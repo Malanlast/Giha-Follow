@@ -20,6 +20,22 @@ const getCurrentUser=async(req,res)=>{
 	}
 };
 
+const getAllUsers=async (req,res)=>{
+	try{
+		const users=await User.find().sort({createdAt:-1});
+
+		res.status(200).json({
+			count:users.length,
+			users,
+		});
+	}catch(error){
+		res.status(500).json({
+			message:"Failed to fetch users",
+		});
+	}
+};
+
 module.exports={
 	getCurrentUser,
+	getAllUsers,
 };
