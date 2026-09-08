@@ -53,12 +53,16 @@ const githubCallback=async (req,res)=>{
 			}
 		);
 
+		req.session.userId=user._id.toString();
+
+		req.session.githubAccessToken=accessToken;
+
 		res.json({
 			message:"Github authenticated successful",
 			accessToken,
 		});
 	}catch(error){
-		console.log(error.message);
+		console.log(error.response?.data || error.message);
 
 		res.status(500).json({
 			message:"Github authentication failed",
