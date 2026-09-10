@@ -2,7 +2,13 @@
 
 function App() { 
   return (
-   <>O'auth Giha Follow</>
+   <>
+   <div className="container">
+		<div className="row">
+			<div className="column"></div>
+		</div>
+	</div>
+  </>
   )
 }
 
