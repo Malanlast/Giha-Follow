@@ -1,5 +1,5 @@
 const User=require("../models/User.js");
-
+const axios=require("axios");
 const getCurrentUser=async(req,res)=>{
 	try{
 		const user=await User.findById(req.session.userId);
@@ -35,7 +35,39 @@ const getAllUsers=async (req,res)=>{
 	}
 };
 
+const followUser=async(req,res)=>{
+	try{
+		const {username}=req.params;
+		const accessToken=req.session.githubAccessToken;
+		if(!accessToken){
+			return res.status(401).json({
+				message:"GitHub authenticated required",
+			});
+		}
+        await axios.put(`https://api.github.com/user/following/${username}`,
+			{},
+			{
+				headers:{
+					Authorization:`Bearer ${accessToken}`,
+					Accept:"application/vnd.github+json",
+				},
+			}
+		);
+		res.status(200).json({
+			message:`Successfully followed ${username} on GitHub`,
+		});
+	}catch(error){
+		console.log(error.response?.data || error.message);
+		res.status(500).json({
+			message:"Failed to follow user",
+		});
+	}
+};
+
+ 
+
 module.exports={
 	getCurrentUser,
 	getAllUsers,
+	followUser, 
 };
