@@ -1,8 +1,13 @@
-import React from 'react'
-
 function login() {
   return (
-	<div>login</div>
+	<>
+    <div className='container'>
+      <div className='row'>
+        <div className='column-6'></div>
+        <div className='column-6'></div>
+      </div>
+    </div>
+  </>
   )
 }
 
