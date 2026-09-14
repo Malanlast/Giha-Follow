@@ -1,5 +1,5 @@
 const express=require("express");
-const { githubCallback, } = require("../controllers/authControllers.js");
+const { githubCallback,logout } = require("../controllers/authControllers.js");
 
 const router=express.Router();
 
@@ -12,5 +12,5 @@ router.get("/github",(req,res)=>{
 });
 
 router.get("/github/callback",githubCallback);
-
+router.post("/logout",logout);
 module.exports=router;
