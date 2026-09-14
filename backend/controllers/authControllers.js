@@ -1,5 +1,6 @@
 const axios=require("axios");
 const User=require("../models/User.js");
+
 const githubCallback=async (req,res)=>{
 	try{
 		const {code}=req.query;
@@ -70,6 +71,21 @@ const githubCallback=async (req,res)=>{
 	}
 };
 
+const logout=(req,res)=>{
+	req.session.destroy((error)=>{
+		if(error){
+			return res.status(500).json({
+				message:"Failed to logout",
+			});
+		}
+		res.clearCookie("connect.sid");
+		res.status(200).json({
+			message:"Logout successful",
+		});
+	});
+};
+
 module.exports={
 	githubCallback,
+	logout
 }

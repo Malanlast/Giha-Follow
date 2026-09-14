@@ -1,5 +1,5 @@
 const express=require("express");
-const { githubCallback } = require("../controllers/authControllers.js");
+const { githubCallback, } = require("../controllers/authControllers.js");
 
 const router=express.Router();
 
