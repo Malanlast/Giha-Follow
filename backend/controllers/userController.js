@@ -92,9 +92,39 @@ const unfollowUser=async(req,res)=>{
 	}
 };
 
+const isfollowing=async(req,res)=>{
+	try{
+	const {username}=req.params;
+	const accessToken=req.session.githubAccessToken;
+	const response=await axios.get(
+		`https://api.github.com/user/following/${username}`,
+		{
+			headers:{
+				Authorization:`Bearer ${accessToken}`,
+				Accept:"application/vnd.github+json",
+			},
+		}
+	);
+	return res.status(200).json({
+		isFollowing: response.status===204,
+	});
+}catch(error){
+	if(error.response?.status===404){
+		return res.status(200).json({
+			isFollowing:false,
+		});
+	}
+	console.log(error.response?.data || error.message);
+	return res.status(500).json({
+		message:"Failed to check follow status",
+	});
+}
+};
+
 module.exports={
 	getCurrentUser,
 	getAllUsers,
 	followUser,
 	unfollowUser,
+	isfollowing
 };
