@@ -106,6 +106,27 @@ const unfollowUser=async(req,res)=>{
 			message:`Successfully unfollowed ${username} on GitHub`,
 		});
 	}catch(error){
+		const status=error.response?.status;
+		if(status===401){
+			return res.status(401).json({
+				message:"GitHub token is invalid or expired",
+			});
+		}
+		if(status===403){
+			return res.status(403).json({
+				message:"GitHub API rate limit exceeded or permission denied",
+			});
+		}
+		if(status===404){
+			return res.status(404).json({
+				message:"GitHUb user is not being followed",
+			});
+		}
+		if(status===422){
+			return res.status(422).json({
+				message:"Invalid GitHub follow request",
+			});
+		}
 		console.log(error.response?.data || error.message);
 		res.status(500).json({
 			message:"Failed to unfollow user",
