@@ -151,7 +151,18 @@ const isfollowing=async(req,res)=>{
 		isFollowing: response.status===204,
 	});
 }catch(error){
-	if(error.response?.status===404){
+	const status=error.response?.status;
+	if(status===401){
+			return res.status(401).json({
+				message:"GitHub token is invalid or expired",
+			});
+		}
+		if(status===403){
+			return res.status(403).json({
+				message:"GitHub API rate limit exceeded or permission denied",
+			});
+		}
+	if(status===404){
 		return res.status(200).json({
 			isFollowing:false,
 		});
