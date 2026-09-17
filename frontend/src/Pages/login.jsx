@@ -1,4 +1,4 @@
-function login() {
+function Login() {
   return (
 	<>
     <div className='container'>
@@ -12,4 +12,4 @@ function login() {
   )
 }
 
-export default login;
+export default Login;

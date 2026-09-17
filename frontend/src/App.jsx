@@ -1,14 +1,10 @@
  import './App.css'
+import Login from './Pages/login.jsx';
 
 function App() { 
   return (
    <>
-   <div className="container">
-		<div className="row">
-			<div className="column-6">1</div>
-      <div className="column-6">2</div>
-		</div>
-	</div>
+   <Login/>
   </>
   )
 }
