@@ -2,16 +2,90 @@
 	min-height:100vh;
 	display:flex;
 	flex-direction:column;
+	
 }
-.content-container{
-	margin-top:1rem;
+.leftRightBox{ 
+	height:80vh;
+	display:flex;
+	flex-direction:column;
+	margin-bottom:1rem;
 }
-.git-globe{
-	height:45vh;
-	width:auto;
+.leftBox{
+	background:red;
+	height:80vh;
+	display:flex;
+	justify-content:center;
+}
+.right{
+	background:pink;
+	height:80vh;
+	display:flex;
+	justify-content:center;
+	flex-direction:column;
+}
+.gitCat{   
+	height:60vh;
+	object-fit:contain; 
+	filter:drop-shadow(-10px 2px 2px rgba(0, 0, 0, 0.7));
+}
+.GihaLogo{  
+	height:5rem; 
+	object-fit:contain; 
+	filter:drop-shadow(-10px 2px 2px rgba(0, 0, 0, 0.7));
 }
 .footer{
 	background:#141313;
 	color:white;
 	margin-top:auto;
+	display:flex;
+	justify-content:center;
+	height:2.5rem;
+}
+.circleRow{
+	display:flex;
+    justify-content:center;
+}
+.circleBox{
+	display:flex;
+    justify-content:center;
+	height:3rem;
+	width:3rem;
+	border-radius:50%;
+	overflow: hidden;
+	border:1px solid #292626; 
+	filter:drop-shadow(-5px 2px 3px rgba(0, 0, 0, 0.7));
+}
+.circleBox img{ 
+	height:100%;
+	width:auto;
+	object-fit:contain;
+	display:block;
+}
+
+h2{ 
+	margin-top:1rem;
+	font-size:14px;
+	padding:5px;
+}
+.rightH2{
+	text-align:center;
+	margin-bottom:0;
+}
+.loginBtn{
+	 height:2rem;
+	 width:6rem;
+	 background: #2c4be5dd;
+	 border-radius:10px;
+	 border:1px solid #01045f;
+	 margin:auto;  
+	 color:white;
+	 box-shadow:-5px 3px 3px #b7b4b4;
+}
+.loginBtn:hover{
+	background: #9ba0b9dd;
+	color: black;
+	box-shadow:-5px 3px 3px #8a8787;
+}
+span{
+	font-size:0.8rem;
 }

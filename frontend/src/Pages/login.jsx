@@ -2,21 +2,54 @@ import '../login.css';
 function Login() {
   return ( 
     <div className='container'>
-    <div className='content-container'>
-    <h1>Welcome to Giha Follow</h1>
-    <p>Increase your Github Followers.</p>
+    <div className='row leftRightBox'>
+    <div className='col-6 leftBox'> 
+    <div className='row' style={{margin:"auto"}}>
+    <div className='col-4' style={{height:"50%",display:"flex",justifyContent:"flex-end",alignItems:"start-end"}}>
+    <img className='GihaLogo' src="/GihaLogo.png" alt="logo"/></div>
+    <div className='col-8'>
+      <h2 style={{marginTop:"0",fontSize:"1rem"}}>MALAN'S DSUS Persent</h2>
+      <h1 style={{fontSize:"1.8rem"}}>Giha Follow</h1>
+    </div>
+    <p style={{fontSize:"0.9rem",marginTop:"10px",textAlign:"center"}}>
+    Discover New Profiles, Make Connections, and Grow Your GitHub Network.
+    </p>
+    <div className='row circleRow'>
+      <div className='circleBox' style={{background:"green"}}>
+        <img src="/onePice.jpeg" alt="user1"/>
+      </div>
+      <div className='circleBox' style={{marginLeft:"-7px",background:"pink"}}>
+         <img src="/wolverine.jpeg" alt="user2"/>
+      </div>
+      <div className='circleBox' style={{marginLeft:"-7px",background:"blue"}}>
+         <img src="/blue.jpeg" alt="user3"/>
+      </div>
+      <div className='circleBox' style={{marginLeft:"-7px",background:"yellow"}}>
+         <img src="/ironMan.jpeg" alt="user4"/>
+      </div>
+    </div>
+     <p style={{fontSize:"0.9rem",marginTop:"10px",textAlign:"center"}}>Every logged-in user can easily follow other users with a single click.</p>
+    </div>   
     </div> 
-        <div>
-          <img className='git-globe' src="/github-globe.gif" alt="github-globe"/>
+        <div className='col-6 right'>
+          <img className='gitCat' src="/gitHubCat.gif" alt="github-globe"/>
+        <h2 className='rightH2'>
+         Secure and Simple Authentication Through Your GitHub Account.
+        </h2> 
+         <button className='loginBtn'>Get started</button>
         </div>
-        <div><h2>
-        Authentication through GitHub
-        </h2>
-        <button>get started</button>
-        </div> 
-      <p>Every logged in user can follow each other by a follow click.</p>
+    </div>
+    <div style={{height:"50vh",width:"20rem",background:"blue",margin:"auto"}} >
+      
+    </div>
       <footer className='footer'>
-      <p><span>@MalanLast</span></p>
+      <p style={{margin:"auto"}}>
+      <span style={{marginRight:"0.5rem"}}>@MalanLast</span>
+      |
+      <span style={{marginRight:"0.5rem",marginLeft:"0.5rem"}}>GitHub</span>
+      |
+      <span style={{marginLeft:"0.5rem"}}>shiothe7@gmail.com</span>
+      </p>
       </footer>
     </div>
   )
