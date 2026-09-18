@@ -2,8 +2,11 @@
 	min-height:100vh;
 	display:flex;
 	flex-direction:column;
-	
+	/* overflow-y:auto; */
 }
+/* .container::-webkit-scrollbar{
+	width:0;
+  } */
 .leftRightBox{ 
 	height:80vh;
 	display:flex;
@@ -27,6 +30,16 @@
 	height:60vh;
 	object-fit:contain; 
 	filter:drop-shadow(-10px 2px 2px rgba(0, 0, 0, 0.7));
+}
+.git-globe {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    max-height: 45vh;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+	filter:drop-shadow(-8px 3px 3px rgba(0, 0, 0, 0.7));
 }
 .GihaLogo{  
 	height:5rem; 
@@ -61,7 +74,6 @@
 	object-fit:contain;
 	display:block;
 }
-
 h2{ 
 	margin-top:1rem;
 	font-size:14px;
@@ -79,12 +91,29 @@ h2{
 	 border:1px solid #01045f;
 	 margin:auto;  
 	 color:white;
+	 margin-bottom:1rem;
 	 box-shadow:-5px 3px 3px #b7b4b4;
 }
 .loginBtn:hover{
 	background: #9ba0b9dd;
 	color: black;
 	box-shadow:-5px 3px 3px #8a8787;
+}
+.signUpBtn{
+	 height:2.1rem; 
+	 font-size:1rem;
+	 background: #171718dd;
+	 border-radius:10px;
+	 border:1px solid #141313;
+	 margin:auto;
+	 margin-bottom:1rem;  
+	 color:white; 
+	 box-shadow:-5px 3px 3px #636060;
+}
+.signUpBtn:hover{
+	background: #363636dd;
+	color: white;
+	box-shadow:-5px 3px 3px #272525;
 }
 span{
 	font-size:0.8rem;
