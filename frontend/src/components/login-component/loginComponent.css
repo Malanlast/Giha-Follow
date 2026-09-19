@@ -9,10 +9,9 @@
 }
 .detailsCard { 
     padding: 1rem;
-	
     box-sizing: border-box; 
     border-radius: 10px;
-    background: #f3f1f4; 
+    background: #efe9f377;
 	border:1px solid #504f4f;
 }
 .detailsCard h2 {

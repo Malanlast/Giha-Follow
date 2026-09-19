@@ -13,7 +13,7 @@ function DetailsBox() {
         <h2>
         Follow & Connect</h2>
         <hr/>
-         <p>Follow or unfollow other users through authorised GitHub functionality with a simple click.</p>
+         <p>Follow or unfollow other users through authorized GitHub functionality with a simple click.</p>
       </div>
       <div className='col-12 col-md-3 detailsCard'>
         <h2>

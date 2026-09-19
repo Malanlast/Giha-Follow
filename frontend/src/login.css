@@ -8,21 +8,26 @@
 	width:0;
   } */
 .leftRightBox{ 
-	min-height:80vh;
+	margin-top:1rem;
+	min-height:70vh;
+	display:flex; 
+	justify-content:center;  
+	gap:10px;
+}
+.leftBox{ 
+	min-height:70vh;
+	margin-bottom:5px; 
+	background: #efe9f377;  
 	display:flex;
 	justify-content:center; 
-	margin-bottom:1rem;
+	border:1px solid #9b9797;
+	border-radius:5px; 
 }
-.leftBox{
-	background:red;
-	height:80vh;
-	display:flex;
-	justify-content:center;
-	margin-bottom:1rem;
-}
-.right{
-	background:pink;
-	height:80vh;
+.right{  
+	border:1px solid #9b9797;
+	border-radius:5px;
+	background: #efe9f377; 
+	height:70vh;
 	display:flex; 
 	flex-direction:column;
 }
@@ -38,8 +43,8 @@
     height: auto;
     max-height: 45vh;
     object-fit: contain;
-    display: block;
-    margin: 0 auto;
+    display: block;  
+    margin:0 auto;
 	filter:drop-shadow(-8px 3px 3px rgba(0, 0, 0, 0.7));
 }
 .GihaLogo{  
@@ -102,6 +107,7 @@ h2{
 	padding:5px;
 }
 .rightH2{
+	margin-top:0;
 	text-align:center;
 	margin-bottom:0;
 }
@@ -113,7 +119,7 @@ h2{
 	 border:1px solid #01045f;
 	 margin:auto;  
 	 color:white;
-	 margin-bottom:1rem;
+	 margin-bottom:5rem;
 	 box-shadow:-5px 3px 3px #b7b4b4;
 }
 .loginBtn:hover{
@@ -141,8 +147,7 @@ span{
 	font-size:0.8rem;
 }
 .githubSection{
-	min-height: 70vh;
-    background: #9cba99;
+	min-height: 70vh; 
     margin: auto;
     margin-bottom: 1rem;
     display: flex;

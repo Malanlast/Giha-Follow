@@ -4,7 +4,7 @@ function Login() {
   return ( 
     <div className='container'>
     <div className='row leftRightBox'>
-    <div className='col-12 col-md-6 leftBox'> 
+    <div className='col-12 col-md-5 leftBox'> 
     <div className='row' style={{margin:"auto"}}>
     <div className='col-4' style={{height:"50%",display:"flex",justifyContent:"flex-end",alignItems:"start-end"}}>
     <img className='GihaLogo' src="/GihaLogo.png" alt="logo"/></div>
@@ -33,8 +33,8 @@ function Login() {
      Every logged-in user can easily follow other developer with a single click.</p>
     </div>   
     </div> 
-        <div className='col-12 col-md-6 right'>
-          <img className='gitCat' src="/gitHubCat.gif" alt="github-globe"/>
+        <div className='col-12 col-md-5 right'>
+          <img className='gitCat'src="/gitHubCat.gif" alt="github-globe"/>
         <h2 className='rightH2'>
          Secure and Simple Authentication Through Your GitHub Account.
         </h2> 
@@ -43,10 +43,10 @@ function Login() {
     </div>
     <div className='githubSection'>
         <img className='git-globe' src="/github-globe.gif" alt="git-globe-img"/>
-        <p style={{textAlign:"center"}}>
+        <p style={{textAlign:"center",marginTop:"1rem"}}>
         Providing one platform where users can find, explore, and connect with other GitHub developers through authorised Follow/Unfollow functionality. It reduces the need to search for developers individually on GitHub and provides a simple interface for discovering profiles, viewing developer information, and building connections.
         </p>
-        <button className='signUpBtn'>SignUp with <i className="bi bi-github"></i></button>
+        <button className='signUpBtn' style={{marginTop:"0"}}>SignUp with <i className="bi bi-github"></i></button>
     </div>
     <DetailsBox/>
       <footer className='footer'>
