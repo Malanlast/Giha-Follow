@@ -8,9 +8,9 @@
 	width:0;
   } */
 .leftRightBox{ 
-	height:80vh;
+	min-height:80vh;
 	display:flex;
-	flex-direction:column;
+	justify-content:center; 
 	margin-bottom:1rem;
 }
 .leftBox{
@@ -18,14 +18,15 @@
 	height:80vh;
 	display:flex;
 	justify-content:center;
+	margin-bottom:1rem;
 }
 .right{
 	background:pink;
 	height:80vh;
-	display:flex;
-	justify-content:center;
+	display:flex; 
 	flex-direction:column;
 }
+ 
 .gitCat{   
 	height:60vh;
 	object-fit:contain; 
@@ -49,10 +50,31 @@
 .footer{
 	background:#141313;
 	color:white;
-	margin-top:auto;
+	margin-top:1rem;
 	display:flex;
 	justify-content:center;
-	height:2.5rem;
+	min-height:2.5rem;
+	align-items:center;
+	padding: 0.5rem 1rem;
+    box-sizing: border-box;
+}
+.footer p {
+    margin: 0;
+    text-align: center;
+    line-height: 1.5;
+}
+@media (max-width: 500px) {
+    .footer {
+        min-height: auto;
+        padding: 0.7rem;
+    }
+
+    .footer p {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+    }
 }
 .circleRow{
 	display:flex;
@@ -118,3 +140,17 @@ h2{
 span{
 	font-size:0.8rem;
 }
+.githubSection{
+	min-height: 70vh;
+    background: #9cba99;
+    margin: auto;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
