@@ -58,10 +58,11 @@ const githubCallback=async (req,res)=>{
 
 		req.session.githubAccessToken=accessToken;
 
-		res.json({
-			message:"Github authenticated successful",
-			accessToken,
-		});
+		// res.json({
+		// 	message:"Github authenticated successful",
+		// 	accessToken,
+		// });
+		res.redirect("http://localhost:5173/dashboard");
 	}catch(error){
 		console.log(error.response?.data || error.message);
 
