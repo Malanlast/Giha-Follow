@@ -2,7 +2,7 @@ require("dotenv").config();
 const express=require('express');
 const session=require("express-session");
 const {MongoStore}=require("connect-mongo");
-
+const cors=require("cors");
 const connectDB=require("./config/db.js");
 const authRoutes=require("./routes/authRoutes.js");
 const userRoutes=require("./routes/userRoutes.js");
@@ -12,6 +12,13 @@ const PORT=process.env.PORT || 5000;
 connectDB();
 
 app.use(express.json());
+
+app.use(
+	cors({
+		origin:"http//localhost:5173",
+		credentials:true,
+	})
+);
 
 app.use(
 	session({

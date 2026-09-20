@@ -1,6 +1,9 @@
 import '../login.css';
 import DetailsBox from '../components/login-component/detailsBox';
 function Login() {
+  const loginWithGitHub=()=>{
+    window.location.href=`${import.meta.env.VITE_API_URL}/api/auth/github`;
+  };
   return ( 
     <div className='container'>
     <div className='row leftRightBox'>
@@ -38,7 +41,9 @@ function Login() {
         <h2 className='rightH2'>
          Secure and Simple Authentication Through Your GitHub Account.
         </h2> 
-         <button style={{marginTop:"0"}} className='loginBtn'>Get started</button>
+         <button 
+          onClick={loginWithGitHub}
+          style={{marginTop:"0"}} className='loginBtn'>Get started</button>
         </div>
     </div>
     <div className='githubSection'>
@@ -46,7 +51,9 @@ function Login() {
         <p style={{textAlign:"center",marginTop:"1rem"}}>
         Providing one platform where users can find, explore, and connect with other GitHub developers through authorised Follow/Unfollow functionality. It reduces the need to search for developers individually on GitHub and provides a simple interface for discovering profiles, viewing developer information, and building connections.
         </p>
-        <button className='signUpBtn' style={{marginTop:"0"}}>SignUp with <i className="bi bi-github"></i></button>
+        <button
+         onClick={loginWithGitHub}
+         className='signUpBtn' style={{marginTop:"0"}}>SignUp with <i className="bi bi-github"></i></button>
     </div>
     <DetailsBox/>
       <footer className='footer'>
