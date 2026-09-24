@@ -19,24 +19,20 @@ function DashBoardNavbar() {
 		currentUser();
 	},[]);
 	if(!user){
-		return(<div className='row' style={{background:"red",height:"20vh"}} >
-		<div style={{background:"pink",height:"5vh"}}  className='col-3'>
-			<img src="" alt='logo'/>
-		</div>
-		<div style={{background:"gray"}}  className='col-4'>4</div>
-		<div style={{background:"blue"}} className='col-5'>5</div>
-	</div>)
+		return<h1>loading...</h1>
 	}
   return (
-	<div className='row' style={{background:"red"}} >
-		{/* <p>{user.username}</p>
-		<p>{user.name}</p>
-		<p>{user.profileUrl}</p>
-		<img src={user.avatar} width={100} alt={user.username}/>
-		<p>{user.bio}</p> */}
-		<div style={{background:"pink"}}  className='col-3'>3</div>
-		<div style={{background:"gray"}}  className='col-4'>4</div>
-		<div className='col-5'>5</div>
+	<div className='row' style={{background:"gray",height:"20vh"}} >
+		<div style={{background:"pink",maxHeight:"6vh",marginTop:"1rem",display:"flex",justifyContent:"center"}}  className='col-3'>	
+			<div style={{display:"flex",justifyContent:"center"}}>
+			<img src="/GihaLogo.png" style={{height:"100%",margin:"auto",marginRight:"3px"}} alt='logo'/>
+			<p style={{fontSize:"0.9rem",letterSpacing:"0.5px",margin:"auto",color:"white"}}><b>Giha Follow</b></p>
+			</div>
+		</div>
+		<div style={{background:"green",display:"flex",justifyContent:"center"}}  className='col-4'>
+			<img src={user.avatar} style={{height:"18vh",margin:"auto",borderRadius:"50%",border:"1px solid #232323"}} alt={user.username}/>
+		</div>
+		<div style={{background:"blue"}} className='col-5'>5</div>
 	</div>
   )
 }
