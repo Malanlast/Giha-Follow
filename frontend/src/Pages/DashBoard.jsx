@@ -1,8 +1,9 @@
+import DashBoardNavbar from '../components/DashBoardNavbar.jsx';
 function DashBoard(){
 	return(
-		<>
-			<h1>DashBoard</h1>
-		</>
+		<div className='container' style={{height:"100vh"}}>
+			<DashBoardNavbar/>
+		</div>
 	);
 }
 export default DashBoard;
