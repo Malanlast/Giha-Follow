@@ -18,21 +18,30 @@ function DashBoardNavbar() {
 		};
 		currentUser();
 	},[]);
+	const handleProfileUrl=()=>{
+		console.log(user.profileUrl);
+	}
 	if(!user){
 		return<h1>loading...</h1>
 	}
   return (
-	<div className='row' style={{background:"gray",height:"20vh"}} >
-		<div style={{background:"pink",maxHeight:"6vh",marginTop:"1rem",display:"flex",justifyContent:"center"}}  className='col-3'>	
-			<div style={{display:"flex",justifyContent:"center"}}>
-			<img src="/GihaLogo.png" style={{height:"100%",margin:"auto",marginRight:"3px"}} alt='logo'/>
-			<p style={{fontSize:"0.9rem",letterSpacing:"0.5px",margin:"auto",color:"white"}}><b>Giha Follow</b></p>
+	<div className='row' style={{background:" #4b4b4b",height:"20vh",color:"white",border:"1px solid #000000",boxShadow:"2px 5px 2px #ddd"}} >
+		<div style={{height:"fit-content",marginTop:"1rem",display:"flex",justifyContent:"center"}}  className='col-3'>	
+			<div style={{display:"flex",width:"fit-content",padding:"5px",justifyContent:"center",border:"1px solid #ddd"}}>
+			<img src="/GihaLogo.png" style={{height:"35px",margin:"auto",marginRight:"7px"}} alt='logo'/>
+			<p style={{fontSize:"0.9rem",letterSpacing:"0.5px",margin:"auto"}}><b>Giha Follow</b></p>
 			</div>
 		</div>
-		<div style={{background:"green",display:"flex",justifyContent:"center"}}  className='col-4'>
-			<img src={user.avatar} style={{height:"18vh",margin:"auto",borderRadius:"50%",border:"1px solid #232323"}} alt={user.username}/>
+		<div style={{display:"flex",justifyContent:"center",height:"20vh"}}  className='col-4'>
+			<img onClick={handleProfileUrl} src={user.avatar} style={{height:"19vh",margin:"auto",borderRadius:"50%",border:"1px solid #000000"}} alt={user.username}/>
 		</div>
-		<div style={{background:"blue"}} className='col-5'>5</div>
+		<div style={{margin:"auto"}} className='col-5'>
+			<div style={{display:"flex",padding:"5px",flexDirection:"column",border:"2px solid #ddd"}}>
+				<h1 style={{fontSize:"1rem"}}>{user.name}</h1>
+				<h2 style={{marginTop:"0",fontSize:"0.8rem"}}>{user.username}</h2>
+				<p style={{fontSize:"0.7rem"}}>{user.bio}</p>
+			</div>
+		</div>
 	</div>
   )
 }
