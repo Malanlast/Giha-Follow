@@ -10,8 +10,7 @@ function DashBoardNavbar() {
 					'http://localhost:5000/api/users/me',
 				{
 					withCredentials:true,
-				});
-				console.log(response.data.user);
+				}); 
 				setUser(response.data.user);
 			}catch(err){
 				console.log(err.response?.data || err.message);
@@ -20,7 +19,7 @@ function DashBoardNavbar() {
 		currentUser();
 	},[]);
 	if(!user){
-		return<h1>loading...</h1>
+		return<h1 style={{background:"#cccbcb"}}>User not found</h1>
 	}
   return (
 	<div className='row dashNav'>
