@@ -1,0 +1,47 @@
+.dashNav{
+	background: #222222;
+	height:20vh;
+	color:white;
+	border:1px solid #000000;
+	box-shadow:2px 5px 2px #ddd;
+}
+.logoContain{
+	display:flex;
+	width:fit-content;
+	padding:5px;
+	justify-content:center;
+	border:1px solid #ddd;
+}
+.imgContain{
+	display:flex;
+	justify-content:center;
+	height:20vh;
+}
+.imgContain img{
+	height:19vh;
+	margin:auto;
+	border-radius:50%;
+	border:2px solid #ffffff;
+}
+.detailsBox{
+	margin:auto;
+	height:20vh;
+	display:flex;
+	align-items:center;
+}
+.detailsBox div{
+	display:flex;
+	padding:5px;
+	flex-direction:column;
+	border:1px solid #ddd;
+	width:fit-content;
+	height:fit-content;
+	box-sizing:border-box;
+	overflow:hidden;
+}
+.detailsBox p{
+	font-size:0.8rem;
+	margin:0;
+	overflow-wrap:anywhere;
+	overflow:hidden;
+}
