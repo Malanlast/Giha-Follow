@@ -1,5 +1,5 @@
 import '../login.css';
-import DetailsBox from '../components/login-component/detailsBox';
+import DetailsBox from '../components/login/detailsBox';
 function Login() {
   const loginWithGitHub=()=>{
     window.location.href=`${import.meta.env.VITE_API_URL}/api/auth/github`;
