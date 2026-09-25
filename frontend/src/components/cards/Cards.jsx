@@ -30,7 +30,7 @@ function Cards(){
 	},[]);
 	if(!currUser){
 		return(
-			<div style={{background:"#505050",display:"flex",justifyContent:"center",marginTop:"1rem",flexDirection:"column",alignItems:"center"}}>
+			<div className="notFoundPage">
 				<img src="/noUser.png" style={{width:"10rem",marginBottom:"0"}} alt="gitHub"/>
 				<p style={{marginTop:"0",color:"white"}}>Failed to fetch users....</p>
 			</div>
@@ -40,14 +40,14 @@ function Cards(){
 		<div className="cardContainer row g-2" style={{marginTop:"1rem",padding:"5px"}}>
 		{
 		users.filter(user=>user._id !== currUser._id).map((user)=>(
-		<div className="col-6 col-md-3" key={user._id}>
-		<div className='card'>
+		<div className="col-6 col-md-3 " key={user._id}>
+		<div className='card cardDesign'>
 		<img src={user.avatar} alt={user.username} className='card-img-top'/>
 		<div className="card-body">
 			<h4 className="card-title">{user.name}</h4>
 			<h5 className="card-subtitle mb-2 text-body-secondary">{user.username}</h5>
 			<p className="card-text">{user.bio}</p>
-			<button className="btn btn-primary">btn</button>
+			<button className="btn followBtn d-block mx-auto">Follow</button>
 		</div>
 		</div>
 		</div>

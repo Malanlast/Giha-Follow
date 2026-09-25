@@ -1,0 +1,22 @@
+.notFoundPage{
+	background:#505050;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex-direction:column;
+	margin-top:1rem;
+}
+.cardDesign{ 
+	overflow-hidden;
+}
+.cardDesign .card-body{
+	overflow-wrap:anywhere;
+}
+.followBtn{
+	background: #202020;
+	color:white;
+}
+.followBtn:hover{
+	background: #202020e6;
+	color:white;
+}
