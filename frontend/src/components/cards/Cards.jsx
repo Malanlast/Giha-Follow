@@ -1,6 +1,7 @@
 import './Cards.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
+import FollowBtn from './FollowBtn';
 function Cards(){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
@@ -51,7 +52,7 @@ function Cards(){
 			<h4 className="card-title">{user.name}</h4>
 			<h5 className="card-subtitle mb-2 text-body-secondary">{user.username}</h5>
 			<p className="card-text">{user.bio}</p>
-			<button className="btn followBtn d-block mx-auto">Follow</button>
+			<FollowBtn/>
 		</div>
 		</div>
 		</div>
