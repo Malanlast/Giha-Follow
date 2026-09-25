@@ -19,7 +19,7 @@ function DashBoardNavbar() {
 		currentUser();
 	},[]);
 	if(!user){
-		return<h1 style={{background:"#cccbcb"}}>User not found</h1>
+		return<h1 style={{background:"#cccbcb"}}>Loading...</h1>
 	}
   return (
 	<div className='row dashNav'>

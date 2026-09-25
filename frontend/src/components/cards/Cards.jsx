@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 function Cards(){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
+	const [apiError, setApiError] = useState(false);
 	useEffect(()=>{
 		const loadData=async()=>{
 			try{
@@ -24,11 +25,12 @@ function Cards(){
 			setUsers(usersResponse.data.users);
 		}catch(err){
 			console.log(err.currUserResponse?.data||err.message);
+			setApiError(true);
 		}
 		};
 		loadData();
 	},[]);
-	if(!currUser){
+	if(apiError){
 		return(
 			<div className="notFoundPage">
 				<img src="/noUser.png" style={{width:"10rem",marginBottom:"0"}} alt="gitHub"/>
@@ -42,7 +44,9 @@ function Cards(){
 		users.filter(user=>user._id !== currUser._id).map((user)=>(
 		<div className="col-6 col-md-3 " key={user._id}>
 		<div className='card cardDesign'>
-		<img src={user.avatar} alt={user.username} className='card-img-top'/>
+		<img style={{cursor:"pointer"}}
+		onClick={()=>window.open(user.profileUrl,"_blank")}
+		src={user.avatar} alt={user.username} className='card-img-top'/>
 		<div className="card-body">
 			<h4 className="card-title">{user.name}</h4>
 			<h5 className="card-subtitle mb-2 text-body-secondary">{user.username}</h5>
