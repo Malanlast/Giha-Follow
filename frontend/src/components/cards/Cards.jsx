@@ -5,7 +5,8 @@ import FollowBtn from './FollowBtn';
 function Cards(){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
-	const [apiError, setApiError] = useState(false);
+	const[apiError, setApiError] = useState(false);
+	const[isfollowing, setIsfollowing]=useState({});
 	useEffect(()=>{
 		const loadData=async()=>{
 			try{
@@ -30,7 +31,7 @@ function Cards(){
 		}
 		};
 		loadData();
-	},[]);
+	},[]); 
 	if(apiError){
 		return(
 			<div className="notFoundPage">
@@ -38,11 +39,14 @@ function Cards(){
 				<p style={{marginTop:"0",color:"white"}}>Failed to fetch users....</p>
 			</div>
 		)
-	}
+	};
+	if (!currUser) {
+	    return <h1>Loading...</h1>;
+	};
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"1rem",padding:"5px"}}>
 		{
-		users.filter(user=>user._id !== currUser._id).map((user)=>(
+		users.filter(user=>user._id !== currUser?._id).map((user)=>(
 		<div className="col-6 col-md-3 " key={user._id}>
 		<div className='card cardDesign'>
 		<img style={{cursor:"pointer"}}
@@ -52,7 +56,11 @@ function Cards(){
 			<h4 className="card-title">{user.name}</h4>
 			<h5 className="card-subtitle mb-2 text-body-secondary">{user.username}</h5>
 			<p className="card-text">{user.bio}</p>
-			<FollowBtn/>
+			<FollowBtn 
+			    isfollowing={isfollowing}
+				user={user}
+				setIsfollowing={setIsfollowing}
+			/>
 		</div>
 		</div>
 		</div>
