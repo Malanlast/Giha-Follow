@@ -44,7 +44,7 @@ function Cards(){
 	    return <h1>Loading...</h1>;
 	};
 	return(
-		<div className="cardContainer row g-2" style={{marginTop:"1rem",padding:"5px"}}>
+		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
 		{
 		users.filter(user=>user._id !== currUser?._id).map((user)=>(
 		<div className="col-6 col-md-3 " key={user._id}>
