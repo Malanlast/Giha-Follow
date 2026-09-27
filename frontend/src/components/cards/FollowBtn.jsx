@@ -17,6 +17,23 @@ function FollowBtn({isfollowing, user, setIsfollowing}) {
 		}catch(err){
 			console.log(err.response?.data||err.message);
 		}
+	};
+	const followUser=async(username)=>{
+		try{
+			await axios.put(
+				`http://localhost:5000/api/users/${username}/follow`,
+				{},
+				{
+					withCredentials:true,
+				}
+			);
+			setIsfollowing((prev)=>({
+				...prev,
+				[username]:true,
+			}));
+		}catch(err){
+			console.log(err.response?.data||err.message);
+		}
 	}
 	useEffect(()=>{ 
 			const updateStatus=()=>{
@@ -32,7 +49,9 @@ function FollowBtn({isfollowing, user, setIsfollowing}) {
 	},[user.username]);
   return (
 	<>
-	{!isfollowing[user.username] && <button className="btn followBtn d-block mx-auto">
+	{!isfollowing[user.username] && <button
+	onClick={()=>followUser(user.username)}
+	className="btn followBtn d-block mx-auto">
 		Follow
 	</button>}
 	</>

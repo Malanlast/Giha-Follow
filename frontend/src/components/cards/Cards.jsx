@@ -2,7 +2,7 @@ import './Cards.css';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import FollowBtn from './FollowBtn';
-function Cards(){
+function Cards({activeList}){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
 	const[apiError, setApiError] = useState(false);
@@ -46,7 +46,13 @@ function Cards(){
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
 		{
-		users.filter(user=>user._id !== currUser?._id).map((user)=>(
+		users.filter(user=>user._id !== currUser?._id)
+		.filter(user=>{
+			if(activeList==="new"){
+				return !isfollowing[user.username];
+			}
+			return isfollowing[user.username];
+		}).map((user)=>(
 		<div className="col-6 col-md-3 " key={user._id}>
 		<div className='card cardDesign'>
 		<img style={{cursor:"pointer"}}
