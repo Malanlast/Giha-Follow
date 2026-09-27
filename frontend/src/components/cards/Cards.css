@@ -13,10 +13,11 @@
 	overflow-wrap:anywhere;
 }
 .followBtn{
-	background: #202020;
+	background: #202020; 
+	border:1px solid black;
 	color:white;
 }
 .followBtn:hover{
-	background: #202020e6;
+	background: #333333;
 	color:white;
 }

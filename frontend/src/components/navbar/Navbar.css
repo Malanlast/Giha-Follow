@@ -1,0 +1,14 @@
+.userListBtn{
+	border:1px solid #7e7d7d;
+}
+.userListBtn:hover{
+	border:1px solid #7e7d7d;
+}
+.userListBtn {
+    transition: all 0.2s ease;
+}
+
+.userListBtn.active {
+    transform: scale(1.08);
+    font-weight: 600;
+}

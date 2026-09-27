@@ -19,7 +19,16 @@ function FollowBtn({isfollowing, user, setIsfollowing}) {
 		}
 	}
 	useEffect(()=>{ 
-			checkFollowStatus(user.username);
+			const updateStatus=()=>{
+				checkFollowStatus(user.username);
+			};
+			updateStatus();
+			window.addEventListener("focus",updateStatus);
+			document.addEventListener("visibilitychange",updateStatus);
+			return()=>{
+				window.removeEventListener("focus",updateStatus);
+				document.removeEventListener("visibilitychange",updateStatus);
+			};
 	},[user.username]);
   return (
 	<>
