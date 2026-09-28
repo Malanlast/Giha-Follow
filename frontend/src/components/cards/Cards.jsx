@@ -43,16 +43,34 @@ function Cards({activeList}){
 	if (!currUser) {
 	    return <h1>Loading...</h1>;
 	};
-	return(
-		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
-		{
-		users.filter(user=>user._id !== currUser?._id)
+	const filteredUser=users
+		.filter(user=>user._id !== currUser?._id)
 		.filter(user=>{
 			if(activeList==="new"){
 				return !isfollowing[user.username];
 			}
 			return isfollowing[user.username];
-		}).map((user)=>(
+        });
+	return(
+		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
+		{
+			filteredUser.length===0?
+		(
+			<div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
+				<img
+					style={{height:"50vh"}}
+				src='/noUser2.png' alt='no user'/>
+				<h2 style={{fontSize:"1rem"}}>
+				{
+					activeList==="new"?
+					"Waiting for new users":
+					"Following users not found"
+				}
+				</h2>
+			</div>
+		)
+		:(
+			filteredUser.map((user)=>(
 		<div className="col-6 col-md-3 " key={user._id}>
 		<div className='card cardDesign'>
 		<img style={{cursor:"pointer"}}
@@ -70,7 +88,9 @@ function Cards({activeList}){
 		</div>
 		</div>
 		</div>
-		))}
+		))
+		)
+		}
 		</div>
 		)
 	};

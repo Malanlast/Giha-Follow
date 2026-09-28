@@ -39,7 +39,7 @@ function FollowBtn({isfollowing, user, setIsfollowing}) {
 			const updateStatus=()=>{
 				checkFollowStatus(user.username);
 			};
-			updateStatus();
+			updateStatus();  
 			window.addEventListener("focus",updateStatus);
 			document.addEventListener("visibilitychange",updateStatus);
 			return()=>{
