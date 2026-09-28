@@ -45,3 +45,11 @@
 	overflow-wrap:anywhere;
 	overflow:hidden;
 }
+.btnLogout{
+	background: #f03030;
+	margin-left:2px;
+	color:white;
+}
+.btnLogout:hover{
+	background: #ff0505;
+}

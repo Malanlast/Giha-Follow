@@ -18,6 +18,20 @@ function DashBoardNavbar() {
 		};
 		currentUser();
 	},[]);
+	const handleLogout=async()=>{
+		try{
+			await axios.post(
+				`http://localhost:5000/api/auth/logout`,
+				{},
+				{
+					withCredentials:true,
+				}
+			);
+			window.location.href="/";
+		}catch(err){
+			console.log(err.response?.data||err.message);
+		}
+	}
 	if(!user){
 		return<h1 style={{background:"#cccbcb"}}>Loading...</h1>
 	}
@@ -38,7 +52,9 @@ function DashBoardNavbar() {
 				<h2 style={{marginTop:"0",fontSize:"0.8rem"}}>Username: {user.username}</h2>
 				<p>Bio: {user.bio}</p>
 			</div>
-		</div>
+			<button
+			onClick={handleLogout} className='btn btnLogout'>logout</button>
+		</div> 
 	</div>
   )
 }
