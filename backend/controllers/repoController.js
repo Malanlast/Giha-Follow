@@ -22,6 +22,16 @@ const searchRepositories=async(req,res)=>{
 				},
 			}
 		);
+		const repositories=response.data.items.map((repo)=>({
+			name:repo.name,
+			username:repo.owner.login,
+			image:repo.avatar_url,
+			about:repo.description,
+			createdDate:repo.created_at,
+			stars:repo.stargazers_count,
+			forks:repo.forks_count,
+			repositoryUrl:repo.html_url,
+		}));
 	}catch(err){
 		console.log(err.response?.data||err.message);
 		res.status(500).json({
