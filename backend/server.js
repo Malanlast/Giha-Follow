@@ -6,6 +6,7 @@ const cors=require("cors");
 const connectDB=require("./config/db.js");
 const authRoutes=require("./routes/authRoutes.js");
 const userRoutes=require("./routes/userRoutes.js");
+const repoRoutes=require("./routes/repoRoutes.js");
 const app=express();
 const PORT=process.env.PORT || 5000;
 
@@ -40,7 +41,7 @@ app.use(
 
 app.use("/api/auth",authRoutes);
 app.use("/api/users",userRoutes);
-
+app.use("/api/repos",repoRoutes);
 app.get("/",(req,res)=>{
 	res.send("backend running on port 5000");
 })
