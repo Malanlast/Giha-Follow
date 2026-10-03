@@ -33,11 +33,11 @@ const searchRepositories=async(req,res)=>{
 				hasDescription&&hasProfileImg
 			);
 		}).map((repo)=>{
-			const trendingScore=repo.stargazers_count+repo.fork_count+repo.watchers_count;
+			const trendingScore=repo.stargazers_count+repo.forks_count+repo.watchers_count;
 			return{
 			name:repo.name,
 			username:repo.owner.login,
-			image:repo.avatar_url,
+			image:repo.owner.avatar_url,
 			about:repo.description,
 			createdDate:repo.created_at,
 			stars:repo.stargazers_count,
@@ -47,6 +47,10 @@ const searchRepositories=async(req,res)=>{
 			trendingScore,
 			};
 		}).sort((a,b)=>b.trendingScore-a.trendingScore).slice(0,10);
+		res.status(200).json({
+		count: repositories.length,
+		repositories
+	});
 	}catch(err){
 		console.log(err.response?.data||err.message);
 		res.status(500).json({
