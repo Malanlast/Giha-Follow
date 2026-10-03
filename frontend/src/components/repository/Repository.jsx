@@ -23,13 +23,13 @@ function Repository() {
 	}
   return (
 	<div className="container">
-		<input
+		<input style={{width:"fit-content"}}
 			type="text"
 			placeholder="search repo"
 			value={query}
 			onChange={(e)=>setQuery(e.target.value)}
 		/>
-		<button onClick={searchRepository}>search</button>
+		<button style={{width:"fit-content"}} onClick={searchRepository}>search</button>
 		{loading && <p>searching...</p>}
 		{repos.map((repo)=>(
 			<div>
