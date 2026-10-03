@@ -52,8 +52,7 @@ function DashBoardNavbar() {
 				<h2 style={{marginTop:"0",fontSize:"0.8rem"}}>Username: {user.username}</h2>
 				<p>Bio: {user.bio}</p>
 			</div>
-			<button
-			onClick={handleLogout} className='btn btnLogout'>logout</button>
+			<i onClick={handleLogout} className="btnLogout bi bi-box-arrow-right"></i> 
 		</div> 
 	</div>
   )

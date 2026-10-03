@@ -1,6 +1,7 @@
 import { useState } from "react";
 import './Navbar.css';
 import Cards from "../cards/Cards";
+import RepoDialogBox from "../repository/RepoDialogBox";
 function Navbar() {
 	const[activeList,setActiveList]=useState("new");
   return (
@@ -19,15 +20,7 @@ function Navbar() {
 		        color:activeList==="following"?"white":""}}
 		 className={`btn userListBtn ${activeList==="following"?"":"btn-sm"}`}
 		 type="button">Followings</button>
-		 <button
-			onClick={()=>setActiveList("searchRepo")}
-			style={{marginLeft:"10px",backgroundColor:activeList==="searchRepo"?"#202020":"",
-		        color:activeList==="searchRepo"?"white":""}}
-				className={`btn userListBtn ${activeList==="searchRepo"?"":"btn-sm"}`}
-				type="button"
-		 >
-		 search Repo
-		 </button>
+		 <RepoDialogBox/>
 	</form>
 	</nav>
 	<Cards
