@@ -1,3 +1,4 @@
+import './SearchRepo.css';
 import { useState } from "react";
 import axios from "axios";
 function Repository() {
@@ -22,14 +23,19 @@ function Repository() {
 		}
 	}
   return (
-	<div className="container">
-		<input style={{width:"fit-content"}}
+	<div className="container-fluid" >
+	<div className="searchBox" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+			<input style={{width:"10rem",borderRadius:"5px",border:"1px solid #777777"}}
 			type="text"
-			placeholder="search repo"
+			placeholder="search repositories"
 			value={query}
 			onChange={(e)=>setQuery(e.target.value)}
-		/>
-		<button style={{width:"fit-content"}} onClick={searchRepository}>search</button>
+			required
+		/>  
+			<button className='searchBtn' type="button" onClick={searchRepository}>
+				<i className="bi bi-search"></i>
+			</button> 
+	</div>
 		{loading && <p>searching...</p>}
 		{repos.map((repo)=>(
 			<div>
