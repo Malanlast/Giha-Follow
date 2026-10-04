@@ -20,6 +20,8 @@ className="btn btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
         </div>
         <div className="modal-footer">
           <button type="button" className="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+          {/* <button type="button" className="btn btn-sm btn-success">Prev</button>
+          <button type="button" className="btn btn-sm btn-secondary">Next</button> */}
         </div>
       </div>
     </div>
