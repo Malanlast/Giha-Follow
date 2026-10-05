@@ -174,10 +174,63 @@ const isfollowing=async(req,res)=>{
 }
 };
 
+const getFollowRequest=async(req,res)=>{
+	try{
+		const accessToken=req.session.githubAccessToken;
+		if(!accessToken){
+			return res.status(401).json({
+				message:"github authentication required",
+			});
+		}
+		const connectedUsers=await User.find({
+			_id:{$ne:req.session.userId},
+		});
+		const followerResponse=await axios.get(
+			`https://api.github.com/user/followers?per_page=50`,
+			{
+				headers:{
+					Authorization:`Bearer ${accessToken}`,
+					Accept:"application/vnd.github+json",
+				},
+			}
+		);
+		const followingResponse=await axios.get(
+			`https://api.github.com/user/following?per_page=50`,
+			{
+				headers:{
+					Authorization:`Bearer ${accessToken}`,
+					Accept:"application/vnd.github+json",
+				},
+			}
+		);
+		const followUsernames=new Set(
+			followerResponse.data.map((user)=>user.login)
+		);
+		const followingUsernames=new Set(
+			followingResponse.data.map((user)=>user.login)
+		);
+		const requests=connectedUsers.filter(
+			(user)=>
+			followUsernames.has(user.username)&&
+			!followingUsernames.has(user.username)
+		);
+		res.status(200).json({
+			count:requests.length,
+			users:requests,
+		});
+	}catch(err){
+		console.log(err.response?.data||err.message);
+		return res.status(500).json({
+			message:"failed to fetch follow requests",
+		});
+	}
+};
+
 module.exports={
 	getCurrentUser,
 	getAllUsers,
 	followUser,
 	unfollowUser,
-	isfollowing
+	isfollowing,
+	getFollowRequest,
 };
