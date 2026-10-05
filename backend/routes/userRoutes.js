@@ -9,5 +9,6 @@ router.get("/me",isAuthenticated,getCurrentUser);
 router.get("/",isAuthenticated,getAllUsers);
 router.put("/:username/follow",isAuthenticated,followUser);
 router.delete("/:username/unfollow",isAuthenticated,unfollowUser);
-router.get("/:username/follow-status",isAuthenticated,isfollowing); 
+router.get("/:username/follow-status",isAuthenticated,isfollowing);
+router.get("/follow-requests",isAuthenticated,getFollowRequest);
 module.exports=router;
