@@ -1,7 +1,8 @@
 import './Cards.css';
 import axios from "axios";
-import { useEffect, useState } from "react";
-import FollowBtn from './FollowBtn';
+import { useEffect, useState } from "react"; 
+import NewUsers from './NewUsers';
+import FollowingUser from './FollowingUser';
 function Cards({activeList}){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
@@ -40,7 +41,7 @@ function Cards({activeList}){
 			</div>
 		)
 	};
-	if (!currUser) {
+	if(!currUser){
 	    return <h1>Loading...</h1>;
 	};
 	const filteredUser=users
@@ -63,32 +64,32 @@ function Cards({activeList}){
 				<h2 style={{fontSize:"1rem"}}>
 				{
 					activeList==="new"?
-					"Waiting for new users":
+					"Waiting for new users"
+					:activeList==="follow-requests"?
+					"No following request yet":
 					"Following users not found"
 				}
 				</h2>
 			</div>
 		)
-		:(
-			filteredUser.map((user)=>(
-		<div className="col-6 col-md-3 " key={user._id}>
-		<div className='card cardDesign'>
-		<img style={{cursor:"pointer"}}
-		onClick={()=>window.open(user.profileUrl,"_blank")}
-		src={user.avatar} alt={user.username} className='card-img-top'/>
-		<div className="card-body">
-			<h4 className="card-title">{user.name}</h4>
-			<h5 className="card-subtitle mb-2 text-body-secondary">{user.username}</h5>
-			<p className="card-text">{user.bio}</p>
-			<FollowBtn 
-			    isfollowing={isfollowing}
-				user={user}
+		:(<>
+			{activeList==="new" &&(
+			 <NewUsers
+				users={users}
+				currUser={currUser}
+				isfollowing={isfollowing}
 				setIsfollowing={setIsfollowing}
 			/>
-		</div>
-		</div>
-		</div>
-		))
+			)}
+			{activeList==="following" &&(
+			 <FollowingUser
+				users={users}
+				currUser={currUser}
+				isfollowing={isfollowing}
+				setIsfollowing={setIsfollowing}
+			/>
+			)}
+			</>
 		)
 		}
 		</div>

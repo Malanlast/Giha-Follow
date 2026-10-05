@@ -18,8 +18,14 @@ function Navbar() {
 		onClick={()=>setActiveList("following")}
 		style={{backgroundColor:activeList==="following"?"#202020":"",
 		        color:activeList==="following"?"white":""}}
-		 className={`btn userListBtn ${activeList==="following"?"":"btn-sm"}`}
+		 className={`btn userListBtn me-2 ${activeList==="following"?"":"btn-sm"}`}
 		 type="button">Followings</button>
+		 <button
+		onClick={()=>setActiveList("follow-requests")}
+		style={{backgroundColor:activeList==="follow-requests"?"#202020":"",
+		        color:activeList==="follow-requests"?"white":""}}
+		 className={`btn userListBtn ${activeList==="follow-requests"?"":"btn-sm"}`}
+		 type="button">Requests</button>
 		 <RepoDialogBox/>
 	</form>
 	</nav>
