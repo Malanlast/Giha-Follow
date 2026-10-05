@@ -3,7 +3,7 @@ function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollo
   return (
 	<>
 		{
-			isFollowRequest.length===0?
+			isFollowRequest.filter(user => !isfollowing[user.username]).length === 0?
 		(
 			<div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
 				<img
@@ -15,7 +15,8 @@ function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollo
 			</div>
 		):
 		(isFollowRequest
-		.map((user)=>(
+		.filter(user => !isfollowing[user.username])
+		.map((user)=>( 
 		<div className="col-6 col-md-3" key={user._id}>
 		<div className='card cardDesign'>
 		<img style={{cursor:"pointer"}}
@@ -27,9 +28,9 @@ function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollo
 			<p className="card-text">{user.bio}</p>
 			<FollowBtn 
 			    isfollowing={isfollowing}
-				user={user}
-				setIsfollowing={setIsfollowing}
 				setIsFollowRequest={setIsFollowRequest}
+				setIsfollowing={setIsfollowing} 
+				user={user}
 			/>
 		</div>
 		</div>

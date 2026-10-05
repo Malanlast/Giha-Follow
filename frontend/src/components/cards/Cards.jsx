@@ -10,6 +10,19 @@ function Cards({activeList}){
 	const[apiError, setApiError] = useState(false);
 	const[isfollowing, setIsfollowing]=useState({});
 	const[isFollowRequest, setIsFollowRequest]=useState([]);
+	const loadFollowRequests=async()=>{
+		try{
+			const response=await axios.get(
+				"http://localhost:5000/api/users/follow-requests",
+				{
+					withCredentials:true,
+				}
+			);
+			setIsFollowRequest(response.data.users);
+		}catch(err){
+			console.log(err.response?.data||err.message);
+		}
+	};
 	useEffect(()=>{
 		const loadData=async()=>{
 			try{
@@ -42,6 +55,13 @@ function Cards({activeList}){
 		}
 		};
 		loadData();
+
+		window.addEventListener("focus",loadFollowRequests);
+		document.addEventListener("visibilitychange",loadFollowRequests);
+		return()=>{
+			window.removeEventListener("focus",loadFollowRequests);
+			document.removeEventListener("visibilitychange",loadFollowRequests);
+		}
 	},[]); 
 	if(apiError){
 		return(
@@ -58,12 +78,12 @@ function Cards({activeList}){
 		.filter(user=>user._id !== currUser?._id)
 		.filter(user=>{
 			if(activeList==="new"){
-				return true;
+				return !isfollowing[user.username];
 			}
 			if(activeList==="following"){
 			return isfollowing[user.username];
 			}
-			return true;
+			return false;
         });
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
@@ -71,10 +91,10 @@ function Cards({activeList}){
 			activeList==="follow-requests"?
 			(
 				<FollowRequest
-					isFollowRequest={isFollowRequest} 
+					isFollowRequest={isFollowRequest}
 					setIsFollowRequest={setIsFollowRequest}
-					isfollowing={isfollowing}
 					setIsfollowing={setIsfollowing}
+					isfollowing={isfollowing}
 				/>
 			):
 			(filteredUser.length===0?
@@ -86,8 +106,8 @@ function Cards({activeList}){
 				<h2 style={{fontSize:"1rem"}}>
 				{
 					activeList==="new"?
-					"Waiting for new users":
-					"Following users not found"
+					"Waiting for new users"
+					:"Following users not found"
 				}
 				</h2>
 			</div>

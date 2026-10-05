@@ -31,9 +31,10 @@ function FollowBtn({isfollowing, user, setIsfollowing, setIsFollowRequest}) {
 				...prev,
 				[username]:true,
 			}));
+			if(setIsFollowRequest){
 			setIsFollowRequest((prev)=>
-			prev.filter(user=>user.username!==username)
-		);
+			prev.filter(user=>user.username!==username));
+		}
 		}catch(err){
 			console.log(err.response?.data||err.message);
 		}
