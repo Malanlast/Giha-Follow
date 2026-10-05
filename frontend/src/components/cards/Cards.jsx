@@ -3,11 +3,13 @@ import axios from "axios";
 import { useEffect, useState } from "react"; 
 import NewUsers from './NewUsers';
 import FollowingUser from './FollowingUser';
+import FollowRequest from './FollowRequest';
 function Cards({activeList}){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
 	const[apiError, setApiError] = useState(false);
 	const[isfollowing, setIsfollowing]=useState({});
+	const[isFollowRequest, setIsFollowRequest]=useState([]);
 	useEffect(()=>{
 		const loadData=async()=>{
 			try{
@@ -26,6 +28,14 @@ function Cards({activeList}){
 				}
 			);
 			setUsers(usersResponse.data.users);
+
+			const followRequest=await axios.get(
+				`http://localhost:5000/api/users/follow-requests`,
+				{
+					withCredentials:true,
+				}
+			);
+			setIsFollowRequest(followRequest.data.users);
 		}catch(err){
 			console.log(err.currUserResponse?.data||err.message);
 			setApiError(true);
@@ -55,7 +65,15 @@ function Cards({activeList}){
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
 		{
-			filteredUser.length===0?
+			activeList==="follow-requests"?
+			(
+				<FollowRequest
+					isFollowRequest={isFollowRequest} 
+					isfollowing={isfollowing}
+					setIsfollowing={setIsfollowing}
+				/>
+			):
+			(filteredUser.length===0?
 		(
 			<div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
 				<img
@@ -91,7 +109,7 @@ function Cards({activeList}){
 			)}
 			</>
 		)
-		}
+		)}
 		</div>
 		)
 	};
