@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect } from "react";
 
-function FollowBtn({isfollowing, user, setIsfollowing}) {
+function FollowBtn({isfollowing, user, setIsfollowing, setIsFollowRequest}) {
 	const checkFollowStatus=async(username)=>{
 		try{
 			const response=await axios.get(
@@ -31,6 +31,9 @@ function FollowBtn({isfollowing, user, setIsfollowing}) {
 				...prev,
 				[username]:true,
 			}));
+			setIsFollowRequest((prev)=>
+			prev.filter(user=>user.username!==username)
+		);
 		}catch(err){
 			console.log(err.response?.data||err.message);
 		}

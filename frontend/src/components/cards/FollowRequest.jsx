@@ -1,9 +1,20 @@
 import FollowBtn from "./FollowBtn";
-function FollowRequest({isFollowRequest, isfollowing, setIsfollowing}) {
+function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollowRequest}) {
   return (
 	<>
 		{
-		isFollowRequest.filter(user=>!isfollowing[user.username])
+			isFollowRequest.length===0?
+		(
+			<div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
+				<img
+				style={{height:"50vh"}}
+				src='/noReq.png' alt='no user'/>
+				<h2 style={{fontSize:"1rem"}}>
+				No follow request yet
+				</h2>
+			</div>
+		):
+		(isFollowRequest
 		.map((user)=>(
 		<div className="col-6 col-md-3" key={user._id}>
 		<div className='card cardDesign'>
@@ -18,10 +29,12 @@ function FollowRequest({isFollowRequest, isfollowing, setIsfollowing}) {
 			    isfollowing={isfollowing}
 				user={user}
 				setIsfollowing={setIsfollowing}
+				setIsFollowRequest={setIsFollowRequest}
 			/>
 		</div>
 		</div>
 		</div>
+		)
 		))
 		}
 	</>

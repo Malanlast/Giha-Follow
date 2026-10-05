@@ -37,7 +37,7 @@ function Cards({activeList}){
 			);
 			setIsFollowRequest(followRequest.data.users);
 		}catch(err){
-			console.log(err.currUserResponse?.data||err.message);
+			console.log(err.response?.data||err.message);
 			setApiError(true);
 		}
 		};
@@ -58,9 +58,12 @@ function Cards({activeList}){
 		.filter(user=>user._id !== currUser?._id)
 		.filter(user=>{
 			if(activeList==="new"){
-				return !isfollowing[user.username];
+				return true;
 			}
+			if(activeList==="following"){
 			return isfollowing[user.username];
+			}
+			return true;
         });
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
@@ -69,6 +72,7 @@ function Cards({activeList}){
 			(
 				<FollowRequest
 					isFollowRequest={isFollowRequest} 
+					setIsFollowRequest={setIsFollowRequest}
 					isfollowing={isfollowing}
 					setIsfollowing={setIsfollowing}
 				/>
@@ -82,9 +86,7 @@ function Cards({activeList}){
 				<h2 style={{fontSize:"1rem"}}>
 				{
 					activeList==="new"?
-					"Waiting for new users"
-					:activeList==="follow-requests"?
-					"No following request yet":
+					"Waiting for new users":
 					"Following users not found"
 				}
 				</h2>
