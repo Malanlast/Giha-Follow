@@ -1,15 +1,19 @@
 import './Cards.css';
+import {io} from "socket.io-client";
 import axios from "axios";
-import { useEffect, useState } from "react"; 
+import { useEffect, useState, useRef } from "react"; 
 import NewUsers from './NewUsers';
 import FollowingUser from './FollowingUser';
 import FollowRequest from './FollowRequest';
-function Cards({activeList}){
+function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotification}){
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
 	const[apiError, setApiError] = useState(false);
-	const[isfollowing, setIsfollowing]=useState({});
-	const[isFollowRequest, setIsFollowRequest]=useState([]);
+	const[isfollowing, setIsfollowing]=useState({}); 
+	const activeListRef=useRef(activeList);
+	useEffect(()=>{
+		activeListRef.current=activeList;
+	},[activeList]);
 	const loadFollowRequests=async()=>{
 		try{
 			const response=await axios.get(
@@ -54,15 +58,47 @@ function Cards({activeList}){
 			setApiError(true);
 		}
 		};
+		const socket=io("http://localhost:5000");
+		socket.on("newUser",(newUser)=>{
+			setUsers(prev=>[...prev, newUser]);
+			if(activeListRef.current!=="new"){
+				setNewUserNotification(prev=>[...prev, newUser]);
+			}
+		});
 		loadData();
-
 		window.addEventListener("focus",loadFollowRequests);
 		document.addEventListener("visibilitychange",loadFollowRequests);
 		return()=>{
+			socket.disconnect();
 			window.removeEventListener("focus",loadFollowRequests);
 			document.removeEventListener("visibilitychange",loadFollowRequests);
 		}
-	},[]); 
+	},[]);
+	useEffect(() => {
+    if (!currUser) return;
+    const socket = io("http://localhost:5000");
+    socket.on("followRequest", (data) => {
+        if (data.targetUsername === currUser.username) {
+            setIsFollowRequest(prev => {
+                const alreadyExists = prev.some(
+                    user => user.username === data.follower.username
+                );
+                if (alreadyExists) {
+                    return prev;
+                }
+                return [...prev, data.follower];
+            });
+        }
+    });
+    return () => {
+        socket.disconnect();
+    };
+}, [currUser]);
+	useEffect(()=>{
+		if(activeList==="new"){
+			setNewUserNotification([]);
+		}
+	},[activeList]);
 	if(apiError){
 		return(
 			<div className="notFoundPage">

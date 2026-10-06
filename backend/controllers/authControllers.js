@@ -1,10 +1,11 @@
+const {getIO}=require("../socket.js");
 const axios=require("axios");
 const User=require("../models/User.js");
 
 const githubCallback=async (req,res)=>{
 	try{
+		const io=getIO();
 		const {code}=req.query;
-
 		if(!code){
 			return res.status(400).json({
 				message:"Authorization code not found",
@@ -38,7 +39,9 @@ const githubCallback=async (req,res)=>{
 		);
 
 		const githubUser=githubUserResponse.data;
-
+		const existingUser=await User.findOne({
+			githubId:githubUser.id.toString()
+		});
 		const user=await User.findOneAndUpdate(
 			{githubId:githubUser.id.toString()},
 			{
@@ -53,6 +56,9 @@ const githubCallback=async (req,res)=>{
 				upsert:true,
 			}
 		);
+		if(!existingUser){
+			io.emit("newUser",user);
+		}
 
 		req.session.userId=user._id.toString();
 

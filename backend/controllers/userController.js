@@ -1,5 +1,6 @@
 const User=require("../models/User.js");
 const axios=require("axios");
+const {getIO}=require("../socket.js");
 const getCurrentUser=async(req,res)=>{
 	try{
 		const user=await User.findById(req.session.userId);
@@ -53,6 +54,12 @@ const followUser=async(req,res)=>{
 				},
 			}
 		);
+		const io=getIO();
+		const follower=await User.findById(req.session.userId); 
+		io.emit("followRequest",{
+			targetUsername:username,
+			follower:follower
+		});
 		res.status(200).json({
 			message:`Successfully followed ${username} on GitHub`,
 		});
