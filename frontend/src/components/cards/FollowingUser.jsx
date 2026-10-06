@@ -1,5 +1,5 @@
 import FollowBtn from "./FollowBtn";
-function FollowingUser({users, currUser, isfollowing, setIsfollowing}) {
+function FollowingUser({users, currUser, isfollowing, setIsfollowing, refreshFollowRequests}) {
 	const followingUsers=users
 	.filter(user=>user._id!==currUser._id)
 	.filter(user=>isfollowing[user.username]);
@@ -20,6 +20,7 @@ function FollowingUser({users, currUser, isfollowing, setIsfollowing}) {
 			    isfollowing={isfollowing}
 				user={user}
 				setIsfollowing={setIsfollowing}
+				refreshFollowRequests={refreshFollowRequests}
 			/>
 		</div>
 		</div>

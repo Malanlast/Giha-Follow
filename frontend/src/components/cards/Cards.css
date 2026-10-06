@@ -21,3 +21,12 @@
 	background: #333333;
 	color:white;
 }
+.unfollowBtn{
+	background: #f93d3d; 
+	border:1px solid black;
+	color:black;
+}
+.unfollowBtn:hover{
+	background: rgb(232, 42, 42);
+	color:black;
+}

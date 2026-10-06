@@ -119,6 +119,7 @@ function Cards({activeList}){
 				currUser={currUser}
 				isfollowing={isfollowing}
 				setIsfollowing={setIsfollowing}
+				refreshFollowRequests={loadFollowRequests}//passing function
 			/>
 			)}
 			{activeList==="following" &&(
@@ -127,6 +128,7 @@ function Cards({activeList}){
 				currUser={currUser}
 				isfollowing={isfollowing}
 				setIsfollowing={setIsfollowing}
+				refreshFollowRequests={loadFollowRequests}
 			/>
 			)}
 			</>
