@@ -90,6 +90,24 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
             });
         }
     });
+	socket.on("followBack", (data) => {
+		if (data.targetUsername === currUser.username) {
+			setIsFollowRequest(prev =>
+				prev.filter(
+					user => user.username !== data.followedBackUser
+				)
+			);
+		}
+	});
+	socket.on("unfollow", (data) => {
+    if (data.targetUsername === currUser.username) {
+        setIsFollowRequest(prev =>
+            prev.filter(
+                user => user.username !== data.unfollower.username
+            )
+        );
+    }
+});
     return () => {
         socket.disconnect();
     };

@@ -60,6 +60,10 @@ const followUser=async(req,res)=>{
 			targetUsername:username,
 			follower:follower
 		});
+		io.emit("followBack", {
+			targetUsername: follower.username,
+			followedBackUser: username
+		});
 		res.status(200).json({
 			message:`Successfully followed ${username} on GitHub`,
 		});
@@ -109,6 +113,12 @@ const unfollowUser=async(req,res)=>{
 				},
 			}
 		);
+		const io=getIO();
+		const unfollower=await User.findById(req.session.userId);
+		io.emit("unfollow",{
+			targetUsername:username,
+			unfollower:unfollower
+		});
 		res.status(200).json({
 			message:`Successfully unfollowed ${username} on GitHub`,
 		});
