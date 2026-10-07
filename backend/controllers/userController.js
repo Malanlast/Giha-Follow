@@ -320,7 +320,6 @@ const isMutualFollow = async (req, res) => {
                 isMutualFollow: false,
             });
         }
-
         console.log(
             error.response?.data || error.message
         );
