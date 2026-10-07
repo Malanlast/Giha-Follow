@@ -242,6 +242,94 @@ const getFollowRequest=async(req,res)=>{
 		});
 	}
 };
+const isMutualFollow = async (req, res) => {
+    try {
+        const { username } = req.params;
+        const accessToken = req.session.githubAccessToken;
+
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        // Current logged-in user
+        const currentUser = await User.findById(req.session.userId);
+
+        if (!currentUser) {
+            return res.status(404).json({
+                message: "Current user not found",
+            });
+        }
+
+        // Check: current user -> target user
+        const followingResponse = await axios.get(
+            `https://api.github.com/user/following/${username}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+            }
+        );
+
+        const currentUserFollowsTarget =
+            followingResponse.status === 204;
+
+        // Check: target user -> current user
+        const reverseResponse = await axios.get(
+            `https://api.github.com/users/${username}/following/${currentUser.username}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+            }
+        );
+
+        const targetFollowsCurrentUser =
+            reverseResponse.status === 204;
+
+        const isMutual =
+            currentUserFollowsTarget &&
+            targetFollowsCurrentUser;
+
+        return res.status(200).json({
+            isMutualFollow: isMutual,
+        });
+
+    } catch (error) {
+        const status = error.response?.status;
+
+        if (status === 401) {
+            return res.status(401).json({
+                message: "GitHub token is invalid or expired",
+            });
+        }
+
+        if (status === 403) {
+            return res.status(403).json({
+                message: "GitHub API rate limit exceeded or permission denied",
+            });
+        }
+
+        // 404 means the target does not follow the current user
+        // or target GitHub user does not exist.
+        if (status === 404) {
+            return res.status(200).json({
+                isMutualFollow: false,
+            });
+        }
+
+        console.log(
+            error.response?.data || error.message
+        );
+
+        return res.status(500).json({
+            message: "Failed to check mutual follow status",
+        });
+    }
+};
 
 module.exports={
 	getCurrentUser,
@@ -250,4 +338,5 @@ module.exports={
 	unfollowUser,
 	isfollowing,
 	getFollowRequest,
+	isMutualFollow,
 };

@@ -11,6 +11,7 @@ const connectDB=require("./config/db.js");
 const authRoutes=require("./routes/authRoutes.js");
 const userRoutes=require("./routes/userRoutes.js");
 const repoRoutes=require("./routes/repoRoutes.js");
+const messageRoutes = require("./routes/messageRoutes.js");
 const app=express();
 const server=http.createServer(app);
 const io=new Server(server,{
@@ -54,6 +55,7 @@ app.use(
 
 app.use("/api/auth",authRoutes);
 app.use("/api/users",userRoutes);
+app.use("/api/messages", messageRoutes);
 app.use("/api/repos",repoRoutes);
 app.get("/",(req,res)=>{
 	res.send("backend running on port 5000");
