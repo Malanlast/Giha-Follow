@@ -1,5 +1,6 @@
 import FollowBtn from "./FollowBtn";
 import axios from "axios";
+import ChatDialog from "./ChatDialog.jsx";
 import { useEffect, useState } from "react";
 function FollowingUser({
     users,
@@ -9,6 +10,7 @@ function FollowingUser({
     refreshFollowRequests
 }) {
     const [mutualFollow, setMutualFollow] = useState({});
+	const [selectedUser, setSelectedUser] = useState(null);
     const followingUsers = users
         .filter(user => user._id !== currUser._id)
         .filter(user => isfollowing[user.username]);
@@ -54,7 +56,7 @@ function FollowingUser({
                         className="col-6 col-md-3"
                         key={user._id}
                     >
-                        <div className="card cardDesign">
+                        <div className="card cardDesign position-relative">
                             <img
                                 style={{ cursor: "pointer" }}
                                 onClick={() =>
@@ -81,18 +83,24 @@ function FollowingUser({
                                     refreshFollowRequests={refreshFollowRequests}
                                 />
                                 {mutualFollow[user.username] && (
-                                    <button
-                                        className="btn btn-outline-primary mt-2"
-                                    >
-                                        Chat
-                                    </button>
-                                )}
-
+								<button
+									className="btn chatBtn position-absolute top-0 end-0 m-2"
+									onClick={() => setSelectedUser(user)}
+								>
+									Chat
+								</button>
+							)}
                             </div>
                         </div>
                     </div>
                 ))
             }
+			{selectedUser && (
+				<ChatDialog
+					user={selectedUser}
+					onClose={() => setSelectedUser(null)}
+				/>
+			)}
         </>
     );
 }

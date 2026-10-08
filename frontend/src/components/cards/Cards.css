@@ -30,3 +30,13 @@
 	background: rgb(232, 42, 42);
 	color:black;
 }
+.chatBtn{
+	background: #0b8abc;
+	color:white;
+	border:1px solid #606060;
+}
+.chatBtn:hover{
+	background: #2fb3df;
+	color:white;
+}
+
