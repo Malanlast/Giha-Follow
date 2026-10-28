@@ -1,5 +1,5 @@
 import FollowBtn from "./FollowBtn";
-function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollowRequest}) {
+function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollowRequest, setNewUsers, setFollowingUsers}) {
   return (
 	<>
 		{
@@ -31,6 +31,8 @@ function FollowRequest({isFollowRequest, isfollowing, setIsfollowing, setIsFollo
 				setIsFollowRequest={setIsFollowRequest}
 				setIsfollowing={setIsfollowing} 
 				user={user}
+				setNewUsers={setNewUsers}
+                setFollowingUsers={setFollowingUsers}
 			/>
 		</div>
 		</div>

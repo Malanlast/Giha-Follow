@@ -9,7 +9,9 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 	const[currUser,setCurrUser]=useState(null);
 	const[users,setUsers]=useState([]);
 	const[apiError, setApiError] = useState(false);
-	const[isfollowing, setIsfollowing]=useState({}); 
+	const[isfollowing, setIsfollowing]=useState({});
+	const [newUsers, setNewUsers] = useState([]);
+    const [followingUsers, setFollowingUsers] = useState([]);
 	const activeListRef=useRef(activeList);
 	useEffect(()=>{
 		activeListRef.current=activeList;
@@ -45,6 +47,21 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 				}
 			);
 			setUsers(usersResponse.data.users);
+			const newUsersResponse = await axios.get(
+			"http://localhost:5000/api/users/new-users",
+			{
+				withCredentials: true,
+			}
+		);
+		setNewUsers(newUsersResponse.data.users);
+
+		const followingUsersResponse = await axios.get(
+			"http://localhost:5000/api/users/following",
+			{
+				withCredentials: true,
+			}
+		);
+		setFollowingUsers(followingUsersResponse.data.users);
 
 			const followRequest=await axios.get(
 				`http://localhost:5000/api/users/follow-requests`,
@@ -128,17 +145,12 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 	if(!currUser){
 	    return <h1>Loading...</h1>;
 	};
-	const filteredUser=users
-		.filter(user=>user._id !== currUser?._id)
-		.filter(user=>{
-			if(activeList==="new"){
-				return !isfollowing[user.username];
-			}
-			if(activeList==="following"){
-			return isfollowing[user.username];
-			}
-			return false;
-        });
+	const filteredUser =
+    activeList === "new"
+        ? newUsers
+        : activeList === "following"
+        ? followingUsers
+        : [];
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
 		{
@@ -149,6 +161,8 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 					setIsFollowRequest={setIsFollowRequest}
 					setIsfollowing={setIsfollowing}
 					isfollowing={isfollowing}
+					setNewUsers={setNewUsers}
+                    setFollowingUsers={setFollowingUsers}
 				/>
 			):
 			(filteredUser.length===0?
@@ -169,20 +183,25 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 		:(<>
 			{activeList==="new" &&(
 			 <NewUsers
-				users={users}
-				currUser={currUser}
-				isfollowing={isfollowing}
-				setIsfollowing={setIsfollowing}
-				refreshFollowRequests={loadFollowRequests}//passing function
-			/>
-			)}
-			{activeList==="following" &&(
-			 <FollowingUser
-				users={users}
+				users={newUsers}
 				currUser={currUser}
 				isfollowing={isfollowing}
 				setIsfollowing={setIsfollowing}
 				refreshFollowRequests={loadFollowRequests}
+				setNewUsers={setNewUsers}
+				setFollowingUsers={setFollowingUsers}
+
+			/>
+			)}
+			{activeList==="following" &&(
+			 <FollowingUser
+				users={followingUsers}
+				currUser={currUser}
+				isfollowing={isfollowing}
+				setIsfollowing={setIsfollowing}
+				refreshFollowRequests={loadFollowRequests}
+				setNewUsers={setNewUsers}
+				setFollowingUsers={setFollowingUsers}
 			/>
 			)}
 			</>

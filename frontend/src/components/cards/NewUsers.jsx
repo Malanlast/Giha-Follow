@@ -1,12 +1,9 @@
 import FollowBtn from "./FollowBtn";
- function NewUsers({users, currUser, isfollowing, setIsfollowing, refreshFollowRequests}) {
-	const newUsers=users
-	.filter(user=>user._id!==currUser._id)
-	.filter(user=>!isfollowing[user.username]);
+ function NewUsers({users, isfollowing, setIsfollowing, refreshFollowRequests, setNewUsers, setFollowingUsers}) {
   return (
 	<>
 		{
-		newUsers.map((user)=>(
+		users.map((user)=>(
 		<div className="col-6 col-md-3 " key={user._id}>
 		<div className='card cardDesign'>
 		<img style={{cursor:"pointer"}}
@@ -21,6 +18,8 @@ import FollowBtn from "./FollowBtn";
 				user={user}
 				setIsfollowing={setIsfollowing}
 				refreshFollowRequests={refreshFollowRequests}
+				setNewUsers={setNewUsers}
+                setFollowingUsers={setFollowingUsers}
 			/>
 		</div>
 		</div>

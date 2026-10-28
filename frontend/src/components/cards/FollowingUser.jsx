@@ -4,24 +4,22 @@ import ChatDialog from "./ChatDialog.jsx";
 import { useEffect, useState } from "react";
 function FollowingUser({
     users,
-    currUser,
     isfollowing,
     setIsfollowing,
-    refreshFollowRequests
+    refreshFollowRequests,
+    setNewUsers,
+    setFollowingUsers
 }) {
     const [mutualFollow, setMutualFollow] = useState({});
 	const [selectedUser, setSelectedUser] = useState(null);
-    const followingUsers = users
-        .filter(user => user._id !== currUser._id)
-        .filter(user => isfollowing[user.username]);
    useEffect(() => {
-    if (followingUsers.length === 0) {
+    if (users.length === 0) { 
         return;
     }
     const checkMutualFollow = async () => {
         try {
             const results = await Promise.all(
-                followingUsers.map(async (user) => {
+                users.map(async (user) => {
                     const response = await axios.get(
                         `http://localhost:5000/api/users/${user.username}/mutual-follow`,
                         {
@@ -47,11 +45,11 @@ function FollowingUser({
         }
     };
     checkMutualFollow();
-}, [users, isfollowing]);
+}, [users]);
     return (
         <>
             {
-                followingUsers.map((user) => (
+                users.map((user) => (
                     <div
                         className="col-6 col-md-3"
                         key={user._id}
@@ -81,6 +79,8 @@ function FollowingUser({
                                     user={user}
                                     setIsfollowing={setIsfollowing}
                                     refreshFollowRequests={refreshFollowRequests}
+                                    setNewUsers={setNewUsers}
+                                    setFollowingUsers={setFollowingUsers}
                                 />
                                 {mutualFollow[user.username] && (
 								<button
