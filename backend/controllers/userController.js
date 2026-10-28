@@ -15,9 +15,9 @@ const getCurrentUser=async(req,res)=>{
 			user,
 		});
 	}catch(error){
-		res.status.json({
-			message:"Server error",
-		});
+		return res.status(500).json({
+		message: "Server error",
+	});
 	}
 };
 
@@ -34,6 +34,37 @@ const getAllUsers=async (req,res)=>{
 			message:"Failed to fetch users",
 		});
 	}
+};
+const getAllGitHubFollowing = async (accessToken) => {
+    const following = [];
+    let page = 1;
+
+    while (true) {
+        const response = await axios.get(
+            "https://api.github.com/user/following",
+            {
+                params: {
+                    per_page: 100,
+                    page,
+                },
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+                timeout: 10000,
+            }
+        );
+
+        following.push(...response.data);
+
+        if (response.data.length < 100) {
+            break;
+        }
+
+        page++;
+    }
+
+    return following;
 };
 
 const followUser=async(req,res)=>{
@@ -329,6 +360,133 @@ const isMutualFollow = async (req, res) => {
         });
     }
 };
+const getNewUsers = async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.session.userId);
+
+        if (!currentUser) {
+            return res.status(404).json({
+                message: "Current user not found",
+            });
+        }
+
+        const accessToken = req.session.githubAccessToken;
+
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        // Get all users followed by the current user on GitHub
+        const following = await getAllGitHubFollowing(accessToken);
+
+        const followingUsernames = new Set(
+            following.map(user => user.login.toLowerCase())
+        );
+
+        // Get all registered users except the current user
+        const users = await User.find({
+            _id: { $ne: currentUser._id },
+        }).sort({ createdAt: -1 });
+
+        // Exclude users already followed on GitHub
+        const newUsers = users.filter(
+            user => !followingUsernames.has(user.username.toLowerCase())
+        );
+
+        return res.status(200).json({
+            count: newUsers.length,
+            users: newUsers,
+        });
+
+    } catch (error) {
+        console.error(
+            "Get new users error:",
+            error.response?.data || error.message
+        );
+
+        if (error.response?.status === 401) {
+            return res.status(401).json({
+                message: "GitHub token is invalid or expired",
+            });
+        }
+
+        if (error.response?.status === 403) {
+            return res.status(403).json({
+                message: "GitHub API rate limit exceeded or access denied",
+            });
+        }
+
+        return res.status(500).json({
+            message: "Failed to fetch new users",
+        });
+    }
+};
+
+const getFollowingUsers = async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.session.userId);
+
+        if (!currentUser) {
+            return res.status(404).json({
+                message: "Current user not found",
+            });
+        }
+
+        const accessToken = req.session.githubAccessToken;
+
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        // Get all users followed by the current user on GitHub
+        const following = await getAllGitHubFollowing(accessToken);
+
+        const followingUsernames = new Set(
+            following.map(user => user.login.toLowerCase())
+        );
+
+        // Get registered users except the current user
+        const users = await User.find({
+            _id: { $ne: currentUser._id },
+        }).sort({ createdAt: -1 });
+
+        // Keep only registered users followed on GitHub
+        const followingUsers = users.filter(
+            user => followingUsernames.has(user.username.toLowerCase())
+        );
+
+        return res.status(200).json({
+            count: followingUsers.length,
+            users: followingUsers,
+        });
+
+    } catch (error) {
+        console.error(
+            "Get following users error:",
+            error.response?.data || error.message
+        );
+
+        if (error.response?.status === 401) {
+            return res.status(401).json({
+                message: "GitHub token is invalid or expired",
+            });
+        }
+
+        if (error.response?.status === 403) {
+            return res.status(403).json({
+                message: "GitHub API rate limit exceeded or access denied",
+            });
+        }
+
+        return res.status(500).json({
+            message: "Failed to fetch following users",
+        });
+    }
+};
 
 module.exports={
 	getCurrentUser,
@@ -338,4 +496,6 @@ module.exports={
 	isfollowing,
 	getFollowRequest,
 	isMutualFollow,
+	getNewUsers,
+	getFollowingUsers
 };
