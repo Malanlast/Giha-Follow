@@ -1,51 +1,65 @@
+
 import axios from "axios";
 import { io } from "socket.io-client";
-import { useEffect, useRef, useState } from "react"; 
+import { useEffect, useRef, useState } from "react";
+
+const API = "http://localhost:5000";
+
+function getId(value) {
+    return value?._id?.toString() ?? value?.toString();
+}
+
 function ChatDialog({ user, onClose }) {
-
     const [messages, setMessages] = useState([]);
-    const messagesEndRef = useRef(null);
-	const [currUser, setCurrUser] = useState(null);
+    const [currUser, setCurrUser] = useState(null);
     const [message, setMessage] = useState("");
-	useEffect(() => {
+    const [sending, setSending] = useState(false);
+    const messagesEndRef = useRef(null);
+    const socketRef = useRef(null);
 
-    const loadCurrentUser = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:5000/api/users/me",
-                {
-                    withCredentials: true
-                }
-            );
-
-            setCurrUser(response.data.user);
-
-        } catch (error) {
-            console.log(
-                error.response?.data || error.message
-            );
-        }
-    };
-
-    loadCurrentUser();
-
-}, []);
-    // Load existing messages
+    // Load current logged-in user
     useEffect(() => {
+        const loadCurrentUser = async () => {
+            try {
+                const response = await axios.get(
+                    `${API}/api/users/me`,
+                    { withCredentials: true }
+                );
+
+                setCurrUser(response.data.user);
+            } catch (error) {
+                console.error(
+                    error.response?.data || error.message
+                );
+            }
+        };
+
+        loadCurrentUser();
+    }, []);
+
+    // Connect socket and load conversation
+    useEffect(() => {
+        if (!currUser?._id || !user?._id) return;
+
+        const currentUserId = getId(currUser._id);
+        const otherUserId = getId(user._id);
+
+        const socket = io(API, {
+            withCredentials: true,
+        });
+
+        socketRef.current = socket;
 
         const loadMessages = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:5000/api/messages/${user._id}`,
-                    {
-                        withCredentials: true,
-                    }
+                    `${API}/api/messages/${otherUserId}`,
+                    { withCredentials: true }
                 );
 
-                setMessages(response.data.messages);
-
+                setMessages(response.data.messages || []);
             } catch (error) {
-                console.log(
+                console.error(
                     error.response?.data || error.message
                 );
             }
@@ -53,89 +67,111 @@ function ChatDialog({ user, onClose }) {
 
         loadMessages();
 
-    }, [user._id]);
+        // Listen only to messages belonging to this conversation
+        const handleNewMessage = ({ message: newMessage }) => {
+            if (!newMessage) return;
 
+            const senderId = getId(newMessage.sender);
+            const receiverId = getId(newMessage.receiver);
 
-    // Socket.IO - real-time messages
-    useEffect(() => {
+            const belongsToConversation =
+                (senderId === currentUserId &&
+                    receiverId === otherUserId) ||
+                (senderId === otherUserId &&
+                    receiverId === currentUserId);
 
-        const socket = io("http://localhost:5000");
+            if (!belongsToConversation) return;
 
-        socket.on("newMessage", (data) => {
+            setMessages((previous) => {
+                if (
+                    previous.some(
+                        (item) => getId(item._id) === getId(newMessage._id)
+                    )
+                ) {
+                    return previous;
+                }
 
-            const newMessage = data.message;
-
-            // Only add message if it belongs to this chat
-            if (
-				newMessage.sender === user._id ||
-				newMessage.receiver === user._id
-			) {
-				setMessages((prevMessages) => [
-					...prevMessages,
-					newMessage
-				]);
-			}
-
-        });
-
-        return () => {
-            socket.disconnect();
+                return [...previous, newMessage];
+            });
         };
 
-    }, [user._id]);
+        // Update ticks when the recipient has seen messages
+        const handleMessagesSeen = ({ readerId, messageIds }) => {
+            if (getId(readerId) !== otherUserId) return;
 
+            const seenIds = new Set(
+                (messageIds || []).map((id) => getId(id))
+            );
+
+            setMessages((previous) =>
+                previous.map((item) =>
+                    seenIds.has(getId(item._id))
+                        ? { ...item, isSeen: true }
+                        : item
+                )
+            );
+        };
+        socket.on("connect", () => {
+            socket.emit("openConversation", otherUserId);
+        });
+        socket.on("newMessage", handleNewMessage);
+        socket.on("messagesSeen", handleMessagesSeen);
+
+        return () => {
+            socket.off("newMessage", handleNewMessage);
+            socket.off("messagesSeen", handleMessagesSeen);
+            socket.emit("closeConversation");
+            socket.disconnect();
+            socketRef.current = null;
+        };
+    }, [currUser?._id, user?._id]);
 
     // Scroll to latest message
     useEffect(() => {
-
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth",
         });
-
     }, [messages]);
-	const sendMessage = async () => {
-    if (!message.trim()) {
-        return;
-    }
 
-    try {
-        await axios.post(
-            "http://localhost:5000/api/messages",
-            {
-                receiverId: user._id,
-                message: message,
-            },
-            {
-                withCredentials: true,
-            }
-        );
+    // Send message
+    const sendMessage = async () => {
+        const trimmedMessage = message.trim();
 
-        setMessage("");
+        if (!trimmedMessage || sending || !user?._id) return;
 
-    } catch (error) {
-        console.log(
-            error.response?.data || error.message
-        );
-    }
-};
+        try {
+            setSending(true);
+
+            await axios.post(
+                `${API}/api/messages`,
+                {
+                    receiverId: user._id,
+                    message: trimmedMessage,
+                },
+                { withCredentials: true }
+            );
+
+            setMessage("");
+        } catch (error) {
+            console.error(
+                error.response?.data || error.message
+            );
+        } finally {
+            setSending(false);
+        }
+    };
 
     return (
         <div
             className="modal d-block container-fluid"
             tabIndex="-1"
-            style={{
-                backgroundColor: "rgba(0,0,0,0.5)"
-            }}
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
             <div className="modal-dialog">
-
                 <div className="modal-content">
-
                     {/* Header */}
                     <div className="modal-header">
-
                         <div className="d-flex align-items-center">
-
                             <img
                                 src={user.avatar}
                                 alt={user.username}
@@ -143,30 +179,25 @@ function ChatDialog({ user, onClose }) {
                                     width: "45px",
                                     height: "45px",
                                     borderRadius: "50%",
-                                    marginRight: "10px"
+                                    marginRight: "10px",
                                 }}
                             />
 
                             <div>
-                                <h5 className="mb-0">
-                                    {user.name}
-                                </h5>
-
+                                <h5 className="mb-0">{user.name}</h5>
                                 <small className="text-body-secondary">
                                     @{user.username}
                                 </small>
                             </div>
-
                         </div>
 
                         <button
                             type="button"
                             className="btn-close"
                             onClick={onClose}
-                        ></button>
-
+                            aria-label="Close chat"
+                        />
                     </div>
-
 
                     {/* Messages */}
                     <div
@@ -174,80 +205,101 @@ function ChatDialog({ user, onClose }) {
                         style={{
                             minHeight: "300px",
                             maxHeight: "400px",
-                            overflowY: "auto"
+                            overflowY: "auto",
                         }}
                     >
+                        {messages.length === 0 ? (
+                            <p className="text-center text-body-secondary">
+                                No messages yet
+                            </p>
+                        ) : (
+                            messages.map((msg) => {
+                                const isMyMessage =
+                                    getId(msg.sender) === getId(currUser?._id);
 
-					{messages.length === 0 ? (
+                                return (
+                                    <div
+                                        key={msg._id}
+                                        className={`d-flex mb-2 ${
+                                            isMyMessage
+                                                ? "justify-content-end"
+                                                : "justify-content-start"
+                                        }`}
+                                    >
+                                        <div
+                                            className={`px-3 py-2 rounded ${
+                                                isMyMessage
+                                                    ? "bg-primary text-white"
+                                                    : "bg-light text-dark border"
+                                            }`}
+                                            style={{
+                                                maxWidth: "75%",
+                                                wordBreak: "break-word",
+                                            }}
+                                        >
+                                            <div>{msg.message}</div>
 
-						<p className="text-center text-body-secondary">
-							No messages yet
-						</p>
+                                            {isMyMessage && (
+                                                <div
+                                                    className="text-end small"
+                                                    title={
+                                                        msg.isSeen
+                                                            ? "Seen"
+                                                            : "Sent"
+                                                    }
+                                                    aria-label={
+                                                        msg.isSeen
+                                                            ? "Seen"
+                                                            : "Sent"
+                                                    }
+                                                >
+                                                    <span
+                                                        style={{
+                                                            color: msg.isSeen
+                                                                ? "#63d9ff"
+                                                                : "#d3d3d3",
+                                                            fontWeight: "bold",
+                                                        }}
+                                                    >
+                                                        {msg.isSeen ? "✓✓" : "✓"}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
 
-					) : (
+                        <div ref={messagesEndRef} />
 
-						messages.map((msg) => {
+                        {/* Message input */}
+                        <div className="d-flex gap-2 mt-3">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Type a message..."
+                                value={message}
+                                onChange={(event) =>
+                                    setMessage(event.target.value)
+                                }
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter") {
+                                        sendMessage();
+                                    }
+                                }}
+                            />
 
-							const isMyMessage = msg.sender === currUser?._id;
-
-							return (
-								<div
-									key={msg._id}
-									className={`d-flex mb-2 ${
-										isMyMessage
-											? "justify-content-end"
-											: "justify-content-start"
-									}`}
-								>
-
-									<div
-										className={`px-3 py-2 rounded ${
-											isMyMessage
-												? "bg-primary text-white"
-												: "bg-light text-dark border"
-										}`}
-										style={{
-											maxWidth: "75%",
-											wordBreak: "break-word"
-										}}
-									>
-										{msg.message}
-									</div>
-
-								</div>
-							);
-						})
-
-					)}
-
-                        <div ref={messagesEndRef}></div>
-						<div className="d-flex gap-2 mt-3">
-
-						<input
-							type="text"
-							className="form-control"
-							placeholder="Type a message..."
-							value={message}
-							onChange={(e) => setMessage(e.target.value)}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									sendMessage();
-								}
-							}}
-						/>
-
-						<button
-							className="btn btn-primary"
-							onClick={sendMessage}
-						>
-							Send
-						</button>
-
-					</div>
+                            <button
+                                className="btn btn-primary"
+                                onClick={sendMessage}
+                                disabled={sending || !message.trim()}
+                            >
+                                {sending ? "Sending..." : "Send"}
+                            </button>
+                        </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
     );

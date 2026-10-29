@@ -1,3 +1,4 @@
+
 const { getIO } = require("../socket.js");
 const Message = require("../models/message.js");
 const User = require("../models/User.js");
@@ -6,41 +7,85 @@ const User = require("../models/User.js");
 const sendMessage = async (req, res) => {
     try {
         const { receiverId, message } = req.body;
+        const senderId = req.session.userId;
 
-        if (!receiverId || !message.trim()) {
+        if (!receiverId || typeof message !== "string" || !message.trim()) {
             return res.status(400).json({
                 message: "Receiver and message are required",
             });
         }
 
-        const senderId = req.session.userId;
-
-        const sender = await User.findById(senderId);
-        const receiver = await User.findById(receiverId);
-
-        if (!sender || !receiver) {
-            return res.status(404).json({
-                message: "User not found",
+        if (senderId.toString() === receiverId.toString()) {
+            return res.status(400).json({
+                message: "Cannot message yourself",
             });
         }
 
-        const newMessage = await Message.create({
+        const [sender, receiver] = await Promise.all([
+            User.findById(senderId),
+            User.findById(receiverId),
+        ]);
+
+        if (!sender || !receiver) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Unhide history only for the sender who is starting again.
+        await Message.updateMany(
+            {
+                $or: [
+                    { sender: senderId, receiver: receiverId },
+                    { sender: receiverId, receiver: senderId },
+                ],
+                hiddenFor: senderId,
+            },
+            { $pull: { hiddenFor: senderId } }
+        );
+
+        let newMessage = await Message.create({
             sender: senderId,
             receiver: receiverId,
             message: message.trim(),
         });
+
         const io = getIO();
 
-        io.emit("newMessage", {
+        // Check whether the recipient currently has this conversation open.
+        const receiverSockets = await io
+            .in(receiverId.toString())
+            .fetchSockets();
+
+        const recipientIsReading = receiverSockets.some(
+            (socket) =>
+                socket.data.activeChatUserId === senderId.toString()
+        );
+
+        if (recipientIsReading) {
+            newMessage = await Message.findByIdAndUpdate(
+                newMessage._id,
+                { $set: { isSeen: true } },
+                { new: true }
+            );
+
+            // Immediately notify the sender that this message was seen.
+            io.to(senderId.toString()).emit("messagesSeen", {
+                readerId: receiverId.toString(),
+                messageIds: [newMessage._id.toString()],
+            });
+        }
+
+        // Send only to the authenticated participants' rooms.
+        io.to(senderId.toString()).emit("newMessage", {
             message: newMessage,
         });
 
-        return res.status(201).json({
+        io.to(receiverId.toString()).emit("newMessage", {
             message: newMessage,
         });
 
+        return res.status(201).json({ message: newMessage });
     } catch (error) {
-        console.log(error.message);
+        console.error("SEND MESSAGE ERROR:", error);
 
         return res.status(500).json({
             message: "Failed to send message",
@@ -49,32 +94,65 @@ const sendMessage = async (req, res) => {
 };
 
 
-// Get chat messages
+// Get messages and mark received messages as seen
 const getMessages = async (req, res) => {
     try {
         const { userId } = req.params;
         const currentUserId = req.session.userId;
 
+        if (currentUserId.toString() === userId) {
+            return res.status(400).json({
+                message: "Cannot open a conversation with yourself",
+            });
+        }
+
+        const receiverExists = await User.exists({ _id: userId });
+
+        if (!receiverExists) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        // Mark only incoming, visible, unread messages as seen.
+        const updatedMessages = await Message.find({
+            sender: userId,
+            receiver: currentUserId,
+            isSeen: false,
+            hiddenFor: { $ne: currentUserId },
+        }).select("_id");
+
+        if (updatedMessages.length > 0) {
+            const messageIds = updatedMessages.map((msg) => msg._id);
+
+            await Message.updateMany(
+                { _id: { $in: messageIds }, isSeen: false },
+                { $set: { isSeen: true } }
+            );
+
+            // Notify the original sender that their messages were seen.
+            const io = getIO();
+
+            io.to(userId.toString()).emit("messagesSeen", {
+                readerId: currentUserId.toString(),
+                messageIds: messageIds.map((id) => id.toString()),
+            });
+        }
+
         const messages = await Message.find({
             $or: [
-                {
-                    sender: currentUserId,
-                    receiver: userId,
-                },
-                {
-                    sender: userId,
-                    receiver: currentUserId,
-                },
+                { sender: currentUserId, receiver: userId },
+                { sender: userId, receiver: currentUserId },
             ],
+            hiddenFor: { $ne: currentUserId },
         }).sort({ createdAt: 1 });
 
         return res.status(200).json({
             count: messages.length,
             messages,
         });
-
     } catch (error) {
-        console.log("GET MESSAGE ERROR:", error);
+        console.error("GET MESSAGE ERROR:", error);
 
         return res.status(500).json({
             message: "Failed to fetch messages",
@@ -83,7 +161,52 @@ const getMessages = async (req, res) => {
 };
 
 
+// Delete conversation only for the current user
+const deleteConversation = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const currentUserId = req.session.userId;
+
+        if (currentUserId.toString() === userId) {
+            return res.status(400).json({
+                message: "Cannot delete a conversation with yourself",
+            });
+        }
+
+        const userExists = await User.exists({ _id: userId });
+
+        if (!userExists) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        await Message.updateMany(
+            {
+                $or: [
+                    { sender: currentUserId, receiver: userId },
+                    { sender: userId, receiver: currentUserId },
+                ],
+                hiddenFor: { $ne: currentUserId },
+            },
+            { $addToSet: { hiddenFor: currentUserId } }
+        );
+
+        return res.status(200).json({
+            message: "Conversation deleted successfully",
+        });
+    } catch (error) {
+        console.error("DELETE CONVERSATION ERROR:", error);
+
+        return res.status(500).json({
+            message: "Failed to delete conversation",
+        });
+    }
+};
+
+
 module.exports = {
     sendMessage,
     getMessages,
+    deleteConversation,
 };

@@ -14,12 +14,28 @@ const repoRoutes=require("./routes/repoRoutes.js");
 const messageRoutes = require("./routes/messageRoutes.js");
 const app=express();
 const server=http.createServer(app);
+const sessionMiddleware = session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+    }),
+
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        maxAge: 24 * 60 * 60 * 1000,
+    },
+});
 const io=new Server(server,{
 	cors:{
 		origin:"http://localhost:5173",
 		credentials:true,
 	},
 });
+io.engine.use(sessionMiddleware);
 setIO(io);
 
 const PORT=process.env.PORT || 5000;
@@ -35,23 +51,7 @@ app.use(
 	})
 );
 
-app.use(
-	session({
-		secret:process.env.SESSION_SECRET,
-		resave:false,
-		saveUninitialized:false,
-
-		store:MongoStore.create({
-			mongoUrl:process.env.MONGO_URL,
-		}),
-
-		cookie:{
-			httpOnly:true,
-			secure:false,
-			maxAge:24*60*60*1000,
-		},
-	})
-);
+app.use(sessionMiddleware);
 
 app.use("/api/auth",authRoutes);
 app.use("/api/users",userRoutes);

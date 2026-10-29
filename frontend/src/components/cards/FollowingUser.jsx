@@ -86,8 +86,8 @@ function FollowingUser({
 								<button
 									className="btn chatBtn position-absolute top-0 end-0 m-2"
 									onClick={() => setSelectedUser(user)}
-								>
-									Chat
+								>	
+                                <i className="bi bi-chat-dots-fill"></i>
 								</button>
 							)}
                             </div>
