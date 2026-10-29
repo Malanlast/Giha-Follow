@@ -12,6 +12,7 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 	const[isfollowing, setIsfollowing]=useState({});
 	const [newUsers, setNewUsers] = useState([]);
     const [followingUsers, setFollowingUsers] = useState([]);
+	const [followersUsers, setFollowersUsers] = useState([]);
 	const activeListRef=useRef(activeList);
 	useEffect(()=>{
 		activeListRef.current=activeList;
@@ -62,6 +63,11 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 			}
 		);
 		setFollowingUsers(followingUsersResponse.data.users);
+		const followersResponse = await axios.get(
+			"http://localhost:5000/api/users/followers",
+			{ withCredentials: true }
+		);
+		setFollowersUsers(followersResponse.data.users);
 
 			const followRequest=await axios.get(
 				`http://localhost:5000/api/users/follow-requests`,
@@ -150,6 +156,8 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
         ? newUsers
         : activeList === "following"
         ? followingUsers
+        : activeList === "followers"
+        ? followersUsers
         : [];
 	return(
 		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
@@ -173,9 +181,11 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 				src='/noUser2.png' alt='no user'/>
 				<h2 style={{fontSize:"1rem"}}>
 				{
-					activeList==="new"?
-					"Waiting for new users"
-					:"Following users not found"
+					activeList === "new"
+					? "Waiting for new users"
+					: activeList === "followers"
+					? "No followers found"
+					: "Following users not found"
 				}
 				</h2>
 			</div>
@@ -203,6 +213,17 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 				setNewUsers={setNewUsers}
 				setFollowingUsers={setFollowingUsers}
 			/>
+			)}
+			{activeList === "followers" && (
+				<FollowingUser
+					users={followersUsers}
+					currUser={currUser}
+					isfollowing={isfollowing}
+					setIsfollowing={setIsfollowing}
+					refreshFollowRequests={loadFollowRequests}
+					setNewUsers={setNewUsers}
+					setFollowingUsers={setFollowingUsers}
+				/>
 			)}
 			</>
 		)

@@ -26,6 +26,19 @@ function Navbar() {
 		}
 		</button>
 		<button
+		onClick={() => setActiveList("followers")}
+		style={{
+			backgroundColor: activeList === "followers" ? "#202020" : "",
+			color: activeList === "followers" ? "white" : ""
+		}}
+		className={`btn userListBtn me-2 ${
+			activeList === "followers" ? "" : "btn-sm"
+		}`}
+		type="button"
+		>
+		Follow
+		</button>
+		<button
 		onClick={()=>setActiveList("following")}
 		style={{backgroundColor:activeList==="following"?"#202020":"",
 		        color:activeList==="following"?"white":""}}

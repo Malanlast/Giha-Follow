@@ -487,6 +487,50 @@ const getFollowingUsers = async (req, res) => {
         });
     }
 };
+const getFollowersUsers = async (req, res) => {
+    try {
+        const currentUser = await User.findById(req.session.userId);
+        if (!currentUser) {
+            return res.status(404).json({ message: "Current user not found" });
+        }
+
+        const accessToken = req.session.githubAccessToken;
+        if (!accessToken) {
+            return res.status(401).json({ message: "GitHub authentication required" });
+        }
+
+        const response = await axios.get(
+            "https://api.github.com/user/followers",
+            {
+                params: { per_page: 100 },
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+            }
+        );
+
+        const followerUsernames = new Set(
+            response.data.map(user => user.login.toLowerCase())
+        );
+
+        const users = await User.find({
+            _id: { $ne: currentUser._id },
+        }).sort({ createdAt: -1 });
+
+        const followersUsers = users.filter(user =>
+            followerUsernames.has(user.username.toLowerCase())
+        );
+
+        return res.status(200).json({
+            count: followersUsers.length,
+            users: followersUsers,
+        });
+    } catch (error) {
+        console.error(error.response?.data || error.message);
+        return res.status(500).json({ message: "Failed to fetch followers" });
+    }
+};
 
 module.exports={
 	getCurrentUser,
@@ -497,5 +541,6 @@ module.exports={
 	getFollowRequest,
 	isMutualFollow,
 	getNewUsers,
-	getFollowingUsers
+	getFollowingUsers,
+	getFollowersUsers
 };
