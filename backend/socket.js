@@ -20,9 +20,10 @@ const setIO = (socketIO) => {
     io.on("connection", (socket) => {
         const userId = socket.data.userId;
 
+        // Join authenticated user's private room
         socket.join(userId);
 
-        // Track all active connections for this user
+        // Track multiple connections for the same user
         let userSockets = onlineUsers.get(userId);
 
         if (!userSockets) {
@@ -33,14 +34,18 @@ const setIO = (socketIO) => {
         const wasOffline = userSockets.size === 0;
         userSockets.add(socket.id);
 
-        // Send current online users to this client
+        // Send the current online users to the newly connected client
         socket.emit("onlineUsers", [...onlineUsers.keys()]);
+        socket.on("getOnlineUsers", () => {
+            socket.emit("onlineUsers", [...onlineUsers.keys()]);
+        });
 
-        // Notify others only when the user comes online
+        // Notify other clients when this user becomes online
         if (wasOffline) {
             socket.broadcast.emit("userOnline", { userId });
         }
 
+        // Existing conversation tracking
         socket.on("openConversation", (otherUserId) => {
             if (
                 typeof otherUserId !== "string" ||
@@ -56,6 +61,7 @@ const setIO = (socketIO) => {
             socket.data.activeChatUserId = null;
         });
 
+        // Handle disconnection
         socket.on("disconnect", () => {
             socket.data.activeChatUserId = null;
 
@@ -65,7 +71,7 @@ const setIO = (socketIO) => {
 
             sockets.delete(socket.id);
 
-            // Mark offline only when all connections are gone
+            // User becomes offline only after all connections close
             if (sockets.size === 0) {
                 onlineUsers.delete(userId);
 

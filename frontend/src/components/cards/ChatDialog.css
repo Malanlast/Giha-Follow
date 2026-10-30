@@ -330,7 +330,9 @@
 .chat-online-dot.online {
     background-color: #22c55e;
 }
-
 .chat-online-dot.offline {
     background-color: #ef4444;
+}
+.chat-online-dot.unknown {
+    background-color: #9ca3af;
 }

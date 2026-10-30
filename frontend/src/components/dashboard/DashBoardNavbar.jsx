@@ -1,4 +1,5 @@
 import './Dashboard.css';
+import { socket } from "../../socket.js";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 function DashBoardNavbar() {
@@ -18,20 +19,21 @@ function DashBoardNavbar() {
 		};
 		currentUser();
 	},[]);
-	const handleLogout=async()=>{
-		try{
-			await axios.post(
-				`http://localhost:5000/api/auth/logout`,
-				{},
-				{
-					withCredentials:true,
-				}
-			);
-			window.location.href="/";
-		}catch(err){
-			console.log(err.response?.data||err.message);
-		}
-	}
+	const handleLogout = async () => {
+    try {
+        await axios.post(
+            "http://localhost:5000/api/auth/logout",
+            {},
+            { withCredentials: true }
+        );
+
+        socket.disconnect();
+
+        window.location.href = "/";
+    } catch (err) {
+        console.error(err.response?.data || err.message);
+    }
+    };
 	if(!user){
 		return<h1 style={{background:"#cccbcb"}}>Loading...</h1>
 	}

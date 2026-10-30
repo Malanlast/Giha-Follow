@@ -1,6 +1,5 @@
-
+import { socket } from "../../socket.js";
 import axios from "axios";
-import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
 import "./ChatDialog.css";
 
@@ -16,8 +15,9 @@ function ChatDialog({ user, onClose }) {
     const [message, setMessage] = useState("");
     const [sending, setSending] = useState(false);
     const [isOnline, setIsOnline] = useState(false);
+    const [presenceLoaded, setPresenceLoaded] = useState(false);
+
     const messagesEndRef = useRef(null);
-    const socketRef = useRef(null);
 
     // Load logged-in user
     useEffect(() => {
@@ -39,18 +39,12 @@ function ChatDialog({ user, onClose }) {
         loadCurrentUser();
     }, []);
 
-    // Load conversation and listen for real-time messages
+    // Load conversation and listen to shared Socket.IO connection
     useEffect(() => {
         if (!currUser?._id || !user?._id) return;
 
         const currentUserId = getId(currUser._id);
         const otherUserId = getId(user._id);
-
-        const socket = io(API, {
-            withCredentials: true,
-        });
-
-        socketRef.current = socket;
 
         const loadMessages = async () => {
             try {
@@ -69,6 +63,7 @@ function ChatDialog({ user, onClose }) {
 
         const handleConnect = () => {
             socket.emit("openConversation", otherUserId);
+            socket.emit("getOnlineUsers");
         };
 
         const handleNewMessage = ({ message: newMessage }) => {
@@ -113,26 +108,40 @@ function ChatDialog({ user, onClose }) {
             );
         };
 
+        const handleOnlineUsers = (userIds) => {
+            const isUserOnline = userIds.some(
+                (id) => getId(id) === otherUserId
+            );
+
+            setIsOnline(isUserOnline);
+            setPresenceLoaded(true);
+        };
+
+        const handleUserOnline = ({ userId }) => {
+            if (getId(userId) === otherUserId) {
+                setIsOnline(true);
+                setPresenceLoaded(true);
+            }
+        };
+
+        const handleUserOffline = ({ userId }) => {
+            if (getId(userId) === otherUserId) {
+                setIsOnline(false);
+                setPresenceLoaded(true);
+            }
+        };
+
         socket.on("connect", handleConnect);
         socket.on("newMessage", handleNewMessage);
         socket.on("messagesSeen", handleMessagesSeen);
-        socket.on("onlineUsers", (userIds) => {
-        setIsOnline(
-                userIds.some((id) => getId(id) === getId(user._id))
-            );
-        });
+        socket.on("onlineUsers", handleOnlineUsers);
+        socket.on("userOnline", handleUserOnline);
+        socket.on("userOffline", handleUserOffline);
 
-        socket.on("userOnline", ({ userId }) => {
-            if (getId(userId) === getId(user._id)) {
-                setIsOnline(true);
-            }
-        });
-
-        socket.on("userOffline", ({ userId }) => {
-            if (getId(userId) === getId(user._id)) {
-                setIsOnline(false);
-            }
-        });
+        // Handle already-connected shared socket
+        if (socket.connected) {
+            handleConnect();
+        }
 
         loadMessages();
 
@@ -140,16 +149,15 @@ function ChatDialog({ user, onClose }) {
             socket.off("connect", handleConnect);
             socket.off("newMessage", handleNewMessage);
             socket.off("messagesSeen", handleMessagesSeen);
+            socket.off("onlineUsers", handleOnlineUsers);
+            socket.off("userOnline", handleUserOnline);
+            socket.off("userOffline", handleUserOffline);
+
             socket.emit("closeConversation");
-            socket.off("onlineUsers");
-            socket.off("userOnline");
-            socket.off("userOffline");
-            socket.disconnect();
-            socketRef.current = null;
         };
     }, [currUser?._id, user?._id]);
 
-    // Scroll to the latest message
+    // Scroll to latest message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth",
@@ -187,6 +195,7 @@ function ChatDialog({ user, onClose }) {
     return (
         <div className="chat-overlay">
             <div className="chat-window">
+
                 {/* Header */}
                 <header className="chat-header">
                     <button
@@ -216,10 +225,23 @@ function ChatDialog({ user, onClose }) {
                                 src={user.avatar}
                                 alt={user.username}
                             />
+
                             <span
-                                className={`chat-online-dot ${isOnline ? "online" : "offline"}`}
-                                title={isOnline ? "Online" : "Offline"}
-                            ></span>
+                                className={`chat-online-dot ${
+                                    presenceLoaded
+                                        ? isOnline
+                                            ? "online"
+                                            : "offline"
+                                        : "unknown"
+                                }`}
+                                title={
+                                    !presenceLoaded
+                                        ? "Checking status..."
+                                        : isOnline
+                                            ? "Online"
+                                            : "Offline"
+                                }
+                            />
                         </span>
 
                         <span className="chat-user-info">
@@ -228,7 +250,6 @@ function ChatDialog({ user, onClose }) {
                         </span>
                     </button>
 
-                    {/* Menu placeholder; features not implemented yet */}
                     <button
                         className="chat-menu"
                         type="button"
