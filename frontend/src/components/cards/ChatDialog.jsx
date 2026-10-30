@@ -2,6 +2,7 @@
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useEffect, useRef, useState } from "react";
+import "./ChatDialog.css";
 
 const API = "http://localhost:5000";
 
@@ -14,10 +15,11 @@ function ChatDialog({ user, onClose }) {
     const [currUser, setCurrUser] = useState(null);
     const [message, setMessage] = useState("");
     const [sending, setSending] = useState(false);
+    const [isOnline, setIsOnline] = useState(false);
     const messagesEndRef = useRef(null);
     const socketRef = useRef(null);
 
-    // Load current logged-in user
+    // Load logged-in user
     useEffect(() => {
         const loadCurrentUser = async () => {
             try {
@@ -37,7 +39,7 @@ function ChatDialog({ user, onClose }) {
         loadCurrentUser();
     }, []);
 
-    // Connect socket and load conversation
+    // Load conversation and listen for real-time messages
     useEffect(() => {
         if (!currUser?._id || !user?._id) return;
 
@@ -65,9 +67,10 @@ function ChatDialog({ user, onClose }) {
             }
         };
 
-        loadMessages();
+        const handleConnect = () => {
+            socket.emit("openConversation", otherUserId);
+        };
 
-        // Listen only to messages belonging to this conversation
         const handleNewMessage = ({ message: newMessage }) => {
             if (!newMessage) return;
 
@@ -83,19 +86,17 @@ function ChatDialog({ user, onClose }) {
             if (!belongsToConversation) return;
 
             setMessages((previous) => {
-                if (
-                    previous.some(
-                        (item) => getId(item._id) === getId(newMessage._id)
-                    )
-                ) {
-                    return previous;
-                }
+                const alreadyExists = previous.some(
+                    (item) =>
+                        getId(item._id) === getId(newMessage._id)
+                );
+
+                if (alreadyExists) return previous;
 
                 return [...previous, newMessage];
             });
         };
 
-        // Update ticks when the recipient has seen messages
         const handleMessagesSeen = ({ readerId, messageIds }) => {
             if (getId(readerId) !== otherUserId) return;
 
@@ -111,22 +112,44 @@ function ChatDialog({ user, onClose }) {
                 )
             );
         };
-        socket.on("connect", () => {
-            socket.emit("openConversation", otherUserId);
-        });
+
+        socket.on("connect", handleConnect);
         socket.on("newMessage", handleNewMessage);
         socket.on("messagesSeen", handleMessagesSeen);
+        socket.on("onlineUsers", (userIds) => {
+        setIsOnline(
+                userIds.some((id) => getId(id) === getId(user._id))
+            );
+        });
+
+        socket.on("userOnline", ({ userId }) => {
+            if (getId(userId) === getId(user._id)) {
+                setIsOnline(true);
+            }
+        });
+
+        socket.on("userOffline", ({ userId }) => {
+            if (getId(userId) === getId(user._id)) {
+                setIsOnline(false);
+            }
+        });
+
+        loadMessages();
 
         return () => {
+            socket.off("connect", handleConnect);
             socket.off("newMessage", handleNewMessage);
             socket.off("messagesSeen", handleMessagesSeen);
             socket.emit("closeConversation");
+            socket.off("onlineUsers");
+            socket.off("userOnline");
+            socket.off("userOffline");
             socket.disconnect();
             socketRef.current = null;
         };
     }, [currUser?._id, user?._id]);
 
-    // Scroll to latest message
+    // Scroll to the latest message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth",
@@ -162,144 +185,200 @@ function ChatDialog({ user, onClose }) {
     };
 
     return (
-        <div
-            className="modal d-block container-fluid"
-            tabIndex="-1"
-            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    {/* Header */}
-                    <div className="modal-header">
-                        <div className="d-flex align-items-center">
+        <div className="chat-overlay">
+            <div className="chat-window">
+                {/* Header */}
+                <header className="chat-header">
+                    <button
+                        className="chat-back"
+                        onClick={onClose}
+                        aria-label="Close chat"
+                        type="button"
+                    >
+                        <i className="bi bi-arrow-left"></i>
+                    </button>
+
+                    <button
+                        className="chat-profile"
+                        type="button"
+                        onClick={() =>
+                            user.profileUrl &&
+                            window.open(
+                                user.profileUrl,
+                                "_blank",
+                                "noopener,noreferrer"
+                            )
+                        }
+                    >
+                        <span className="chat-avatar-wrap">
+                            <img
+                                className="chat-avatar"
+                                src={user.avatar}
+                                alt={user.username}
+                            />
+                            <span
+                                className={`chat-online-dot ${isOnline ? "online" : "offline"}`}
+                                title={isOnline ? "Online" : "Offline"}
+                            ></span>
+                        </span>
+
+                        <span className="chat-user-info">
+                            <strong>{user.name}</strong>
+                            <span>@{user.username}</span>
+                        </span>
+                    </button>
+
+                    {/* Menu placeholder; features not implemented yet */}
+                    <button
+                        className="chat-menu"
+                        type="button"
+                        aria-label="More options"
+                        title="More options"
+                    >
+                        <i className="bi bi-three-dots-vertical"></i>
+                    </button>
+                </header>
+
+                {/* Messages */}
+                <main className="chat-messages">
+                    <div className="chat-date-divider">
+                        <span>Messages</span>
+                    </div>
+
+                    {messages.length === 0 ? (
+                        <div className="chat-empty">
                             <img
                                 src={user.avatar}
                                 alt={user.username}
-                                style={{
-                                    width: "45px",
-                                    height: "45px",
-                                    borderRadius: "50%",
-                                    marginRight: "10px",
-                                }}
                             />
-
-                            <div>
-                                <h5 className="mb-0">{user.name}</h5>
-                                <small className="text-body-secondary">
-                                    @{user.username}
-                                </small>
-                            </div>
+                            <strong>{user.name}</strong>
+                            <span>@{user.username}</span>
+                            <p>Start a conversation 👋</p>
                         </div>
+                    ) : (
+                        messages.map((msg) => {
+                            const isMyMessage =
+                                getId(msg.sender) ===
+                                getId(currUser?._id);
 
-                        <button
-                            type="button"
-                            className="btn-close"
-                            onClick={onClose}
-                            aria-label="Close chat"
-                        />
-                    </div>
+                            return (
+                                <div
+                                    key={msg._id}
+                                    className={`chat-message-row ${
+                                        isMyMessage
+                                            ? "sent"
+                                            : "received"
+                                    }`}
+                                >
+                                    {!isMyMessage && (
+                                        <img
+                                            className="chat-message-avatar"
+                                            src={user.avatar}
+                                            alt={user.username}
+                                        />
+                                    )}
 
-                    {/* Messages */}
-                    <div
-                        className="modal-body"
-                        style={{
-                            minHeight: "300px",
-                            maxHeight: "400px",
-                            overflowY: "auto",
-                        }}
-                    >
-                        {messages.length === 0 ? (
-                            <p className="text-center text-body-secondary">
-                                No messages yet
-                            </p>
-                        ) : (
-                            messages.map((msg) => {
-                                const isMyMessage =
-                                    getId(msg.sender) === getId(currUser?._id);
-
-                                return (
                                     <div
-                                        key={msg._id}
-                                        className={`d-flex mb-2 ${
+                                        className={`chat-bubble ${
                                             isMyMessage
-                                                ? "justify-content-end"
-                                                : "justify-content-start"
+                                                ? "sent-bubble"
+                                                : "received-bubble"
                                         }`}
                                     >
-                                        <div
-                                            className={`px-3 py-2 rounded ${
-                                                isMyMessage
-                                                    ? "bg-primary text-white"
-                                                    : "bg-light text-dark border"
-                                            }`}
-                                            style={{
-                                                maxWidth: "75%",
-                                                wordBreak: "break-word",
-                                            }}
-                                        >
-                                            <div>{msg.message}</div>
+                                        <div className="chat-message-text">
+                                            {msg.message}
+                                        </div>
+
+                                        <div className="chat-message-meta">
+                                            {msg.createdAt &&
+                                                new Date(
+                                                    msg.createdAt
+                                                ).toLocaleTimeString(
+                                                    [],
+                                                    {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                    }
+                                                )}
 
                                             {isMyMessage && (
-                                                <div
-                                                    className="text-end small"
+                                                <span
+                                                    className={`chat-ticks ${
+                                                        msg.isSeen
+                                                            ? "seen"
+                                                            : ""
+                                                    }`}
                                                     title={
                                                         msg.isSeen
                                                             ? "Seen"
                                                             : "Sent"
                                                     }
-                                                    aria-label={
-                                                        msg.isSeen
-                                                            ? "Seen"
-                                                            : "Sent"
-                                                    }
                                                 >
-                                                    <span
-                                                        style={{
-                                                            color: msg.isSeen
-                                                                ? "#63d9ff"
-                                                                : "#d3d3d3",
-                                                            fontWeight: "bold",
-                                                        }}
-                                                    >
-                                                        {msg.isSeen ? "✓✓" : "✓"}
-                                                    </span>
-                                                </div>
+                                                    {msg.isSeen
+                                                        ? "✓✓"
+                                                        : "✓"}
+                                                </span>
                                             )}
                                         </div>
                                     </div>
-                                );
-                            })
-                        )}
+                                </div>
+                            );
+                        })
+                    )}
 
-                        <div ref={messagesEndRef} />
-
-                        {/* Message input */}
-                        <div className="d-flex gap-2 mt-3">
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Type a message..."
-                                value={message}
-                                onChange={(event) =>
-                                    setMessage(event.target.value)
-                                }
-                                onKeyDown={(event) => {
-                                    if (event.key === "Enter") {
-                                        sendMessage();
-                                    }
-                                }}
-                            />
-
-                            <button
-                                className="btn btn-primary"
-                                onClick={sendMessage}
-                                disabled={sending || !message.trim()}
-                            >
-                                {sending ? "Sending..." : "Send"}
-                            </button>
+                    {messages.some(
+                        (msg) =>
+                            getId(msg.sender) ===
+                                getId(currUser?._id) &&
+                            msg.isSeen
+                    ) && (
+                        <div className="chat-seen-label">
+                            <i className="bi bi-check2-all"></i>
+                            Seen
                         </div>
-                    </div>
-                </div>
+                    )}
+
+                    <div ref={messagesEndRef} />
+                </main>
+
+                {/* Message input */}
+                <form
+                    className="chat-composer"
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        sendMessage();
+                    }}
+                >
+                    <button
+                        type="button"
+                        className="chat-emoji"
+                        aria-label="Insert emoji"
+                        onClick={() =>
+                            setMessage((prev) => prev + "🙂")
+                        }
+                    >
+                        <i className="bi bi-emoji-smile"></i>
+                    </button>
+
+                    <input
+                        type="text"
+                        placeholder="Type a message..."
+                        value={message}
+                        onChange={(event) =>
+                            setMessage(event.target.value)
+                        }
+                        aria-label="Message"
+                    />
+
+                    <button
+                        type="submit"
+                        className="chat-send"
+                        disabled={sending || !message.trim()}
+                        aria-label="Send message"
+                    >
+                        <i className="bi bi-send-fill"></i>
+                    </button>
+                </form>
             </div>
         </div>
     );

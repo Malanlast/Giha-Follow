@@ -1,4 +1,7 @@
+
 let io;
+
+const onlineUsers = new Map();
 
 const setIO = (socketIO) => {
     io = socketIO;
@@ -17,15 +20,35 @@ const setIO = (socketIO) => {
     io.on("connection", (socket) => {
         const userId = socket.data.userId;
 
-        // Only the authenticated user's room
         socket.join(userId);
 
+        // Track all active connections for this user
+        let userSockets = onlineUsers.get(userId);
+
+        if (!userSockets) {
+            userSockets = new Set();
+            onlineUsers.set(userId, userSockets);
+        }
+
+        const wasOffline = userSockets.size === 0;
+        userSockets.add(socket.id);
+
+        // Send current online users to this client
+        socket.emit("onlineUsers", [...onlineUsers.keys()]);
+
+        // Notify others only when the user comes online
+        if (wasOffline) {
+            socket.broadcast.emit("userOnline", { userId });
+        }
+
         socket.on("openConversation", (otherUserId) => {
-            if (typeof otherUserId !== "string" || otherUserId === userId) {
+            if (
+                typeof otherUserId !== "string" ||
+                otherUserId === userId
+            ) {
                 return;
             }
 
-            // This records UI state only; it grants no room access.
             socket.data.activeChatUserId = otherUserId;
         });
 
@@ -35,6 +58,19 @@ const setIO = (socketIO) => {
 
         socket.on("disconnect", () => {
             socket.data.activeChatUserId = null;
+
+            const sockets = onlineUsers.get(userId);
+
+            if (!sockets) return;
+
+            sockets.delete(socket.id);
+
+            // Mark offline only when all connections are gone
+            if (sockets.size === 0) {
+                onlineUsers.delete(userId);
+
+                io.emit("userOffline", { userId });
+            }
         });
     });
 };
