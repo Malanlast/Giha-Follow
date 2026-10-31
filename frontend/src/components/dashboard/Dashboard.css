@@ -7,10 +7,14 @@
 }
 .logoContain{
 	display:flex;
-	width:fit-content;
 	padding:5px;
-	justify-content:center;
+	justify-content:center; 
 	border:1px solid #ddd;
+	background:white;
+	color:black;
+	height:6rem;
+	border-radius:50%;
+	border:2px solid #29ddf5;
 }
 .imgContain{
 	display:flex;

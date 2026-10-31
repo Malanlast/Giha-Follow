@@ -37,11 +37,8 @@ function DashBoardNavbar() {
 	}
   return (
 	<div className='row dashNav'>
-		<div style={{height:"fit-content",marginTop:"1rem",display:"flex",justifyContent:"center"}}  className='col-3'>	
-			<div className='logoContain'>
-			<img src="/GihaLogo.png" style={{height:"35px",margin:"auto",marginRight:"7px"}} alt='logo'/>
-			<p style={{fontSize:"0.9rem",letterSpacing:"0.5px",margin:"auto"}}><b>Giha Follow</b></p>
-			</div>
+		<div style={{height:"fit-content",margin:"auto",display:"flex",justifyContent:"center"}}  className='col-3'>	 
+			<img className='logoContain' src="/GihaLogo.png" alt='logo'/>
 		</div>
 		<div className='col-4 imgContain'>
 			<img onClick={()=>window.open(user.profileUrl,"_blank")} src={user.avatar} alt={user.username}/>

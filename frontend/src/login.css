@@ -48,9 +48,8 @@
 	filter:drop-shadow(-8px 3px 3px rgba(0, 0, 0, 0.7));
 }
 .GihaLogo{  
-	height:5rem; 
-	object-fit:contain; 
-	filter:drop-shadow(-10px 2px 2px rgba(0, 0, 0, 0.7));
+	height:6rem; 
+	object-fit:contain;
 }
 .footer{
 	background:#141313;
