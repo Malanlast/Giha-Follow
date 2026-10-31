@@ -1,19 +1,17 @@
+import React from "react";
 import { socket } from "../../socket.js";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import "./ChatDialog.css";
-
+import ChatMenu from "./ChatMenu";
 const API = "http://localhost:5000";
-
 function getId(value) {
     return value?._id?.toString() ?? value?.toString();
 }
-
 function canDeleteForEveryone(createdAt) {
     const age = Date.now() - new Date(createdAt).getTime();
     return age >= 0 && age <= 15 * 60 * 1000;
 }
-
 function ChatDialog({ user, onClose }) {
     const [messages, setMessages] = useState([]);
     const [currUser, setCurrUser] = useState(null);
@@ -259,6 +257,30 @@ function ChatDialog({ user, onClose }) {
             );
         }
     };
+  const deleteConversation = async () => {
+    const otherUserId = getId(user._id);
+    const confirmDelete = window.confirm(
+        "Are you sure you want to delete this conversation?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+        await axios.delete(
+            `${API}/api/messages/${otherUserId}`,
+            { withCredentials: true }
+        );
+
+        setMessages([]);
+        onClose();
+    } catch (error) {
+        console.error("DELETE CONVERSATION ERROR:", error);
+        alert(
+            error.response?.data?.message ||
+            "Failed to delete conversation"
+        );
+    }
+};
 
     // Delete message for everyone (sender only, within 15 minutes)
     const deleteMessageForEveryone = async (messageId) => {
@@ -288,6 +310,27 @@ function ChatDialog({ user, onClose }) {
                 "Failed to delete message for everyone"
             );
         }
+    };
+    const formatMessageDate = (date) => {
+    const messageDate = new Date(date);
+    const today = new Date();
+
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const isSameDay = (date1, date2) =>
+        date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getFullYear() === date2.getFullYear();
+
+    if (isSameDay(messageDate, today)) return "Today";
+    if (isSameDay(messageDate, yesterday)) return "Yesterday";
+
+    return messageDate.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
     };
 
     return (
@@ -347,14 +390,10 @@ function ChatDialog({ user, onClose }) {
                         </span>
                     </button>
 
-                    <button
-                        className="chat-menu"
-                        type="button"
-                        aria-label="More options"
-                        title="More options"
-                    >
-                        <i className="bi bi-three-dots-vertical"></i>
-                    </button>
+                   <ChatMenu
+                        githubUsername={user.username}
+                        onDeleteConversation={deleteConversation}
+                    />
                 </header>
 
                 {/* Messages */}
@@ -374,20 +413,32 @@ function ChatDialog({ user, onClose }) {
                             <p>Start a conversation 👋</p>
                         </div>
                     ) : (
-                        messages.map((msg) => {
-                            const isMyMessage =
-                                getId(msg.sender) ===
-                                getId(currUser?._id);
+                        messages.map((msg, index) => {
+                        const isMyMessage =
+                            getId(msg.sender) === getId(currUser?._id);
 
-                            return (
+                        const currentDate = new Date(msg.createdAt).toDateString();
+
+                        const previousDate =
+                            index > 0
+                                ? new Date(messages[index - 1].createdAt).toDateString()
+                                : null;
+
+                        const showDateSeparator = currentDate !== previousDate;
+
+                        return (
+                            <React.Fragment key={msg._id}>
+                                {showDateSeparator && (
+                                    <div className="chat-date-separator">
+                                        <span>{formatMessageDate(msg.createdAt)}</span>
+                                    </div>
+                                )}
+
                                 <div
-                                    key={msg._id}
                                     className={`chat-message-row ${
                                         isMyMessage ? "sent" : "received"
                                     } ${
-                                        activeMessageMenu === msg._id
-                                            ? "selected"
-                                            : ""
+                                        activeMessageMenu === msg._id ? "selected" : ""
                                     }`}
                                 >
                                     {!isMyMessage && (
@@ -400,9 +451,7 @@ function ChatDialog({ user, onClose }) {
 
                                     <div
                                         className={`chat-bubble ${
-                                            isMyMessage
-                                                ? "sent-bubble"
-                                                : "received-bubble"
+                                            isMyMessage ? "sent-bubble" : "received-bubble"
                                         }`}
                                     >
                                         {!msg.isDeleted && (
@@ -425,25 +474,18 @@ function ChatDialog({ user, onClose }) {
                                         {activeMessageMenu === msg._id &&
                                             !msg.isDeleted && (
                                                 <div className="message-options">
-                                                    {/* Delete for me */}
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            deleteMessageForMe(
-                                                                msg._id
-                                                            )
+                                                            deleteMessageForMe(msg._id)
                                                         }
                                                     >
                                                         <i className="bi bi-trash"></i>
                                                         Delete for me
                                                     </button>
 
-                                                    {/* Delete for everyone */}
-                                                    {!msg.isDeleted &&
-                                                        isMyMessage &&
-                                                        canDeleteForEveryone(
-                                                            msg.createdAt
-                                                        ) && (
+                                                    {isMyMessage &&
+                                                        canDeleteForEveryone(msg.createdAt) && (
                                                             <button
                                                                 type="button"
                                                                 onClick={() => {
@@ -471,35 +513,36 @@ function ChatDialog({ user, onClose }) {
                                             }`}
                                         >
                                             {msg.isDeleted ? (
-                                                <em>
-                                                    This message was deleted
-                                                </em>
+                                                <em>This message was deleted</em>
                                             ) : (
                                                 msg.message
                                             )}
                                         </div>
 
-                                      <div className="chat-message-meta">
-                                        <span className="chat-time">
-                                            {new Date(msg.createdAt).toLocaleTimeString([], {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                            })}
-                                        </span>
-
-                                        {isMyMessage && !msg.isDeleted && (
-                                            <span
-                                                className={`chat-ticks ${msg.isSeen ? "seen" : ""}`}
-                                                title={msg.isSeen ? "Seen" : "Sent"}
-                                            >
-                                                ✓✓
+                                        <div className="chat-message-meta">
+                                            <span className="chat-time">
+                                                {new Date(msg.createdAt).toLocaleTimeString([], {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                })}
                                             </span>
-                                        )}
-                                    </div>
+
+                                            {isMyMessage && !msg.isDeleted && (
+                                                <span
+                                                    className={`chat-ticks ${
+                                                        msg.isSeen ? "seen" : ""
+                                                    }`}
+                                                    title={msg.isSeen ? "Seen" : "Sent"}
+                                                >
+                                                    ✓✓
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            );
-                        })
+                            </React.Fragment>
+                        );
+                    })
                     )}
                     <div ref={messagesEndRef} />
                 </main>

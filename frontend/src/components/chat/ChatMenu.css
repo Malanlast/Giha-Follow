@@ -1,0 +1,54 @@
+.chat-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.chat-menu-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+.chat-menu-trigger:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+/* Dropdown opens just left of the three-dot button */
+.chat-menu-dropdown {
+    position: absolute;
+    top: 100%;
+    right: calc(100% + 8px);
+    transform: translateY(-50%);
+    width: 210px;
+    background: var(--chat-menu-bg, #f4f4f4);
+    color: var(--chat-menu-text, #222222);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 10px;
+    padding: 6px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+}
+.chat-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 10px;
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    color: inherit;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+}
+.chat-menu-item:hover {
+    background: rgba(128, 128, 128, 0.12);
+}
+.chat-menu-item.delete {
+    color: #dc2626;
+}

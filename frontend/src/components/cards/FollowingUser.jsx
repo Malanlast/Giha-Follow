@@ -1,5 +1,5 @@
 import FollowBtn from "./FollowBtn"; 
-import ChatDialog from "./ChatDialog.jsx";
+import ChatDialog from "../chat/ChatDialog.jsx";
 import { useState } from "react";
 function FollowingUser({
     users,

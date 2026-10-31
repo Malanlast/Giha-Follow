@@ -462,3 +462,16 @@
     color: #838383;
     font-style: italic;
 }
+.chat-date-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 18px 0;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 500;
+}
+.chat-date-separator span {
+    white-space: noWrap;
+}
