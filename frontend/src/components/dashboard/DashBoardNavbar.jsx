@@ -26,9 +26,7 @@ function DashBoardNavbar() {
             {},
             { withCredentials: true }
         );
-
         socket.disconnect();
-
         window.location.href = "/";
     } catch (err) {
         console.error(err.response?.data || err.message);
@@ -59,5 +57,4 @@ function DashBoardNavbar() {
 	</div>
   )
 }
-
 export default DashBoardNavbar;

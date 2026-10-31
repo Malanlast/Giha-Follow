@@ -9,6 +9,11 @@ function getId(value) {
     return value?._id?.toString() ?? value?.toString();
 }
 
+function canDeleteForEveryone(createdAt) {
+    const age = Date.now() - new Date(createdAt).getTime();
+    return age >= 0 && age <= 15 * 60 * 1000;
+}
+
 function ChatDialog({ user, onClose }) {
     const [messages, setMessages] = useState([]);
     const [currUser, setCurrUser] = useState(null);
@@ -16,6 +21,7 @@ function ChatDialog({ user, onClose }) {
     const [sending, setSending] = useState(false);
     const [isOnline, setIsOnline] = useState(false);
     const [presenceLoaded, setPresenceLoaded] = useState(false);
+    const [activeMessageMenu, setActiveMessageMenu] = useState(null);
 
     const messagesEndRef = useRef(null);
 
@@ -131,6 +137,19 @@ function ChatDialog({ user, onClose }) {
             }
         };
 
+        const handleMessageDeleted = ({ message: updatedMessage }) => {
+            if (!updatedMessage) return;
+
+            setMessages((previous) =>
+                previous.map((item) =>
+                    getId(item._id) === getId(updatedMessage._id)
+                        ? updatedMessage
+                        : item
+                )
+            );
+        };
+
+        socket.on("messageDeleted", handleMessageDeleted);
         socket.on("connect", handleConnect);
         socket.on("newMessage", handleNewMessage);
         socket.on("messagesSeen", handleMessagesSeen);
@@ -138,7 +157,7 @@ function ChatDialog({ user, onClose }) {
         socket.on("userOnline", handleUserOnline);
         socket.on("userOffline", handleUserOffline);
 
-        // Handle already-connected shared socket
+        // Handle an already-connected shared socket
         if (socket.connected) {
             handleConnect();
         }
@@ -152,17 +171,42 @@ function ChatDialog({ user, onClose }) {
             socket.off("onlineUsers", handleOnlineUsers);
             socket.off("userOnline", handleUserOnline);
             socket.off("userOffline", handleUserOffline);
-
+            socket.off("messageDeleted", handleMessageDeleted);
             socket.emit("closeConversation");
         };
     }, [currUser?._id, user?._id]);
 
     // Scroll to latest message
+    const previousMessageCount = useRef(0);
+
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({
-            behavior: "smooth",
-        });
+        if (messages.length > previousMessageCount.current) {
+            messagesEndRef.current?.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+
+        previousMessageCount.current = messages.length;
     }, [messages]);
+
+    // Close message menu when clicking outside
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (
+                !event.target.closest(
+                    ".message-options, .message-menu-button"
+                )
+            ) {
+                setActiveMessageMenu(null);
+            }
+        };
+
+        document.addEventListener("click", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
 
     // Send message
     const sendMessage = async () => {
@@ -192,10 +236,63 @@ function ChatDialog({ user, onClose }) {
         }
     };
 
-    return (
-        <div className="chat-overlay">
-            <div className="chat-window">
+    // Delete message only for the current user
+    const deleteMessageForMe = async (messageId) => {
+        try {
+            await axios.delete(
+                `${API}/api/messages/single/${messageId}`,
+                { withCredentials: true }
+            );
 
+            setMessages((previousMessages) =>
+                previousMessages.filter(
+                    (msg) => getId(msg._id) !== getId(messageId)
+                )
+            );
+
+            setActiveMessageMenu(null);
+        } catch (error) {
+            console.error("DELETE MESSAGE ERROR:", error);
+            alert(
+                error.response?.data?.message ||
+                "Failed to delete message"
+            );
+        }
+    };
+
+    // Delete message for everyone (sender only, within 15 minutes)
+    const deleteMessageForEveryone = async (messageId) => {
+        try {
+            const response = await axios.delete(
+                `${API}/api/messages/single/${messageId}/everyone`,
+                { withCredentials: true }
+            );
+
+            const updatedMessage =
+                response.data.updatedMessage;
+
+            if (updatedMessage) {
+                setMessages((previous) =>
+                    previous.map((msg) =>
+                        getId(msg._id) === getId(messageId)
+                            ? updatedMessage
+                            : msg
+                    )
+                );
+            }
+
+            setActiveMessageMenu(null);
+        } catch (error) {
+            alert(
+                error.response?.data?.message ||
+                "Failed to delete message for everyone"
+            );
+        }
+    };
+
+    return (
+        <div className="chat-overlay container-fluid">
+            <div className="chat-window">
                 {/* Header */}
                 <header className="chat-header">
                     <button
@@ -286,9 +383,11 @@ function ChatDialog({ user, onClose }) {
                                 <div
                                     key={msg._id}
                                     className={`chat-message-row ${
-                                        isMyMessage
-                                            ? "sent"
-                                            : "received"
+                                        isMyMessage ? "sent" : "received"
+                                    } ${
+                                        activeMessageMenu === msg._id
+                                            ? "selected"
+                                            : ""
                                     }`}
                                 >
                                     {!isMyMessage && (
@@ -306,59 +405,102 @@ function ChatDialog({ user, onClose }) {
                                                 : "received-bubble"
                                         }`}
                                     >
-                                        <div className="chat-message-text">
-                                            {msg.message}
-                                        </div>
+                                        {!msg.isDeleted && (
+                                            <button
+                                                type="button"
+                                                className="message-menu-button"
+                                                onClick={() =>
+                                                    setActiveMessageMenu(
+                                                        activeMessageMenu === msg._id
+                                                            ? null
+                                                            : msg._id
+                                                    )
+                                                }
+                                                aria-label="Message options"
+                                            >
+                                                <i className="bi bi-three-dots"></i>
+                                            </button>
+                                        )}
 
-                                        <div className="chat-message-meta">
-                                            {msg.createdAt &&
-                                                new Date(
-                                                    msg.createdAt
-                                                ).toLocaleTimeString(
-                                                    [],
-                                                    {
-                                                        hour: "2-digit",
-                                                        minute: "2-digit",
-                                                    }
-                                                )}
+                                        {activeMessageMenu === msg._id &&
+                                            !msg.isDeleted && (
+                                                <div className="message-options">
+                                                    {/* Delete for me */}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            deleteMessageForMe(
+                                                                msg._id
+                                                            )
+                                                        }
+                                                    >
+                                                        <i className="bi bi-trash"></i>
+                                                        Delete for me
+                                                    </button>
 
-                                            {isMyMessage && (
-                                                <span
-                                                    className={`chat-ticks ${
-                                                        msg.isSeen
-                                                            ? "seen"
-                                                            : ""
-                                                    }`}
-                                                    title={
-                                                        msg.isSeen
-                                                            ? "Seen"
-                                                            : "Sent"
-                                                    }
-                                                >
-                                                    {msg.isSeen
-                                                        ? "✓✓"
-                                                        : "✓"}
-                                                </span>
+                                                    {/* Delete for everyone */}
+                                                    {!msg.isDeleted &&
+                                                        isMyMessage &&
+                                                        canDeleteForEveryone(
+                                                            msg.createdAt
+                                                        ) && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    if (
+                                                                        window.confirm(
+                                                                            "Delete this message for everyone?"
+                                                                        )
+                                                                    ) {
+                                                                        deleteMessageForEveryone(
+                                                                            msg._id
+                                                                        );
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <i className="bi bi-trash"></i>
+                                                                Delete for everyone
+                                                            </button>
+                                                        )}
+                                                </div>
+                                            )}
+
+                                        <div
+                                            className={`chat-message-text ${
+                                                msg.isDeleted ? "deleted-message" : ""
+                                            }`}
+                                        >
+                                            {msg.isDeleted ? (
+                                                <em>
+                                                    This message was deleted
+                                                </em>
+                                            ) : (
+                                                msg.message
                                             )}
                                         </div>
+
+                                      <div className="chat-message-meta">
+                                        <span className="chat-time">
+                                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                            })}
+                                        </span>
+
+                                        {isMyMessage && !msg.isDeleted && (
+                                            <span
+                                                className={`chat-ticks ${msg.isSeen ? "seen" : ""}`}
+                                                title={msg.isSeen ? "Seen" : "Sent"}
+                                            >
+                                                ✓✓
+                                            </span>
+                                        )}
+                                    </div>
                                     </div>
                                 </div>
                             );
                         })
                     )}
-
-                    {messages.some(
-                        (msg) =>
-                            getId(msg.sender) ===
-                                getId(currUser?._id) &&
-                            msg.isSeen
-                    ) && (
-                        <div className="chat-seen-label">
-                            <i className="bi bi-check2-all"></i>
-                            Seen
-                        </div>
-                    )}
-
                     <div ref={messagesEndRef} />
                 </main>
 
@@ -375,7 +517,7 @@ function ChatDialog({ user, onClose }) {
                         className="chat-emoji"
                         aria-label="Insert emoji"
                         onClick={() =>
-                            setMessage((prev) => prev + "🙂")
+                            setMessage((previous) => previous + "🙂")
                         }
                     >
                         <i className="bi bi-emoji-smile"></i>

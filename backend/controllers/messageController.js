@@ -160,6 +160,121 @@ const getMessages = async (req, res) => {
     }
 };
 
+// Delete a single message only for the current user
+const deleteMessageForMe = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const currentUserId = req.session.userId;
+
+        const message = await Message.findById(messageId);
+
+        if (!message) {
+            return res.status(404).json({
+                message: "Message not found",
+            });
+        }
+
+        // Only sender or receiver can hide this message
+        const isParticipant =
+            message.sender.toString() === currentUserId.toString() ||
+            message.receiver.toString() === currentUserId.toString();
+
+        if (!isParticipant) {
+            return res.status(403).json({
+                message: "Not authorized to delete this message",
+            });
+        }
+
+        await Message.findByIdAndUpdate(messageId, {
+            $addToSet: { hiddenFor: currentUserId },
+        });
+
+        return res.status(200).json({
+            message: "Message deleted successfully",
+            messageId,
+        });
+    } catch (error) {
+        console.error("DELETE MESSAGE ERROR:", error);
+
+        return res.status(500).json({
+            message: "Failed to delete message",
+        });
+    }
+};
+// Delete a single message for everyone
+const deleteMessageForEveryone = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const currentUserId = req.session.userId;
+
+        const message = await Message.findById(messageId);
+
+        if (!message) {
+            return res.status(404).json({
+                message: "Message not found",
+            });
+        }
+
+        // Only the original sender can delete for everyone
+        if (message.sender.toString() !== currentUserId.toString()) {
+            return res.status(403).json({
+                message: "Only the sender can delete this message for everyone",
+            });
+        }
+
+        // Check 15-minute time limit
+        const fifteenMinutes = 15 * 60 * 1000;
+        const messageAge =
+            Date.now() - new Date(message.createdAt).getTime();
+
+        if (messageAge > fifteenMinutes) {
+            return res.status(400).json({
+                message: "You can delete this message only within 15 minutes",
+            });
+        }
+
+        if (message.isDeleted) {
+            return res.status(400).json({
+                message: "Message is already deleted",
+            });
+        }
+
+        // Replace original message with deletion notice
+        const updatedMessage = await Message.findByIdAndUpdate(
+            messageId,
+            {
+                $set: {
+                    isDeleted: true,
+                    message: "This message was deleted",
+                },
+            },
+            { new: true }
+        );
+
+        // Notify both participants through Socket.IO
+        const io = getIO();
+
+        io.to(message.sender.toString()).emit("messageDeleted", {
+            message: updatedMessage,
+        });
+
+        io.to(message.receiver.toString()).emit("messageDeleted", {
+            message: updatedMessage,
+        });
+
+        return res.status(200).json({
+            message: "Message deleted for everyone",
+            updatedMessage,
+        });
+    } catch (error) {
+        console.error("DELETE MESSAGE FOR EVERYONE ERROR:", error);
+
+        return res.status(500).json({
+            message: "Failed to delete message for everyone",
+        });
+    }
+};
+
 
 // Delete conversation only for the current user
 const deleteConversation = async (req, res) => {
@@ -209,4 +324,6 @@ module.exports = {
     sendMessage,
     getMessages,
     deleteConversation,
+    deleteMessageForMe,
+    deleteMessageForEveryone 
 };
