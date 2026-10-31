@@ -1,6 +1,6 @@
-import './Cards.css';
-import {io} from "socket.io-client";
+import './Cards.css'; 
 import axios from "axios";
+import { socket } from "../../socket.js";
 import { useEffect, useState, useRef } from "react"; 
 import NewUsers from './NewUsers';
 import FollowingUser from './FollowingUser';
@@ -81,60 +81,65 @@ function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotif
 			setApiError(true);
 		}
 		};
-		const socket=io("http://localhost:5000");
-		socket.on("newUser",(newUser)=>{
-			setUsers(prev=>[...prev, newUser]);
-			if(activeListRef.current!=="new"){
-				setNewUserNotification(prev=>[...prev, newUser]);
+		const handleNewUser = (newUser) => {
+			setUsers(prev => [...prev, newUser]);
+
+			if (activeListRef.current !== "new") {
+				setNewUserNotification(prev => [...prev, newUser]);
 			}
-		});
+		};
+
+		socket.on("newUser", handleNewUser);
 		loadData();
 		window.addEventListener("focus",loadFollowRequests);
 		document.addEventListener("visibilitychange",loadFollowRequests);
-		return()=>{
-			socket.disconnect();
-			window.removeEventListener("focus",loadFollowRequests);
-			document.removeEventListener("visibilitychange",loadFollowRequests);
-		}
+		return () => {
+			socket.off("newUser", handleNewUser);
+			window.removeEventListener("focus", loadFollowRequests);
+			document.removeEventListener("visibilitychange", loadFollowRequests);
+		};
 	},[]);
 	useEffect(() => {
-    if (!currUser) return;
-    const socket = io("http://localhost:5000");
-    socket.on("followRequest", (data) => {
-        if (data.targetUsername === currUser.username) {
-            setIsFollowRequest(prev => {
-                const alreadyExists = prev.some(
-                    user => user.username === data.follower.username
-                );
-                if (alreadyExists) {
-                    return prev;
-                }
-                return [...prev, data.follower];
-            });
-        }
-    });
-	socket.on("followBack", (data) => {
-		if (data.targetUsername === currUser.username) {
-			setIsFollowRequest(prev =>
-				prev.filter(
-					user => user.username !== data.followedBackUser
-				)
-			);
-		}
-	});
-	socket.on("unfollow", (data) => {
-    if (data.targetUsername === currUser.username) {
-        setIsFollowRequest(prev =>
-            prev.filter(
-                user => user.username !== data.unfollower.username
-            )
-        );
-    }
-});
-    return () => {
-        socket.disconnect();
-    };
-}, [currUser]);
+		if (!currUser) return;
+		socket.on("followRequest", (data) => {
+			if (data.targetUsername === currUser.username) {
+				setIsFollowRequest(prev => {
+					const alreadyExists = prev.some(
+						user => user.username === data.follower.username
+					);
+
+					if (alreadyExists) return prev;
+					return [...prev, data.follower];
+				});
+			}
+		});
+
+		socket.on("followBack", (data) => {
+			if (data.targetUsername === currUser.username) {
+				setIsFollowRequest(prev =>
+					prev.filter(
+						user => user.username !== data.followedBackUser
+					)
+				);
+			}
+		});
+
+		socket.on("unfollow", (data) => {
+			if (data.targetUsername === currUser.username) {
+				setIsFollowRequest(prev =>
+					prev.filter(
+						user => user.username !== data.unfollower.username
+					)
+				);
+			}
+		});
+
+		return () => {
+			socket.off("followRequest");
+			socket.off("followBack");
+			socket.off("unfollow");
+		};
+	}, [currUser]);
 	useEffect(()=>{
 		if(activeList==="new"){
 			setNewUserNotification([]);
