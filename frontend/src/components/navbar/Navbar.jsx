@@ -44,21 +44,9 @@ function Navbar() {
 		style={{backgroundColor:activeList==="following"?"#202020":"",
 		        color:activeList==="following"?"white":""}}
 		 className={`btn userListBtn me-2 ${activeList==="following"?"":"btn-sm"}`}
-		 type="button">Followings</button>
-		 <button
-		onClick={()=>setActiveList("follow-requests")}
-		style={{backgroundColor:activeList==="follow-requests"?"#202020":"",
-		        color:activeList==="follow-requests"?"white":""}}
-		 className={`btn userListBtn ${activeList==="follow-requests"?"":"btn-sm"}`}
-		 type="button">Requests
-			{
-				isFollowRequest.length>0&&(
-					<span className="requestCount">{isFollowRequest.length}</span>
-				)
-			}
+		 type="button">Followings
 		 </button>
-		 <RepoDialogBox/>
-		 <button
+		 		 <button
 			onClick={() => setActiveList("messages")}
 			className={`btn userListBtn me-2 ${
 				activeList === "messages" ? "" : "btn-sm"
@@ -72,6 +60,19 @@ function Navbar() {
 			<i className="bi bi-chat-dots me-1"></i>
 			Messages
 		</button>
+		 <button
+		onClick={()=>setActiveList("follow-requests")}
+		style={{backgroundColor:activeList==="follow-requests"?"#202020":"",
+		        color:activeList==="follow-requests"?"white":""}}
+		 className={`btn userListBtn ${activeList==="follow-requests"?"":"btn-sm"}`}
+		 type="button">Requests
+			{
+				isFollowRequest.length>0&&(
+					<span className="requestCount">{isFollowRequest.length}</span>
+				)
+			}
+		 </button>
+		 <RepoDialogBox/>
 	</form>
 	</nav>
 	{activeList === "messages" ? (
