@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Messages from "../../Pages/Messages.jsx";
 import './Navbar.css';
 import Cards from "../cards/Cards";
 import RepoDialogBox from "../repository/RepoDialogBox";
@@ -57,14 +58,32 @@ function Navbar() {
 			}
 		 </button>
 		 <RepoDialogBox/>
+		 <button
+			onClick={() => setActiveList("messages")}
+			className={`btn userListBtn me-2 ${
+				activeList === "messages" ? "" : "btn-sm"
+			}`}
+			style={{
+				backgroundColor: activeList === "messages" ? "#202020" : "",
+				color: activeList === "messages" ? "white" : ""
+			}}
+			type="button"
+		>
+			<i className="bi bi-chat-dots me-1"></i>
+			Messages
+		</button>
 	</form>
 	</nav>
-	<Cards
-		activeList={activeList}
-		isFollowRequest={isFollowRequest}
-		setIsFollowRequest={setIsFollowRequest} 
-		setNewUserNotification={setNewUserNotification}
-	/>
+	{activeList === "messages" ? (
+    <Messages />
+		) : (
+			<Cards
+				activeList={activeList}
+				isFollowRequest={isFollowRequest}
+				setIsFollowRequest={setIsFollowRequest}
+				setNewUserNotification={setNewUserNotification}
+			/>
+		)}
 	</>
   )
 };

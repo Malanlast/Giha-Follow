@@ -2,53 +2,112 @@
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
+
 .chat-menu-trigger {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
+    width: 34px;
+    height: 34px;
+    padding: 0;
     border: none;
+    border-radius: 50%;
+    background: transparent;
     color: inherit;
     cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
+    transition: background 0.2s ease, color 0.2s ease;
 }
-.chat-menu-trigger:hover {
+
+.chat-menu-trigger:hover,
+.chat-menu-trigger:focus-visible {
     background: rgba(128, 128, 128, 0.15);
+    outline: none;
 }
-/* Dropdown opens just left of the three-dot button */
+
+.chat-menu-trigger i {
+    font-size: 18px;
+}
+
+/* Dropdown */
 .chat-menu-dropdown {
     position: absolute;
-    top: 100%;
-    right: calc(100% + 8px);
-    transform: translateY(-50%);
+    top: calc(100% + 5px);
+    right: 0;
     width: 210px;
-    background: var(--chat-menu-bg, #f4f4f4);
-    color: var(--chat-menu-text, #222222);
-    border: 1px solid rgba(128, 128, 128, 0.2);
-    border-radius: 10px;
+    max-width: calc(100vw - 30px);
     padding: 6px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
-    z-index: 1000;
+    background: var(--bs-body-bg, #fff);
+    color: var(--bs-body-color, #222);
+    border: 1px solid var(--bs-border-color, #e5e7eb);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1100;
+    animation: chatMenuOpen 0.16s ease-out;
 }
+
+@keyframes chatMenuOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .chat-menu-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 11px;
     width: 100%;
     padding: 11px 10px;
     background: transparent;
     border: none;
-    border-radius: 7px;
+    border-radius: 8px;
     color: inherit;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
     text-align: left;
     cursor: pointer;
+    transition: background 0.2s ease;
 }
+
+.chat-menu-item i {
+    font-size: 16px;
+}
+
 .chat-menu-item:hover {
     background: rgba(128, 128, 128, 0.12);
 }
+
 .chat-menu-item.delete {
     color: #dc2626;
+}
+
+.chat-menu-item.delete:hover {
+    background: rgba(220, 38, 38, 0.09);
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .chat-menu-trigger {
+        width: 36px;
+        height: 36px;
+    }
+
+    .chat-menu-dropdown {
+        width: 195px;
+        right: 0;
+        top: calc(100% + 4px);
+    }
+
+    .chat-menu-item {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
 }

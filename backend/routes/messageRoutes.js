@@ -1,7 +1,7 @@
 const express = require("express");
 const {
     sendMessage,
-    getMessages,
+    getMessages,getConversations,
     deleteConversation,
     deleteMessageForMe,
     deleteMessageForEveryone ,
@@ -13,6 +13,7 @@ const router = express.Router();
 router.post("/", isAuthenticated, sendMessage);
 router.delete("/single/:messageId", isAuthenticated, deleteMessageForMe);
 router.delete("/single/:messageId/everyone",isAuthenticated,deleteMessageForEveryone);
+router.get("/conversations", isAuthenticated, getConversations);
 router.get("/:userId", isAuthenticated, getMessages);
 router.delete("/:userId", isAuthenticated, deleteConversation);
 

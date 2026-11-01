@@ -124,6 +124,60 @@ const getMessages = async (req, res) => {
             message: "Failed to fetch messages",
         });
     }
+}; 
+// Get all users with whom the current user has conversations
+const getConversations = async (req, res) => {
+    try {
+        const currentUserId = req.session.userId;
+
+        const messages = await Message.find({
+            $or: [
+                { sender: currentUserId },
+                { receiver: currentUserId }
+            ],
+            hiddenFor: { $ne: currentUserId }
+        }).sort({ createdAt: -1 });
+
+        const conversationMap = new Map();
+
+        for (const msg of messages) {
+            const otherUserId =
+                msg.sender.toString() === currentUserId.toString()
+                    ? msg.receiver.toString()
+                    : msg.sender.toString();
+
+            // First message is the latest because of descending sort
+            if (!conversationMap.has(otherUserId)) {
+                conversationMap.set(otherUserId, msg);
+            }
+        }
+
+        const userIds = [...conversationMap.keys()];
+
+        const users = await User.find({
+            _id: { $in: userIds }
+        }).select("name username avatar profileUrl");
+
+        const conversations = users.map(user => ({
+            ...user.toObject(),
+            lastMessage: conversationMap.get(user._id.toString())
+        }));
+
+        conversations.sort(
+            (a, b) =>
+                new Date(b.lastMessage.createdAt) -
+                new Date(a.lastMessage.createdAt)
+        );
+
+        return res.status(200).json({ conversations });
+
+    } catch (error) {
+        console.error("GET CONVERSATIONS ERROR:", error);
+
+        return res.status(500).json({
+            message: "Failed to fetch conversations"
+        });
+    }
 };
 // Delete a single message only for the current user
 const deleteMessageForMe = async (req, res) => {
@@ -278,6 +332,7 @@ const deleteConversation = async (req, res) => {
 module.exports = {
     sendMessage,
     getMessages,
+    getConversations,
     deleteConversation,
     deleteMessageForMe,
     deleteMessageForEveryone 

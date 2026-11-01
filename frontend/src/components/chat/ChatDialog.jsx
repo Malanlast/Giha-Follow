@@ -12,7 +12,7 @@ function canDeleteForEveryone(createdAt) {
     const age = Date.now() - new Date(createdAt).getTime();
     return age >= 0 && age <= 15 * 60 * 1000;
 }
-function ChatDialog({ user, onClose }) {
+function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
     const [messages, setMessages] = useState([]);
     const [currUser, setCurrUser] = useState(null);
     const [message, setMessage] = useState("");
@@ -259,6 +259,7 @@ function ChatDialog({ user, onClose }) {
     };
   const deleteConversation = async () => {
     const otherUserId = getId(user._id);
+
     const confirmDelete = window.confirm(
         "Are you sure you want to delete this conversation?"
     );
@@ -272,15 +273,18 @@ function ChatDialog({ user, onClose }) {
         );
 
         setMessages([]);
+        onConversationDeleted?.(otherUserId);
         onClose();
+
     } catch (error) {
         console.error("DELETE CONVERSATION ERROR:", error);
+
         alert(
             error.response?.data?.message ||
             "Failed to delete conversation"
         );
     }
-};
+    };
 
     // Delete message for everyone (sender only, within 15 minutes)
     const deleteMessageForEveryone = async (messageId) => {
@@ -334,8 +338,8 @@ function ChatDialog({ user, onClose }) {
     };
 
     return (
-        <div className="chat-overlay container-fluid">
-            <div className="chat-window">
+        <div className={`chat-overlay container-fluid ${inline ? "chat-inline" : ""}`}>
+        <div className="chat-window">
                 {/* Header */}
                 <header className="chat-header">
                     <button
