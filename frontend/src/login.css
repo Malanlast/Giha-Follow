@@ -101,4 +101,277 @@
     position: relative;
     z-index: 2;
 }
- 
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    margin-bottom: 22px;
+    color: #dbd1f9;
+    font-size: 13px;
+    font-weight: 500;
+    background: rgba(124, 92, 220, 0.18);
+    border: 1px solid rgba(167, 139, 250, 0.7);
+    border-radius: 30px;
+}
+
+.hero-content h1 {
+    margin-bottom: 18px;
+    color: #fff;
+    font-size: clamp(2.8rem, 5.2vw, 5rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -2px;
+}
+
+.hero-content h1 span {
+    color: #a78bfa;
+}
+
+.hero-content h2 {
+    margin-bottom: 15px;
+    color: #e5e1ff;
+    font-size: clamp(1.2rem, 2vw, 1.7rem);
+    font-weight: 600;
+}
+
+.hero-content p {
+    max-width: 480px;
+    margin-bottom: 15px;
+    color: #eeeeee;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.8;
+    text-shadow: 1px 2px 7px rgba(0, 0, 0, 0.8);
+}
+
+/* ================================
+   GitHub Login Button
+================================ */
+
+.github-login-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 0;
+    padding: 14px 27px;
+    border: none;
+    border-radius: 35px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #9452d6, #511678);
+    box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+    transition: all 0.3s ease;
+}
+
+.github-login-btn:hover {
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.45);
+}
+
+
+/* ================================
+   Feature Boxes
+================================ */
+
+.feature-bar {
+    width: fit-content;
+    margin: 10px 0 20px 5.5%;
+    display: flex;
+    justify-content: flex-start;
+    align-self: flex-start;
+    gap: 12px;
+    background: transparent;
+    position: relative;
+    z-index: 2;
+}
+
+.feature-item {
+    width: fit-content;
+    min-height: auto;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 18, 48, 0.65);
+    border: 1px solid rgba(160, 130, 255, 0.25);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+    background: rgba(91, 55, 180, 0.35);
+    border-color: rgba(170, 140, 255, 0.7);
+    box-shadow: 0 8px 25px rgba(100, 60, 220, 0.2);
+}
+
+.feature-item i {
+    color: #a78bfa;
+    font-size: 23px;
+    flex-shrink: 0;
+}
+
+.feature-item span {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+
+/* ================================
+   Tablet Responsive
+================================ */
+
+@media (max-width: 991px) {
+    .hero-content {
+        width: 65%;
+    }
+
+    .hero-content h1 {
+        font-size: clamp(2.7rem, 6vw, 4rem);
+    }
+
+    .feature-bar {
+        margin-left: 5.5%;
+        gap: 10px;
+    }
+
+    .feature-item {
+        padding: 5px;
+        gap: 8px;
+    }
+
+    .feature-item span {
+        font-size: 12px;
+    }
+}
+
+
+/* ================================
+   Mobile Responsive
+================================ */
+
+@media (max-width: 576px) {
+
+    .login-page {
+        height: 100vh;
+        min-height: 650px;
+        overflow-y: auto;
+
+        background-position: 65% center;
+    }
+
+    .login-navbar {
+        height: 65px;
+        padding: 0 5%;
+    }
+
+    .brand-logo {
+        gap: 8px;
+        font-size: 19px;
+    }
+
+    .brand-logo img {
+        width: 38px;
+        height: 38px;
+    }
+
+    .nav-get-started {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+
+    .hero-section {
+        flex: 0 0 auto;
+        align-items: flex-start;
+        padding: 45px 7% 10px;
+    }
+
+    .hero-content {
+        width: 100%;
+    }
+
+    .hero-badge {
+        font-size: 11px;
+        margin-bottom: 18px;
+    }
+
+    .hero-content h1 {
+        font-size: 2.8rem;
+        letter-spacing: -1px;
+    }
+
+    .hero-content h2 {
+        font-size: 1.25rem;
+    }
+
+    .hero-content p {
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 15px;
+    }
+
+    .github-login-btn {
+        padding: 12px 21px;
+        font-size: 13px;
+    }
+
+    .feature-bar {
+        width: fit-content;
+        margin: 10px 0 15px 7%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .feature-item {
+        width: fit-content;
+        padding: 5px;
+    }
+
+    .feature-item i {
+        font-size: 20px;
+    }
+
+    .feature-item span {
+        font-size: 13px;
+    }
+}
+/* Background Responsive Position */
+
+.login-page {
+    background-position: center center;
+}
+
+@media (max-width: 1200px) {
+    .login-page {
+        background-position: 60% center;
+    }
+}
+
+@media (max-width: 991px) {
+    .login-page {
+        background-position: 70% center;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-page {
+        background-position: 78% center;
+    }
+}
+
+@media (max-width: 576px) {
+    .login-page {
+        background-position: 85% center;
+    }
+}
