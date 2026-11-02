@@ -45,16 +45,16 @@ function Login() {
                         community.
                     </p>
                     <div className='row circleRow container-fluid'>
-                    <div className='circleBox' style={{background:"green"}}>
+                    <div className='circleBox circle1' style={{background:"green"}}>
                       <img src="/onePice.jpeg" alt="user1"/>
                     </div>
-                    <div className='circleBox' style={{marginLeft:"-7px",background:"pink"}}>
+                    <div className='circleBox circle2' style={{marginLeft:"-7px",background:"pink"}}>
                       <img src="/wolverine.jpeg" alt="user2"/>
                     </div>
-                    <div className='circleBox' style={{marginLeft:"-7px",background:"blue"}}>
+                    <div className='circleBox circle3' style={{marginLeft:"-7px",background:"blue"}}>
                       <img src="/blue.jpeg" alt="user3"/>
                     </div>
-                    <div className='circleBox' style={{marginLeft:"-7px",background:"yellow"}}>
+                    <div className='circleBox circle4' style={{marginLeft:"-7px",background:"yellow"}}>
                       <img src="/ironMan.jpeg" alt="user4"/>
                     </div>
                     </div>
