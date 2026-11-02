@@ -1,33 +1,112 @@
+/* Feature cards container */
 .cardBox {
-    width: 100%; 
-    margin:0;  
-    padding: 1rem;
-    box-sizing: border-box;
-	gap:5px;
-	display:flex;
-	justify-content:center;
-}
-.detailsCard { 
-    padding: 1rem;
-    box-sizing: border-box; 
-    border-radius: 10px;
-    background: #efe9f377;
-	border:1px solid #504f4f;
-}
-.detailsCard h2 {
+    width: 100%;
     margin: 0;
-    padding: 5px;
-    font-size: 1.2rem;
-    text-align: center;
+    padding: 15px 0;
 }
+
+/* Individual feature card */
+.detailsCard {
+    position: relative;
+    height: 100%;
+    min-height: 230px;
+    padding: 28px 22px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    background: linear-gradient(
+        145deg,
+        rgba(31, 27, 67, 0.78),
+        rgba(10, 13, 37, 0.88)
+    );
+
+    border: 1px solid rgba(153, 105, 255, 0.3);
+    border-radius: 16px;
+
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+
+    transition: transform 0.3s ease, border-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+.detailsCard:hover {
+    transform: translateY(-7px);
+    border-color: rgba(166, 100, 255, 0.8);
+    box-shadow: 0 12px 35px rgba(105, 54, 220, 0.2);
+}
+
+/* Icon */
+.feature-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+    background: linear-gradient(135deg, #5425dc, #a020e8);
+
+    color: white;
+    font-size: 23px;
+    margin-bottom: 20px;
+
+    box-shadow: 0 4px 18px rgba(135, 65, 255, 0.3);
+}
+
+/* Heading */
+.detailsCard h3 {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 650;
+    margin: 0 0 12px;
+}
+
+/* Description */
 .detailsCard p {
+    color: #bfc1d8;
+    font-size: 0.9rem;
+    line-height: 1.7;
     margin: 0;
-    padding: 5px;
-    font-size: 0.9rem; 
-	line-height:1.5;
-    text-align: center;
-	overflow-wrap:break-word; 
+    overflow-wrap: break-word;
 }
-.detailsCard hr {
-    margin: 8px 0;
+
+/* Bottom decorative line */
+.feature-line {
+    width: 35px;
+    height: 3px;
+    margin-top: auto;
+    padding-top: 0;
+    background: linear-gradient(90deg, #5425dc, #c026ed);
+    border-radius: 10px;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .detailsCard {
+        min-height: 210px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    .cardBox {
+        padding: 10px 5px;
+    }
+
+    .detailsCard {
+        min-height: 190px;
+        padding: 23px 20px;
+    }
+
+    .detailsCard h3 {
+        font-size: 1.05rem;
+    }
+
+    .detailsCard p {
+        font-size: 0.85rem;
+    }
 }

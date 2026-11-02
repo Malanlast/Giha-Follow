@@ -1,29 +1,64 @@
-import './loginComponent.css';
+import "./loginComponent.css";
+
 function DetailsBox() {
-  return (
-	<>
-	<div className='row cardBox'>
-      <div className='col-12 col-md-3 detailsCard'>
-        <h2>
-        Discover Users</h2>
-        <hr/>
-        <p>Explore profiles of users who have joined the platform and view their GitHub information in one place.</p>
-      </div>
-      <div className='col-12 col-md-3 detailsCard'>
-        <h2>
-        Follow & Connect</h2>
-        <hr/>
-         <p>Follow or unfollow other users through authorized GitHub functionality with a simple click.</p>
-      </div>
-      <div className='col-12 col-md-3 detailsCard'>
-        <h2>
-        User Profiles</h2>
-        <hr/>
-         <p>View useful profile information such as username, bio, followers, following, repositories, and GitHub profile link.</p>
-      </div> 
-    </div>
-	</>
-  )
+    const features = [
+        {
+            icon: "bi bi-people-fill",
+            title: "Discover Developers",
+            description:
+                "Explore developers who have joined Giha Follow and discover new connections within the community."
+        },
+        {
+            icon: "bi bi-person-plus-fill",
+            title: "Follow & Unfollow",
+            description:
+                "Follow developers and manage your connections through authorized GitHub functionality."
+        },
+        {
+            icon: "bi bi-person-vcard-fill",
+            title: "Developer Profiles",
+            description:
+                "Explore GitHub profiles, including usernames, bios, followers, following, and repositories."
+        },
+        {
+            icon: "bi bi-person-check-fill",
+            title: "Follow Requests",
+            description:
+                "View incoming follow requests and build connections with other developers."
+        },
+        {
+            icon: "bi bi-chat-dots-fill",
+            title: "Real-time Messaging",
+            description:
+                "Chat with mutual connections through real-time messaging."
+        },
+        {
+            icon: "bi bi-bell-fill",
+            title: "Live Notifications",
+            description:
+                "Stay updated when new developers join and discover new activity."
+        }
+    ];
+
+    return (
+        <div className="row g-4 cardBox">
+            {features.map((feature, index) => (
+                <div className="col-12 col-md-6 col-lg-4" key={index}>
+                    <div className="detailsCard h-100">
+                        <div className="feature-icon">
+                            <i className={feature.icon}></i>
+                        </div>
+
+                        <h3>{feature.title}</h3>
+
+                        <p>{feature.description}</p>
+
+                        <div className="feature-line"></div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
 }
 
 export default DetailsBox;

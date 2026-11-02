@@ -1,160 +1,104 @@
-.container{
-	min-height:100vh;
-	display:flex;
-	flex-direction:column;
-	/* overflow-y:auto; */
-}
-/* .container::-webkit-scrollbar{
-	width:0;
-  } */
-.leftRightBox{ 
-	margin-top:1rem;
-	min-height:70vh;
-	display:flex; 
-	justify-content:center;  
-	gap:10px;
-}
-.leftBox{ 
-	min-height:70vh;
-	margin-bottom:5px; 
-	background: #efe9f377;  
-	display:flex;
-	justify-content:center; 
-	border:1px solid #9b9797;
-	border-radius:5px; 
-}
-.right{  
-	border:1px solid #9b9797;
-	border-radius:5px;
-	background: #efe9f377; 
-	height:70vh;
-	display:flex; 
-	flex-direction:column;
-}
- 
-.gitCat{   
-	height:60vh;
-	object-fit:contain; 
-	filter:drop-shadow(-10px 2px 2px rgba(0, 0, 0, 0.7));
-}
-.git-globe {
-    width: 100%;
-    max-width: 500px;
-    height: auto;
-    max-height: 45vh;
-    object-fit: contain;
-    display: block;  
-    margin:0 auto;
-	filter:drop-shadow(-8px 3px 3px rgba(0, 0, 0, 0.7));
-}
-.GihaLogo{  
-	height:6rem; 
-	object-fit:contain;
-}
-.footer{
-	background:#141313;
-	color:white;
-	margin-top:1rem;
-	display:flex;
-	justify-content:center;
-	min-height:2.5rem;
-	align-items:center;
-	padding: 0.5rem 1rem;
-    box-sizing: border-box;
-}
-.footer p {
-    margin: 0;
-    text-align: center;
-    line-height: 1.5;
-}
-@media (max-width: 500px) {
-    .footer {
-        min-height: auto;
-        padding: 0.7rem;
-    }
 
-    .footer p {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 5px;
-    }
-}
-.circleRow{
-	display:flex;
-    justify-content:center;
-}
-.circleBox{
-	display:flex;
-    justify-content:center;
-	height:3rem;
-	width:3rem;
-	border-radius:50%;
-	overflow: hidden;
-	border:1px solid #292626; 
-	filter:drop-shadow(-5px 2px 3px rgba(0, 0, 0, 0.7));
-}
-.circleBox img{ 
-	height:100%;
-	width:auto;
-	object-fit:contain;
-	display:block;
-}
-h2{ 
-	margin-top:1rem;
-	font-size:14px;
-	padding:5px;
-}
-.rightH2{
-	margin-top:0;
-	text-align:center;
-	margin-bottom:0;
-}
-.loginBtn{
-	 height:2rem;
-	 width:6rem;
-	 background: #2c4be5dd;
-	 border-radius:10px;
-	 border:1px solid #01045f;
-	 margin:auto;  
-	 color:white;
-	 margin-bottom:5rem;
-	 box-shadow:-5px 3px 3px #b7b4b4;
-}
-.loginBtn:hover{
-	background: #9ba0b9dd;
-	color: black;
-	box-shadow:-5px 3px 3px #8a8787;
-}
-.signUpBtn{
-	 height:2.1rem; 
-	 font-size:1rem;
-	 background: #171718dd;
-	 border-radius:10px;
-	 border:1px solid #141313;
-	 margin:auto;
-	 margin-bottom:1rem;  
-	 color:white; 
-	 box-shadow:-5px 3px 3px #636060;
-}
-.signUpBtn:hover{
-	background: #363636dd;
-	color: white;
-	box-shadow:-5px 3px 3px #272525;
-}
-span{
-	font-size:0.8rem;
-}
-.githubSection{
-	min-height: 70vh; 
-    margin: auto;
-    margin-bottom: 1rem;
+/* ================================
+   Main Login Page
+================================ */
+
+.login-page {
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
     overflow: hidden;
-    padding: 1rem;
-    box-sizing: border-box;
+    position: relative;
+    color: #fff;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(3, 5, 22, 0.35) 0%,
+            rgba(3, 5, 22, 0.10) 55%,
+            rgba(3, 5, 22, 0.05) 100%
+        ),
+        url("/giha-follow-galaxy-background.webp") center center / cover no-repeat;
 }
 
+
+/* ================================
+   Transparent Navbar
+================================ */
+
+.login-navbar {
+    width: 100%;
+    height: 76px;
+    flex-shrink: 0;
+    padding: 0 5.5%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: transparent;
+    border-bottom: none;
+    backdrop-filter: none;
+
+    position: relative;
+    z-index: 5;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: #fff;
+    text-decoration: none;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.brand-logo img {
+	margin-top:1rem;
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+.nav-get-started {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 30px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #7652e8, #a855f7);
+    transition: 0.3s ease;
+}
+
+.nav-get-started:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+}
+
+
+/* ================================
+   Hero Section
+================================ */
+
+.hero-section {
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    padding: 30px 5.8% 10px;
+    position: relative;
+}
+
+.hero-content {
+    width: 52%;
+    max-width: 650px;
+    position: relative;
+    z-index: 2;
+}
+ 
