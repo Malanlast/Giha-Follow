@@ -38,15 +38,26 @@ function Login() {
                     <h1>
                         Connect. <span>Follow.</span> Grow.
                     </h1>
-
                     <h2>Discover GitHub Developers</h2>
-
                     <p>
                         Discover developers, follow your favourite GitHub
                         users, and become part of a growing developer
                         community.
                     </p>
-
+                    <div className='row circleRow container-fluid'>
+                    <div className='circleBox' style={{background:"green"}}>
+                      <img src="/onePice.jpeg" alt="user1"/>
+                    </div>
+                    <div className='circleBox' style={{marginLeft:"-7px",background:"pink"}}>
+                      <img src="/wolverine.jpeg" alt="user2"/>
+                    </div>
+                    <div className='circleBox' style={{marginLeft:"-7px",background:"blue"}}>
+                      <img src="/blue.jpeg" alt="user3"/>
+                    </div>
+                    <div className='circleBox' style={{marginLeft:"-7px",background:"yellow"}}>
+                      <img src="/ironMan.jpeg" alt="user4"/>
+                    </div>
+                    </div>
                     <button
                         className="github-login-btn"
                         onClick={loginWithGitHub}

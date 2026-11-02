@@ -71,7 +71,7 @@
     color: #fff;
     font-size: 14px;
     font-weight: 600;
-    background: linear-gradient(135deg, #7652e8, #a855f7);
+    background: linear-gradient(135deg, #6b2ca9, #8c1495);
     transition: 0.3s ease;
 }
 
@@ -162,7 +162,7 @@
     color: #fff;
     font-size: 15px;
     font-weight: 600;
-    background: linear-gradient(135deg, #9452d6, #511678);
+    background: linear-gradient(135deg, #6b2ca9, #8c1495);
     box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
     transition: all 0.3s ease;
 }
@@ -197,8 +197,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(15, 18, 48, 0.65);
-    border: 1px solid rgba(160, 130, 255, 0.25);
+    background: rgba(21, 28, 134, 0.75);
+    border: 1px solid rgba(249, 255, 130, 0.25);
     border-radius: 10px;
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
@@ -206,13 +206,13 @@
 
 .feature-item:hover {
     transform: translateY(-5px);
-    background: rgba(91, 55, 180, 0.35);
-    border-color: rgba(170, 140, 255, 0.7);
-    box-shadow: 0 8px 25px rgba(100, 60, 220, 0.2);
+    background: rgba(70, 39, 150, 0.4);
+    border-color: rgba(212, 162, 22, 0.3);
+    box-shadow: 0 8px 25px rgba(202, 194, 77, 0.5);
 }
 
 .feature-item i {
-    color: #a78bfa;
+    color: #e6bb48;
     font-size: 23px;
     flex-shrink: 0;
 }
@@ -374,4 +374,24 @@
     .login-page {
         background-position: 85% center;
     }
+}
+.circleRow{
+	display:flex;
+	margin-bottom:1rem;
+}
+.circleBox{
+	display:flex;
+        justify-content:center;
+	height:3rem;
+	width:3rem;
+	border-radius:50%;
+	overflow: hidden;
+	border:1px solid #292626; 
+	filter:drop-shadow(-5px 2px 3px rgba(0, 0, 0, 0.7));
+}
+.circleBox img{ 
+	height:100%;
+	width:auto;
+	object-fit:contain;
+	display:block;
 }
