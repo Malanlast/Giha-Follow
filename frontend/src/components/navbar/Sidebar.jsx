@@ -1,3 +1,4 @@
+
 import './Sidebar.css';
 
 function Sidebar({
@@ -17,8 +18,11 @@ function Sidebar({
 
     return (
         <aside className="dashboard-sidebar">
+
+            {/* Brand */}
             <div className="sidebar-brand">
-                <img src="/GihaLogo.png" alt="Giha Follow" />
+                <img src="/GihaLogo.png" alt="GiHA Follow" />
+
                 <div>
                     <h2>GiHA Follow</h2>
                     <span>Developer Community</span>
@@ -27,10 +31,10 @@ function Sidebar({
 
             <div className="sidebar-divider"></div>
 
-            <p className="sidebar-heading">MAIN MENU</p>
-
+            {/* Scrollable Navigation */}
             <nav className="sidebar-menu">
                 {menuItems.map((item) => {
+
                     const count =
                         item.id === "new"
                             ? newUserNotification.length
@@ -48,15 +52,27 @@ function Sidebar({
                             }`}
                         >
                             <i className={`bi ${item.icon}`}></i>
+
                             <span>{item.label}</span>
 
                             {count > 0 && (
-                                <span className="sidebar-count">{count}</span>
+                                <span className="sidebar-count">
+                                    {count}
+                                </span>
                             )}
                         </button>
                     );
                 })}
             </nav>
+
+            {/* Bottom GitHub Cat Artwork */}
+            <div className="sidebar-art">
+                <div className="sidebar-art-glow"></div>
+            </div>
+
+            {/* Bottom Gradient Overlay */}
+            <div className="sidebar-bottom-overlay"></div>
+
         </aside>
     );
 }
