@@ -36,13 +36,15 @@ function Repository() {
   return (
 	<div className="container-fluid" >
 	<div className="searchBox" style={{display:"flex",justifyContent:"center",alignItems:"center",marginBottom:"1rem"}}>
-			<input style={{width:"10rem",borderRadius:"5px",border:"1px solid #777777"}}
-			type="text"
-			placeholder="search repositories"
-			value={query}
-			onChange={(e)=>setQuery(e.target.value)}
-			required
-		/>  
+			<input
+				className="repository-search-input"
+				type="text"
+				placeholder="Search repositories..."
+				value={query}
+				onChange={(e) => setQuery(e.target.value)}
+				onKeyDown={(e) => e.key === "Enter" && searchRepository()}
+				required
+			/> 
 			<button className='searchBtn' type="button" onClick={searchRepository}>
 				<i className="bi bi-search"></i>
 			</button> 

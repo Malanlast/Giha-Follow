@@ -2,7 +2,7 @@ import './DashboardNavbar.css';
 import { socket } from "../../socket.js";
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-
+import RepoDialogBox from "../repository/RepoDialogBox.jsx";
 function DashBoardNavbar() {
     const [user, setUser] = useState(null);
 
@@ -64,7 +64,9 @@ function DashBoardNavbar() {
                     {user.bio || "GitHub Developer"}
                 </p>
             </div>
-
+			<div className="topbar-repository">
+				<RepoDialogBox />
+			</div>
             {/* Logout */}
             <button
                 className="topbar-logout"

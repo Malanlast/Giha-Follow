@@ -1,9 +1,104 @@
-.searchBtn{
-	width:2rem;
-	margin-left:1rem;
-	border-radius:5px;
-	border:1px solid #777777;
+.searchBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
 }
-.searchBtn:hover{
-	background: #9ddddd;
+
+.repository-search-input {
+    width: 260px;
+    max-width: 75%;
+    padding: 9px 12px;
+    border-radius: 7px;
+    border: 1px solid #365174;
+    outline: none;
+}
+
+.repository-search-input:focus {
+    border-color: #2586ff;
+    box-shadow: 0 0 0 3px rgba(37, 126, 255, 0.15);
+}
+
+.searchBtn {
+    width: 40px;
+    height: 38px;
+    border-radius: 7px;
+    border: 1px solid #2879d8;
+    background: #1675e8;
+    color: white;
+    transition: 0.2s ease;
+}
+
+.searchBtn:hover {
+    background: #075fc7;
+}
+/* Modal opens from top */
+#exampleModal .repo-modal-dialog {
+    margin: 1.5rem auto;
+}
+
+/* Custom close button */
+#exampleModal .repo-modal-close {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #40516b;
+    border-radius: 9px;
+    background: #1b2940;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+#exampleModal .repo-modal-close i {
+    font-size: 13px;
+}
+
+#exampleModal .repo-modal-close:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+#exampleModal .repo-modal-close:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    #exampleModal .repo-modal-dialog {
+        margin: 12px;
+    }
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.repo-modal-close {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background: transparent;
+    color: #cbd5e1;
+    cursor: pointer;
+}
+
+.repo-modal-close:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
 }

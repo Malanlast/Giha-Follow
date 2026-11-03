@@ -175,3 +175,90 @@
         font-size: 15px;
     }
 }
+.topbar-repository {
+    flex-shrink: 0;
+}
+
+.topbar-repository button {
+    border: 1px solid #2879d8;
+    border-radius: 9px;
+    padding: 9px 15px;
+    background: rgba(37, 126, 255, 0.12);
+    color: #65adff;
+    font-size: 13px;
+    transition: all 0.25s ease;
+}
+
+.topbar-repository button:hover {
+    background: #1675e8;
+    color: white;
+    box-shadow: 0 0 15px rgba(37, 126, 255, 0.3);
+}
+/* Repository button */
+.repo-trigger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    padding: 10px 16px;
+
+    border: 1px solid rgba(59, 130, 246, 0.45);
+    border-radius: 10px;
+
+    background: rgba(37, 126, 255, 0.12);
+    color: #70b5ff;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.repo-trigger-btn:hover {
+    background: linear-gradient(135deg, #1675e8, #2563eb);
+    border-color: #459aff;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(37, 126, 255, 0.25);
+}
+
+.repo-trigger-btn i {
+    font-size: 16px;
+}
+
+/* Repository modal */
+#exampleModal .modal-content {
+    background: #0d1729;
+    color: #fff;
+    border: 1px solid #263b59;
+    border-radius: 14px;
+}
+
+#exampleModal .modal-header,
+#exampleModal .modal-footer {
+    border-color: #263b59;
+}
+
+#exampleModal .modal-title {
+    color: #fff;
+}
+
+#exampleModal .btn-close {
+    filter: invert(1);
+}
+
+@media (max-width: 480px) {
+    .repo-trigger-btn {
+        padding: 8px 10px;
+        gap: 6px;
+        font-size: 11px;
+    }
+
+    .repo-trigger-btn i {
+        font-size: 14px;
+    }
+}

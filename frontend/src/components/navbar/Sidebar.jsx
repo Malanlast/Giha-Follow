@@ -1,5 +1,5 @@
 import './Sidebar.css';
-import RepoDialogBox from "../repository/RepoDialogBox";
+
 function Sidebar({
     activeList,
     setActiveList,
@@ -57,11 +57,6 @@ function Sidebar({
                     );
                 })}
             </nav>
-
-            <div className="sidebar-repository">
-                <p className="sidebar-heading">REPOSITORIES</p>
-                <RepoDialogBox />
-            </div>
         </aside>
     );
 }
