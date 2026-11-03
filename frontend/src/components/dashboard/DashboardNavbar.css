@@ -1,0 +1,177 @@
+/* Topbar */
+.dashboard-topbar {
+    width: 100%;
+    height: 105px;
+    min-height: 105px;
+    padding: 10px 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    background: #101827;
+    color: #fff;
+
+    border-bottom: 1px solid #1b2940;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+
+    overflow: hidden;
+}
+
+/* Profile image */
+.topbar-avatar {
+    flex: 0 0 78px;
+    width: 78px;
+    height: 78px;
+}
+
+.topbar-avatar img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    cursor: pointer;
+}
+
+/* User details */
+.topbar-user-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.topbar-user-details h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.topbar-user-details span {
+    color: #55a4ff;
+    font-size: 13px;
+}
+
+.topbar-user-details p {
+    margin: 0;
+    color: #aab7cb;
+    font-size: 12px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Logout */
+.topbar-logout {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #263b59;
+    border-radius: 9px;
+
+    background: transparent;
+    color: #aab7cb;
+    font-size: 19px;
+
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.topbar-logout:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+/* Loading */
+.dashboard-topbar-loading {
+    width: 100%;
+    height: 105px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background: #101827;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .dashboard-topbar {
+        height: 85px;
+        min-height: 85px;
+        padding: 8px 12px;
+        gap: 12px;
+    }
+
+    .topbar-logo {
+        flex-basis: 48px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .topbar-avatar {
+        flex-basis: 58px;
+        width: 58px;
+        height: 58px;
+    }
+
+    .topbar-user-details h2 {
+        font-size: 14px;
+    }
+
+    .topbar-user-details span {
+        font-size: 11px;
+    }
+
+    .topbar-user-details p {
+        font-size: 10px;
+    }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+    .dashboard-topbar {
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .topbar-logo {
+        flex-basis: 38px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .topbar-avatar {
+        flex-basis: 45px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .topbar-user-details h2 {
+        font-size: 12px;
+    }
+
+    .topbar-user-details span,
+    .topbar-user-details p {
+        font-size: 9px;
+    }
+
+    .topbar-logout {
+        flex-basis: 30px;
+        width: 30px;
+        height: 30px;
+        font-size: 15px;
+    }
+}
