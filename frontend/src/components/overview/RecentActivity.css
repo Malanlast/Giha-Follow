@@ -1,0 +1,128 @@
+.recent-activity-section {
+    margin-top: 22px;
+    padding: 24px;
+    background: #0b1224;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    color: #fff;
+}
+
+.recent-activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.recent-activity-header h2 {
+    font-size: 20px;
+    margin: 0 0 6px;
+}
+
+.recent-activity-header p {
+    color: #94a3b8;
+    font-size: 13px;
+    margin: 0;
+}
+
+.activity-label {
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: #211936;
+    color: #c084fc;
+    font-size: 12px;
+}
+
+.activity-label i {
+    margin-right: 6px;
+}
+
+.activity-timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity-item {
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 25px;
+}
+
+.activity-item:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 19px;
+    top: 42px;
+    bottom: 0;
+    width: 1px;
+    background: #334155;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #211936;
+    color: #c084fc;
+    font-size: 17px;
+    z-index: 1;
+}
+
+.activity-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.activity-title-row h3 {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.activity-title-row > span {
+    color: #64748b;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.activity-details > p {
+    margin: 7px 0 10px;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.activity-repo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 6px;
+    background: #172033;
+    color: #cbd5e1;
+    font-size: 11px;
+}
+
+@media (max-width: 576px) {
+    .recent-activity-section {
+        padding: 18px;
+    }
+
+    .activity-title-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
