@@ -1,6 +1,6 @@
 import "./Contributions.css";
 
-const contributionData = Array.from({ length: 26 }, (_, week) =>
+const contributionData = Array.from({ length: 52 }, (_, week) =>
     Array.from({ length: 7 }, (_, day) => {
         const value = (week * 7 + day * 3) % 9;
 
@@ -23,7 +23,7 @@ function Contributions() {
 
                 <span className="contribution-year">
                     <i className="bi bi-calendar3"></i>
-                    Last 6 Months
+                    Last 1 Year
                 </span>
             </div>
 
@@ -64,7 +64,7 @@ function Contributions() {
             <div className="contribution-activity">
                 <div className="activity-heading">
                     <h3>Contribution Activity</h3>
-                    <span>1,248 contributions in the last 6 months</span>
+                    <span>1,248 contributions in the last year</span>
                 </div>
 
                 <div className="heatmap-scroll">
