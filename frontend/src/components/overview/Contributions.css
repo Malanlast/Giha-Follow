@@ -264,3 +264,47 @@
         gap: 4px;
     }
 }
+.heatmap-container {
+    min-width: max-content;
+}
+
+.heatmap-months {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 7px;
+}
+
+.day-label-space {
+    width: 28px;
+    flex-shrink: 0;
+}
+
+.month-label {
+    width: 13px;
+    flex-shrink: 0;
+    color: #8b9bb5;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.heatmap-body {
+    display: flex;
+    gap: 8px;
+}
+
+.heatmap-days {
+    width: 28px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0 0 0;
+    color: #8b9bb5;
+    font-size: 10px;
+}
+
+.heatmap-days span {
+    height: 13px;
+    line-height: 13px;
+}
