@@ -604,6 +604,72 @@ const getGitHubStats = async (req, res) => {
         });
     }
 };
+const getGitHubContributions = async (req, res) => {
+    try {
+        const accessToken = req.session.githubAccessToken;
+
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        const query = `
+            query {
+                viewer {
+                    contributionsCollection {
+                        contributionCalendar {
+                            totalContributions
+                            weeks {
+                                contributionDays {
+                                    date
+                                    contributionCount
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const response = await axios.post(
+            "https://api.github.com/graphql",
+            { query },
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+            }
+        );
+
+        if (response.data.errors) {
+            console.error(response.data.errors);
+            return res.status(400).json({
+                message: "Failed to fetch GitHub contributions",
+            });
+        }
+
+        const calendar =
+            response.data.data.viewer.contributionsCollection
+                .contributionCalendar;
+
+        return res.status(200).json({
+            totalContributions: calendar.totalContributions,
+            weeks: calendar.weeks,
+        });
+
+    } catch (error) {
+        console.error(
+            "GitHub contributions error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(error.response?.status || 500).json({
+            message: "Failed to fetch GitHub contributions",
+        });
+    }
+};
 module.exports={
 	getCurrentUser,
 	getAllUsers,
@@ -616,4 +682,5 @@ module.exports={
 	getFollowingUsers,
 	getFollowersUsers,
     getGitHubStats,
+    getGitHubContributions
 };

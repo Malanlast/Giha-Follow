@@ -4,13 +4,14 @@ const {getCurrentUser, getAllUsers,
 	   isfollowing, getFollowRequest,
 	   isMutualFollow,
 	   getNewUsers,getFollowingUsers,
-	   getFollowersUsers,getGitHubStats,
+	   getFollowersUsers,getGitHubStats,getGitHubContributions
 }=require("../controllers/userController.js");
 const isAuthenticated=require("../middleware/authMiddleware.js");
 const router=express.Router();
 
 router.get("/me",isAuthenticated,getCurrentUser);
 router.get("/github-stats", isAuthenticated, getGitHubStats);
+router.get("/github-contributions", isAuthenticated, getGitHubContributions);
 router.get("/",isAuthenticated,getAllUsers);
 router.put("/:username/follow",isAuthenticated,followUser);
 router.delete("/:username/unfollow",isAuthenticated,unfollowUser);
