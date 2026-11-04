@@ -531,7 +531,79 @@ const getFollowersUsers = async (req, res) => {
         return res.status(500).json({ message: "Failed to fetch followers" });
     }
 };
+const getGitHubStats = async (req, res) => {
+    try {
+        const accessToken = req.session.githubAccessToken;
 
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/vnd.github+json",
+        };
+
+        // Get GitHub user stats
+        const userResponse = await axios.get(
+            "https://api.github.com/user",
+            { headers }
+        );
+
+        const { followers, following, login } = userResponse.data;
+
+        // Get all public repositories
+        let repositories = [];
+        let page = 1;
+
+        while (true) {
+            const repoResponse = await axios.get(
+                `https://api.github.com/user/repos`,
+                {
+                    headers,
+                    params: {
+                        visibility: "public",
+                        affiliation: "owner",
+                        per_page: 100,
+                        page,
+                    },
+                }
+            );
+
+            repositories.push(...repoResponse.data);
+
+            if (repoResponse.data.length < 100) {
+                break;
+            }
+
+            page++;
+        }
+
+        // Calculate total stars
+        const totalStars = repositories.reduce(
+            (total, repo) => total + repo.stargazers_count,
+            0
+        );
+
+        return res.status(200).json({
+            followers,
+            following,
+            totalStars,
+        });
+
+    } catch (error) {
+        console.error(
+            "Get GitHub stats error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(error.response?.status || 500).json({
+            message: "Failed to fetch GitHub stats",
+        });
+    }
+};
 module.exports={
 	getCurrentUser,
 	getAllUsers,
@@ -542,5 +614,6 @@ module.exports={
 	isMutualFollow,
 	getNewUsers,
 	getFollowingUsers,
-	getFollowersUsers
+	getFollowersUsers,
+    getGitHubStats,
 };
