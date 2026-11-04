@@ -184,3 +184,9 @@
     font-size: 13px;
   }
 }
+.banner-content h1 span {
+    background: linear-gradient(90deg, #ff8c00, #ff4500, #ffb347);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

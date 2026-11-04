@@ -1,33 +1,41 @@
-import './Welcome.css';
-function WelcomeBanner() {
-  return (
-	<section className="overview-banner">
-        <div className="banner-overlay"></div>
+import "./Welcome.css";
 
-        <div className="banner-content">
-          <span className="banner-tag">
-            <i className="bi bi-stars"></i>
-            Developer Community
-          </span>
+function WelcomeBanner({ user }) {
+    return (
+        <section className="overview-banner">
+            <div className="banner-overlay"></div>
 
-          <h1>
-            Welcome back, <span>Shivam!</span> 👋
-          </h1>
+            <div className="banner-content">
+                <span className="banner-tag">
+                    <i className="bi bi-stars"></i>
+                    Developer Community
+                </span>
 
-          <h2>Connect. Follow. Grow.</h2>
+                <h1>
+                    Welcome  <span>{user?.name || user?.username}!</span>
+                </h1>
 
-          <p>
-            Stay updated with developers, repositories,
-            <br className="d-none d-md-block" />
-            and the community you care about.
-          </p>
+                <h2>Connect. Follow. Grow.</h2>
 
-          <button className="btn banner-btn">
-            Explore GitHub
-            <i className="bi bi-arrow-right ms-2"></i>
-          </button>
-        </div>
-      </section>
-  )
-};
+                <p>
+                    Stay updated with developers, repositories,
+                    <br className="d-none d-md-block" />
+                    and the community you care about.
+                </p>
+
+                <button
+                    className="btn banner-btn"
+                    type="button"
+                    onClick={() =>
+                        window.open(user?.profileUrl, "_blank", "noopener,noreferrer")
+                    }
+                >
+                    Explore GitHub
+                    <i className="bi bi-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </section>
+    );
+}
+
 export default WelcomeBanner;

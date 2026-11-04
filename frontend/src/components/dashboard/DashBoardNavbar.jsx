@@ -1,29 +1,9 @@
 import './DashboardNavbar.css';
 import { socket } from "../../socket.js";
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import RepoDialogBox from "../repository/RepoDialogBox.jsx";
-function DashBoardNavbar() {
-    const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const currentUser = async () => {
-            try {
-                const response = await axios.get(
-                    'http://localhost:5000/api/users/me',
-                    {
-                        withCredentials: true,
-                    }
-                );
-
-                setUser(response.data.user);
-            } catch (err) {
-                console.log(err.response?.data || err.message);
-            }
-        };
-
-        currentUser();
-    }, []);
+function DashBoardNavbar({ user }) {
 
     const handleLogout = async () => {
         try {
@@ -40,16 +20,17 @@ function DashBoardNavbar() {
         }
     };
 
-    if (!user) {
-        return <div className="dashboard-topbar-loading">Loading...</div>;
-    }
-
     return (
         <header className="dashboard-topbar">
+
             {/* Profile image */}
             <div className="topbar-avatar">
                 <img
-                    onClick={() => window.open(user.profileUrl, "_blank")}
+                    onClick={() => window.open(
+                        user.profileUrl,
+                        "_blank",
+                        "noopener,noreferrer"
+                    )}
                     src={user.avatar}
                     alt={user.username}
                     title="View GitHub Profile"
@@ -64,9 +45,12 @@ function DashBoardNavbar() {
                     {user.bio || "GitHub Developer"}
                 </p>
             </div>
-			<div className="topbar-repository">
-				<RepoDialogBox />
-			</div>
+
+            {/* Repository search */}
+            <div className="topbar-repository">
+                <RepoDialogBox />
+            </div>
+
             {/* Logout */}
             <button
                 className="topbar-logout"

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import DashBoardNavbar from "../components/dashboard/DashBoardNavbar.jsx";
 import Sidebar from "../components/navbar/Sidebar.jsx";
 import Cards from "../components/cards/Cards.jsx";
@@ -7,9 +8,30 @@ import Overview from "../components/overview/Overview.jsx";
 import "./DashBoard.css";
 
 function DashBoard() {
+    const [user, setUser] = useState(null);
     const [activeList, setActiveList] = useState("overview");
     const [isFollowRequest, setIsFollowRequest] = useState([]);
     const [newUserNotification, setNewUserNotification] = useState([]);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const response = await axios.get(
+                    "http://localhost:5000/api/users/me",
+                    { withCredentials: true }
+                );
+                setUser(response.data.user);
+            } catch (err) {
+                console.log(err.response?.data || err.message);
+            }
+        };
+
+        fetchUser();
+    }, []);
+
+    if (!user) {
+        return <div className="dashboard-topbar-loading">Loading...</div>;
+    }
 
     return (
         <div className="dashboard-layout">
@@ -21,11 +43,11 @@ function DashBoard() {
             />
 
             <main className="dashboard-main">
-                <DashBoardNavbar />
+                <DashBoardNavbar user={user} />
 
                 <section className="dashboard-content">
                     {activeList === "overview" ? (
-                        <Overview />
+                        <Overview user={user} />
                     ) : activeList === "messages" ? (
                         <Messages />
                     ) : (
