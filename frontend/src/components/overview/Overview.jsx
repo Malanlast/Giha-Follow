@@ -1,4 +1,5 @@
 import Contributions from './Contributions';
+import MostUsedLanguages from './MostUsedLanguages';
 import './Overview.css'; 
 import Repositories from './Repositories';
 import StatsBanner from './StatsBanner';
@@ -10,7 +11,8 @@ function Overview({user}) {
     <WelcomeBanner user={user}/>
 	   <StatsBanner/>
 	   <Contributions/>
-	   <Repositories/> 
+	   <Repositories/>
+     <MostUsedLanguages/>
     </div>
   );
 }
