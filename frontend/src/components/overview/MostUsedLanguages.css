@@ -1,128 +1,168 @@
-.recent-activity-section {
-    margin-top: 22px;
+.languages-section {
+    width: 100%;
+    margin-top: 24px;
     padding: 24px;
-    background: #0b1224;
-    border: 1px solid #1e293b;
-    border-radius: 16px;
+
+    border: 1px solid rgba(120, 80, 190, 0.22);
+    border-radius: 18px;
+
+    background: #0b1020;
     color: #fff;
 }
 
-.recent-activity-header {
+/* Header */
+
+.languages-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 25px;
+    gap: 15px;
+    margin-bottom: 24px;
 }
 
-.recent-activity-header h2 {
-    font-size: 20px;
-    margin: 0 0 6px;
+.languages-header h2 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    font-weight: 700;
 }
 
-.recent-activity-header p {
-    color: #94a3b8;
-    font-size: 13px;
+.languages-header p {
     margin: 0;
+    color: #929bb3;
+    font-size: 13px;
 }
 
-.activity-label {
-    padding: 7px 12px;
-    border-radius: 20px;
-    background: #211936;
-    color: #c084fc;
-    font-size: 12px;
+.languages-header-icon {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 11px;
+    background: rgba(139, 92, 246, 0.15);
+    color: #b58aff;
+    font-size: 21px;
 }
 
-.activity-label i {
-    margin-right: 6px;
-}
+/* Chart and legend */
 
-.activity-timeline {
-    display: flex;
-    flex-direction: column;
-}
-
-.activity-item {
-    display: flex;
-    gap: 16px;
-    position: relative;
-    padding-bottom: 25px;
-}
-
-.activity-item:not(:last-child)::before {
-    content: "";
-    position: absolute;
-    left: 19px;
-    top: 42px;
-    bottom: 0;
-    width: 1px;
-    background: #334155;
-}
-
-.activity-icon {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
+.languages-content {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    background: #211936;
-    color: #c084fc;
-    font-size: 17px;
-    z-index: 1;
+    gap: 35px;
+
+    min-height: 230px;
 }
 
-.activity-details {
+.languages-chart {
+    position: relative;
+    width: 210px;
+    height: 210px;
+    flex-shrink: 0;
+}
+
+/* Legend */
+
+.languages-legend {
     flex: 1;
-    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.activity-title-row {
+.language-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
 }
 
-.activity-title-row h3 {
-    font-size: 14px;
-    margin: 0;
-    font-weight: 600;
+.language-name {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 500;
 }
 
-.activity-title-row > span {
-    color: #64748b;
-    font-size: 11px;
-    white-space: nowrap;
+.language-color {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+    border-radius: 50%;
 }
 
-.activity-details > p {
-    margin: 7px 0 10px;
-    color: #94a3b8;
+.language-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+
+.language-details strong {
+    color: #ffffff;
     font-size: 13px;
 }
 
-.activity-repo {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 9px;
-    border-radius: 6px;
-    background: #172033;
-    color: #cbd5e1;
-    font-size: 11px;
+.language-details span {
+    color: #8290a8;
+    font-size: 10px;
 }
 
-@media (max-width: 576px) {
-    .recent-activity-section {
-        padding: 18px;
+.languages-message {
+    min-height: 180px;
+    display: grid;
+    place-items: center;
+    color: #929bb3;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* Tablet */
+
+@media (max-width: 768px) {
+    .languages-content {
+        gap: 25px;
     }
 
-    .activity-title-row {
-        align-items: flex-start;
+    .languages-chart {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+/* Mobile */
+
+@media (max-width: 576px) {
+    .languages-section {
+        padding: 16px;
+        margin-top: 16px;
+    }
+
+    .languages-header h2 {
+        font-size: 18px;
+    }
+
+    .languages-header p {
+        font-size: 11px;
+    }
+
+    .languages-content {
         flex-direction: column;
-        gap: 5px;
+        gap: 25px;
+        padding: 10px 0;
+    }
+
+    .languages-chart {
+        width: 200px;
+        height: 200px;
+    }
+
+    .languages-legend {
+        width: 100%;
     }
 }
