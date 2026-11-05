@@ -723,6 +723,81 @@ const getGitHubRepositories = async (req, res) => {
         });
     }
 };
+const getGitHubLanguages = async (req, res) => {
+    try {
+        const accessToken = req.session.githubAccessToken;
+
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        const headers = {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/vnd.github+json",
+        };
+
+        // Fetch all repositories owned by the logged-in user
+        const repoResponse = await axios.get(
+            "https://api.github.com/user/repos",
+            {
+                headers,
+                params: {
+                    visibility: "public",
+                    affiliation: "owner",
+                    per_page: 100,
+                    page: 1,
+                },
+            }
+        );
+
+        const languageTotals = {};
+
+        // Fetch language data for each repository
+        for (const repo of repoResponse.data) {
+            const languageResponse = await axios.get(
+                repo.languages_url,
+                { headers }
+            );
+
+            for (const [language, bytes] of Object.entries(languageResponse.data)) {
+                languageTotals[language] =
+                    (languageTotals[language] || 0) + bytes;
+            }
+        }
+
+        const totalBytes = Object.values(languageTotals).reduce(
+            (total, bytes) => total + bytes,
+            0
+        );
+
+        const languages = Object.entries(languageTotals)
+            .map(([name, bytes]) => ({
+                name,
+                bytes,
+                percentage: totalBytes
+                    ? Number(((bytes / totalBytes) * 100).toFixed(2))
+                    : 0,
+            }))
+            .sort((a, b) => b.bytes - a.bytes);
+
+        return res.status(200).json({
+            totalLanguages: languages.length,
+            languages,
+        });
+
+    } catch (error) {
+        console.error(
+            "GitHub languages error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(error.response?.status || 500).json({
+            message: "Failed to fetch GitHub languages",
+        });
+    }
+};
 module.exports={
 	getCurrentUser,
 	getAllUsers,
@@ -736,5 +811,6 @@ module.exports={
 	getFollowersUsers,
     getGitHubStats,
     getGitHubContributions,
-    getGitHubRepositories
+    getGitHubRepositories,
+    getGitHubLanguages
 };
