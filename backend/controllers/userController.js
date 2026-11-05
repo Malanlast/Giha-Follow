@@ -670,6 +670,59 @@ const getGitHubContributions = async (req, res) => {
         });
     }
 };
+const getGitHubRepositories = async (req, res) => {
+    try {
+        const accessToken = req.session.githubAccessToken;
+
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "GitHub authentication required",
+            });
+        }
+
+        const response = await axios.get(
+            "https://api.github.com/user/repos",
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    Accept: "application/vnd.github+json",
+                },
+                params: {
+                    visibility: "public",
+                    affiliation: "owner",
+                    sort: "updated",
+                    direction: "desc",
+                    per_page: 3,
+                    page: 1,
+                },
+            }
+        );
+
+        const repositories = response.data.map((repo) => ({
+            id: repo.id,
+            name: repo.name,
+            description: repo.description,
+            language: repo.language,
+            stars: repo.stargazers_count,
+            forks: repo.forks_count,
+            updatedAt: repo.updated_at,
+            url: repo.html_url,
+            visibility: repo.private ? "Private" : "Public",
+        }));
+
+        return res.status(200).json({ repositories });
+
+    } catch (error) {
+        console.error(
+            "Get GitHub repositories error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(error.response?.status || 500).json({
+            message: "Failed to fetch GitHub repositories",
+        });
+    }
+};
 module.exports={
 	getCurrentUser,
 	getAllUsers,
@@ -682,5 +735,6 @@ module.exports={
 	getFollowingUsers,
 	getFollowersUsers,
     getGitHubStats,
-    getGitHubContributions
+    getGitHubContributions,
+    getGitHubRepositories
 };
