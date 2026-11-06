@@ -1,239 +1,397 @@
-import './Cards.css'; 
+import './Cards.css';
 import axios from "axios";
 import { socket } from "../../socket.js";
-import { useEffect, useState, useRef } from "react"; 
+import { useEffect, useState, useRef, useCallback } from "react";
+
 import NewUsers from './NewUsers';
 import FollowingUser from './FollowingUser';
 import FollowRequest from './FollowRequest';
-function Cards({activeList, isFollowRequest, setIsFollowRequest, setNewUserNotification}){
-	const[currUser,setCurrUser]=useState(null);
-	const[users,setUsers]=useState([]);
-	const[apiError, setApiError] = useState(false);
-	const[isfollowing, setIsfollowing]=useState({});
-	const [newUsers, setNewUsers] = useState([]);
+
+function Cards({
+    activeList,
+    isFollowRequest,
+    setIsFollowRequest,
+    setNewUserNotification
+}) {
+    const [currUser, setCurrUser] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [apiError, setApiError] = useState(false);
+    const [isfollowing, setIsfollowing] = useState({});
+    const [newUsers, setNewUsers] = useState([]);
     const [followingUsers, setFollowingUsers] = useState([]);
-	const [followersUsers, setFollowersUsers] = useState([]);
-	const activeListRef=useRef(activeList);
-	useEffect(()=>{
-		activeListRef.current=activeList;
-	},[activeList]);
-	const loadFollowRequests=async()=>{
-		try{
-			const response=await axios.get(
-				"http://localhost:5000/api/users/follow-requests",
-				{
-					withCredentials:true,
-				}
-			);
-			setIsFollowRequest(response.data.users);
-		}catch(err){
-			console.log(err.response?.data||err.message);
-		}
-	};
-	useEffect(()=>{
-		const loadData=async()=>{
-			try{
-			const currUserResponse=await axios.get(
-				'http://localhost:5000/api/users/me',
-				{
-					withCredentials:true,
-				}
-			);
-			setCurrUser(currUserResponse.data.user);
-		
-			const usersResponse=await axios.get(
-				'http://localhost:5000/api/users',
-				{
-					withCredentials:true,
-				}
-			);
-			setUsers(usersResponse.data.users);
-			const newUsersResponse = await axios.get(
-			"http://localhost:5000/api/users/new-users",
-			{
-				withCredentials: true,
-			}
-		);
-		setNewUsers(newUsersResponse.data.users);
+    const [followersUsers, setFollowersUsers] = useState([]);
 
-		const followingUsersResponse = await axios.get(
-			"http://localhost:5000/api/users/following",
-			{
-				withCredentials: true,
-			}
-		);
-		setFollowingUsers(followingUsersResponse.data.users);
-		const followersResponse = await axios.get(
-			"http://localhost:5000/api/users/followers",
-			{ withCredentials: true }
-		);
-		setFollowersUsers(followersResponse.data.users);
+    const activeListRef = useRef(activeList);
 
-			const followRequest=await axios.get(
-				`http://localhost:5000/api/users/follow-requests`,
-				{
-					withCredentials:true,
-				}
-			);
-			setIsFollowRequest(followRequest.data.users);
-		}catch(err){
-			console.log(err.response?.data||err.message);
-			setApiError(true);
-		}
-		};
-		const handleNewUser = (newUser) => {
-			setUsers(prev => [...prev, newUser]);
+    useEffect(() => {
+        activeListRef.current = activeList;
+    }, [activeList]);
 
-			if (activeListRef.current !== "new") {
-				setNewUserNotification(prev => [...prev, newUser]);
-			}
-		};
+    // Load follow requests
+    const loadFollowRequests = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:5000/api/users/follow-requests",
+                { withCredentials: true }
+            );
 
-		socket.on("newUser", handleNewUser);
-		loadData();
-		window.addEventListener("focus",loadFollowRequests);
-		document.addEventListener("visibilitychange",loadFollowRequests);
-		return () => {
-			socket.off("newUser", handleNewUser);
-			window.removeEventListener("focus", loadFollowRequests);
-			document.removeEventListener("visibilitychange", loadFollowRequests);
-		};
-	},[]);
-	useEffect(() => {
-		if (!currUser) return;
-		socket.on("followRequest", (data) => {
-			if (data.targetUsername === currUser.username) {
-				setIsFollowRequest(prev => {
-					const alreadyExists = prev.some(
-						user => user.username === data.follower.username
-					);
+            setIsFollowRequest(response.data.users);
+        } catch (err) {
+            console.log(err.response?.data || err.message);
+        }
+    }, [setIsFollowRequest]);
 
-					if (alreadyExists) return prev;
-					return [...prev, data.follower];
-				});
-			}
-		});
+    // Load all initial data
+    useEffect(() => {
+        let isMounted = true;
 
-		socket.on("followBack", (data) => {
-			if (data.targetUsername === currUser.username) {
-				setIsFollowRequest(prev =>
-					prev.filter(
-						user => user.username !== data.followedBackUser
-					)
-				);
-			}
-		});
+        const loadData = async () => {
+            try {
+                const [
+                    currUserResponse,
+                    usersResponse,
+                    newUsersResponse,
+                    followingResponse,
+                    followersResponse,
+                    requestsResponse
+                ] = await Promise.all([
+                    axios.get("http://localhost:5000/api/users/me", {
+                        withCredentials: true
+                    }),
+                    axios.get("http://localhost:5000/api/users", {
+                        withCredentials: true
+                    }),
+                    axios.get("http://localhost:5000/api/users/new-users", {
+                        withCredentials: true
+                    }),
+                    axios.get("http://localhost:5000/api/users/following", {
+                        withCredentials: true
+                    }),
+                    axios.get("http://localhost:5000/api/users/followers", {
+                        withCredentials: true
+                    }),
+                    axios.get("http://localhost:5000/api/users/follow-requests", {
+                        withCredentials: true
+                    })
+                ]);
 
-		socket.on("unfollow", (data) => {
-			if (data.targetUsername === currUser.username) {
-				setIsFollowRequest(prev =>
-					prev.filter(
-						user => user.username !== data.unfollower.username
-					)
-				);
-			}
-		});
+                if (!isMounted) return;
 
-		return () => {
-			socket.off("followRequest");
-			socket.off("followBack");
-			socket.off("unfollow");
-		};
-	}, [currUser]);
-	useEffect(()=>{
-		if(activeList==="new"){
-			setNewUserNotification([]);
-		}
-	},[activeList]);
-	if(apiError){
-		return(
-			<div className="notFoundPage">
-				<img src="/noUser.png" style={{width:"10rem",marginBottom:"0"}} alt="gitHub"/>
-				<p style={{marginTop:"0",color:"white"}}>Failed to fetch users....</p>
-			</div>
-		)
-	};
-	if(!currUser){
-	    return <h1>Loading...</h1>;
-	};
-	const filteredUser =
-    activeList === "new"
-        ? newUsers
-        : activeList === "following"
-        ? followingUsers
-        : activeList === "followers"
-        ? followersUsers
-        : [];
-	return(
-		<div className="cardContainer row g-2" style={{marginTop:"0rem",padding:"5px"}}>
-		{
-			activeList==="follow-requests"?
-			(
-				<FollowRequest
-					isFollowRequest={isFollowRequest}
-					setIsFollowRequest={setIsFollowRequest}
-					setIsfollowing={setIsfollowing}
-					isfollowing={isfollowing}
-					setNewUsers={setNewUsers}
+                setCurrUser(currUserResponse.data.user);
+                setUsers(usersResponse.data.users);
+                setNewUsers(newUsersResponse.data.users);
+                setFollowingUsers(followingResponse.data.users);
+                setFollowersUsers(followersResponse.data.users);
+                setIsFollowRequest(requestsResponse.data.users);
+
+            } catch (err) {
+                console.log(err.response?.data || err.message);
+
+                if (isMounted) {
+                    setApiError(true);
+                }
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [setIsFollowRequest]);
+
+    // Centralized follow status fetching
+    const loadFollowStatuses = useCallback(async () => {
+        const allUsers = [
+            ...newUsers,
+            ...followingUsers,
+            ...followersUsers,
+            ...isFollowRequest
+        ];
+
+        const uniqueUsers = [
+            ...new Map(
+                allUsers.map(user => [user.username, user])
+            ).values()
+        ];
+
+        const results = await Promise.all(
+            uniqueUsers.map(async user => {
+                try {
+                    const response = await axios.get(
+                        `http://localhost:5000/api/users/${user.username}/follow-status`,
+                        { withCredentials: true }
+                    );
+
+                    return [
+                        user.username,
+                        response.data.isFollowing
+                    ];
+                } catch (err) {
+                    console.log(
+                        user.username,
+                        err.response?.data || err.message
+                    );
+
+                    return null;
+                }
+            })
+        );
+
+        setIsfollowing(prev => {
+            const updated = { ...prev };
+
+            results.forEach(result => {
+                if (result) {
+                    updated[result[0]] = result[1];
+                }
+            });
+
+            return updated;
+        });
+    }, [newUsers, followingUsers, followersUsers, isFollowRequest]);
+
+    // Fetch status when user lists change
+    useEffect(() => {
+    if (!currUser) return;
+
+    const timer = setTimeout(() => {
+        loadFollowStatuses();
+    }, 0);
+
+    return () => clearTimeout(timer);
+    }, [currUser, loadFollowStatuses]);
+
+    // Refresh statuses when page becomes active
+    useEffect(() => {
+        const handleFocus = () => {
+            loadFollowStatuses();
+            loadFollowRequests();
+        };
+
+        const handleVisibility = () => {
+            if (document.visibilityState === "visible") {
+                handleFocus();
+            }
+        };
+
+        window.addEventListener("focus", handleFocus);
+        document.addEventListener("visibilitychange", handleVisibility);
+
+        return () => {
+            window.removeEventListener("focus", handleFocus);
+            document.removeEventListener("visibilitychange", handleVisibility);
+        };
+    }, [loadFollowStatuses, loadFollowRequests]);
+
+    // New user socket event
+    useEffect(() => {
+        const handleNewUser = (newUser) => {
+            setUsers(prev =>
+                prev.some(user => user.username === newUser.username)
+                    ? prev
+                    : [...prev, newUser]
+            );
+
+            setNewUsers(prev =>
+                prev.some(user => user.username === newUser.username)
+                    ? prev
+                    : [...prev, newUser]
+            );
+
+            if (activeListRef.current !== "new") {
+                setNewUserNotification(prev =>
+                    prev.some(user => user.username === newUser.username)
+                        ? prev
+                        : [...prev, newUser]
+                );
+            }
+        };
+
+        socket.on("newUser", handleNewUser);
+
+        return () => {
+            socket.off("newUser", handleNewUser);
+        };
+    }, [setNewUserNotification]);
+
+    // Follow request socket events
+    useEffect(() => {
+        if (!currUser) return;
+
+        const handleFollowRequest = (data) => {
+            if (data.targetUsername !== currUser.username) return;
+
+            setIsFollowRequest(prev =>
+                prev.some(user =>
+                    user.username === data.follower.username
+                )
+                    ? prev
+                    : [...prev, data.follower]
+            );
+        };
+
+        const handleFollowBack = (data) => {
+            if (data.targetUsername !== currUser.username) return;
+
+            setIsFollowRequest(prev =>
+                prev.filter(
+                    user => user.username !== data.followedBackUser
+                )
+            );
+        };
+
+        const handleUnfollow = (data) => {
+            if (data.targetUsername !== currUser.username) return;
+
+            setIsFollowRequest(prev =>
+                prev.filter(
+                    user => user.username !== data.unfollower.username
+                )
+            );
+        };
+
+        socket.on("followRequest", handleFollowRequest);
+        socket.on("followBack", handleFollowBack);
+        socket.on("unfollow", handleUnfollow);
+
+        return () => {
+            socket.off("followRequest", handleFollowRequest);
+            socket.off("followBack", handleFollowBack);
+            socket.off("unfollow", handleUnfollow);
+        };
+    }, [currUser, setIsFollowRequest]);
+
+    // Clear notification when New Users page is opened
+    useEffect(() => {
+        if (activeList === "new") {
+            setNewUserNotification([]);
+        }
+    }, [activeList, setNewUserNotification]);
+
+    if (apiError) {
+        return (
+            <div className="notFoundPage">
+                <img
+                    src="/noUser.png"
+                    style={{ width: "10rem", marginBottom: "0" }}
+                    alt="GitHub"
+                />
+                <p style={{ marginTop: "0", color: "white" }}>
+                    Failed to fetch users....
+                </p>
+            </div>
+        );
+    }
+
+    if (!currUser) {
+        return <h1>Loading...</h1>;
+    }
+
+    return (
+        <div
+            className="cardContainer row g-2"
+            style={{ marginTop: "0rem", padding: "5px" }}
+        >
+            {activeList === "new" && (
+                <NewUsers
+                    users={newUsers}
+                    isfollowing={isfollowing}
+                    setIsfollowing={setIsfollowing}
+                    refreshFollowRequests={loadFollowRequests}
+                    setNewUsers={setNewUsers}
                     setFollowingUsers={setFollowingUsers}
-				/>
-			):
-			(filteredUser.length===0?
-		(
-			<div style={{display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
-				<img
-					style={{height:"50vh"}}
-				src='/noUser2.png' alt='no user'/>
-				<h2 style={{fontSize:"1rem"}}>
-				{
-					activeList === "new"
-					? "Waiting for new users"
-					: activeList === "followers"
-					? "No followers found"
-					: "Following users not found"
-				}
-				</h2>
-			</div>
-		)
-		:(<>
-			{activeList==="new" &&(
-			 <NewUsers
-				users={newUsers}
-				currUser={currUser}
-				isfollowing={isfollowing}
-				setIsfollowing={setIsfollowing}
-				refreshFollowRequests={loadFollowRequests}
-				setNewUsers={setNewUsers}
-				setFollowingUsers={setFollowingUsers}
+                >
+                    {newUsers.length === 0 && (
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                            <img
+                                src="/noUser2.png"
+                                alt="No users"
+                                style={{ height: "50vh" }}
+                            />
+                            <h2 style={{ fontSize: "1rem" }}>
+                                Waiting for new users
+                            </h2>
+                        </div>
+                    )}
+                </NewUsers>
+            )}
 
-			/>
-			)}
-			{activeList==="following" &&(
-			 <FollowingUser
-				users={followingUsers}
-				currUser={currUser}
-				isfollowing={isfollowing}
-				setIsfollowing={setIsfollowing}
-				refreshFollowRequests={loadFollowRequests}
-				setNewUsers={setNewUsers}
-				setFollowingUsers={setFollowingUsers}
-			/>
-			)}
-			{activeList === "followers" && (
-				<FollowingUser
-					users={followersUsers}
-					currUser={currUser}
-					isfollowing={isfollowing}
-					setIsfollowing={setIsfollowing}
-					refreshFollowRequests={loadFollowRequests}
-					setNewUsers={setNewUsers}
-					setFollowingUsers={setFollowingUsers}
-				/>
-			)}
-			</>
-		)
-		)}
-		</div>
-		)
-	};
+            {activeList === "following" && (
+                <FollowingUser
+                    users={followingUsers}
+                    isfollowing={isfollowing}
+                    setIsfollowing={setIsfollowing}
+                    refreshFollowRequests={loadFollowRequests}
+                    setNewUsers={setNewUsers}
+                    setFollowingUsers={setFollowingUsers}
+                >
+                    {followingUsers.length === 0 && (
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                            <img
+                                src="/noUser2.png"
+                                alt="No following users"
+                                style={{ height: "50vh" }}
+                            />
+                            <h2 style={{ fontSize: "1rem" }}>
+                                You are not following anyone yet
+                            </h2>
+                        </div>
+                    )}
+                </FollowingUser>
+            )}
+
+            {activeList === "followers" && (
+                <FollowingUser
+                    users={followersUsers}
+                    isfollowing={isfollowing}
+                    setIsfollowing={setIsfollowing}
+                    refreshFollowRequests={loadFollowRequests}
+                    setNewUsers={setNewUsers}
+                    setFollowingUsers={setFollowingUsers}
+                >
+                    {followersUsers.length === 0 && (
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}>
+                            <img
+                                src="/noUser2.png"
+                                alt="No followers"
+                                style={{ height: "50vh" }}
+                            />
+                            <h2 style={{ fontSize: "1rem" }}>
+                                No followers yet
+                            </h2>
+                        </div>
+                    )}
+                </FollowingUser>
+            )}
+
+            {activeList === "follow-requests" && (
+                <FollowRequest
+                    isFollowRequest={isFollowRequest}
+                    setIsFollowRequest={setIsFollowRequest}
+                    setIsfollowing={setIsfollowing}
+                    isfollowing={isfollowing}
+                    setNewUsers={setNewUsers}
+                    setFollowingUsers={setFollowingUsers}
+                />
+            )}
+        </div>
+    );
+}
+
 export default Cards;

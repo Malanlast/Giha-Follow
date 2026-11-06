@@ -1,6 +1,5 @@
-
 import axios from "axios";
-import { useEffect } from "react";
+import { useState } from "react";
 
 function FollowBtn({
     isfollowing,
@@ -11,25 +10,13 @@ function FollowBtn({
     setNewUsers,
     setFollowingUsers
 }) {
-    const checkFollowStatus = async (username) => {
-        try {
-            const response = await axios.get(
-                `http://localhost:5000/api/users/${username}/follow-status`,
-                {
-                    withCredentials: true,
-                }
-            );
-
-            setIsfollowing((prev) => ({
-                ...prev,
-                [username]: response.data.isFollowing,
-            }));
-        } catch (err) {
-            console.log(err.response?.data || err.message);
-        }
-    };
+    const [loading, setLoading] = useState(false);
 
     const followUser = async (username) => {
+        if (loading) return;
+
+        setLoading(true);
+
         try {
             await axios.put(
                 `http://localhost:5000/api/users/${username}/follow`,
@@ -56,17 +43,26 @@ function FollowBtn({
                     : [...prev, user]
             );
 
+            // Remove from Follow Requests
             if (setIsFollowRequest) {
                 setIsFollowRequest((prev) =>
                     prev.filter((u) => u.username !== username)
                 );
             }
         } catch (err) {
-            console.log(err.response?.data || err.message);
+            console.error(
+                err.response?.data || err.message
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
     const unfollowUser = async (username) => {
+        if (loading) return;
+
+        setLoading(true);
+
         try {
             await axios.delete(
                 `http://localhost:5000/api/users/${username}/unfollow`,
@@ -92,48 +88,39 @@ function FollowBtn({
                     : [...prev, user]
             );
 
+            // Refresh Follow Requests
             if (refreshFollowRequests) {
                 await refreshFollowRequests();
             }
         } catch (err) {
-            console.log(err.response?.data || err.message);
+            console.error(
+                err.response?.data || err.message
+            );
+        } finally {
+            setLoading(false);
         }
     };
 
-    useEffect(() => {
-        const updateStatus = () => {
-            checkFollowStatus(user.username);
-        };
-
-        updateStatus();
-
-        window.addEventListener("focus", updateStatus);
-        document.addEventListener("visibilitychange", updateStatus);
-
-        return () => {
-            window.removeEventListener("focus", updateStatus);
-            document.removeEventListener("visibilitychange", updateStatus);
-        };
-    }, [user.username]);
-
     return (
-        <>
-            {!isfollowing[user.username] ? (
-                <button
-                    onClick={() => followUser(user.username)}
-                    className="btn followBtn d-block mx-auto"
-                >
-                    Follow
-                </button>
-            ) : (
-                <button
-                    onClick={() => unfollowUser(user.username)}
-                    className="btn unfollowBtn d-block mx-auto"
-                >
-                    Unfollow
-                </button>
-            )}
-        </>
+        <button
+            onClick={() =>
+                isfollowing[user.username]
+                    ? unfollowUser(user.username)
+                    : followUser(user.username)
+            }
+            disabled={loading}
+            className={`btn ${
+                isfollowing[user.username]
+                    ? "unfollowBtn"
+                    : "followBtn"
+            } d-block mx-auto`}
+        >
+            {loading
+                ? "Please wait..."
+                : isfollowing[user.username]
+                ? "Unfollow"
+                : "Follow"}
+        </button>
     );
 }
 

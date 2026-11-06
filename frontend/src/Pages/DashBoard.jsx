@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DashBoardNavbar from "../components/dashboard/DashBoardNavbar.jsx";
-import Sidebar from "../components/navbar/Sidebar.jsx";
+import Sidebar from "../components/sidebar/Sidebar.jsx";
 import Cards from "../components/cards/Cards.jsx";
 import Messages from "./Messages.jsx";
 import Overview from "../components/overview/Overview.jsx";

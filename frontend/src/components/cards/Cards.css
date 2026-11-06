@@ -1,42 +1,534 @@
-.notFoundPage{
-	background:#505050;
-	display:flex;
-	justify-content:center;
-	align-items:center;
-	flex-direction:column;
-	margin-top:1rem;
-}
-.cardDesign{ 
-	overflow-hidden;
-}
-.cardDesign .card-body{
-	overflow-wrap:anywhere;
-}
-.followBtn{
-	background: #202020; 
-	border:1px solid black;
-	color:white;
-}
-.followBtn:hover{
-	background: #333333;
-	color:white;
-}
-.unfollowBtn{
-	background: #f93d3d; 
-	border:1px solid black;
-	color:black;
-}
-.unfollowBtn:hover{
-	background: rgb(232, 42, 42);
-	color:black;
-}
-.chatBtn{
-	background: #0b8abc;
-	color:white;
-	border:1px solid #606060;
-}
-.chatBtn:hover{
-	background: #2fb3df;
-	color:white;
+
+/* =====================================
+   GENERAL
+===================================== */
+
+.notFoundPage {
+    min-height: 250px;
+    background: #0b1223;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 1rem;
 }
 
+.cardDesign {
+    overflow: hidden;
+}
+
+.cardDesign .card-body {
+    overflow-wrap: anywhere;
+}
+
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+/* Follow Button */
+.followBtn {
+    background: linear-gradient(135deg, #193b65, #176b87);
+    border: 1px solid #176b87;
+    color: #fff;
+    border-radius: 25px;
+    padding: 7px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+}
+
+.followBtn:hover {
+    background: linear-gradient(135deg, #176b87, #20a6a0);
+    border-color: #20a6a0;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Unfollow Button */
+.unfollowBtn {
+    background: transparent;
+    border: 1px solid #dc5555;
+    color: #dc5555;
+    border-radius: 25px;
+    padding: 7px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+}
+
+.unfollowBtn:hover {
+    background: #dc5555;
+    border-color: #dc5555;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* Chat Button */
+.chatBtn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #176b87;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #193b65, #176b87);
+    color: #fff;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.chatBtn:hover {
+    background: linear-gradient(135deg, #176b87, #20a6a0);
+    border-color: #20a6a0;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+
+/* =====================================
+   COMMON PAGE
+===================================== */
+
+.new-users-page,
+.following-users-page {
+    width: 100%;
+    min-width: 0;
+    padding: 5px;
+    color: #fff;
+}
+
+
+/* =====================================
+   TOP BANNER
+===================================== */
+
+.new-users-banner,
+.following-users-banner {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+
+    min-height: 260px;
+    padding: 30px 40px;
+    margin-bottom: 25px;
+
+    border: 1px solid #203d65;
+    border-radius: 18px;
+
+    background:
+        radial-gradient(
+            circle at 85% 50%,
+            rgba(23, 107, 135, 0.3),
+            transparent 35%
+        ),
+        linear-gradient(120deg, #071326, #101b43, #111d3e);
+
+    color: #fff;
+}
+
+.new-users-banner::before,
+.following-users-banner::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: 8%;
+    top: -110px;
+    border: 1px solid rgba(102, 188, 232, 0.15);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.new-users-banner-content,
+.following-users-banner-content {
+    position: relative;
+    z-index: 2;
+    max-width: 650px;
+}
+
+
+/* Banner Tag */
+
+.new-users-tag,
+.following-users-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 13px;
+    margin-bottom: 12px;
+
+    border: 1px solid rgba(102, 188, 232, 0.3);
+    border-radius: 30px;
+
+    background: rgba(23, 107, 135, 0.15);
+    color: #a9dff5;
+
+    font-size: 13px;
+}
+
+
+/* Banner Heading */
+
+.new-users-banner h1,
+.following-users-banner h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 750;
+}
+
+.new-users-banner h1 span,
+.following-users-banner h1 span {
+    color: #ff922e;
+}
+
+.new-users-banner h2,
+.following-users-banner h2 {
+    margin-top: 8px;
+    color: #e4edf8;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.new-users-banner p,
+.following-users-banner p {
+    max-width: 500px;
+    margin-top: 10px;
+    color: #b8c9dd;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* Banner Bottom */
+
+.new-users-banner-bottom,
+.following-users-banner-bottom {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-top: 20px;
+}
+
+
+/* Total Users */
+
+.new-users-total,
+.following-users-total {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.new-users-total > i,
+.following-users-total > i {
+    font-size: 27px;
+    color: #66bce8;
+}
+
+.new-users-total div,
+.following-users-total div {
+    display: flex;
+    flex-direction: column;
+}
+
+.new-users-total strong,
+.following-users-total strong {
+    color: #fff;
+    font-size: 21px;
+}
+
+.new-users-total span,
+.following-users-total span {
+    color: #aabbd0;
+    font-size: 12px;
+}
+
+
+/* Discover Label */
+
+.new-users-discover-label,
+.following-users-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 15px;
+    border: 1px solid rgba(102, 188, 232, 0.15);
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.07);
+    color: #d5e5f2;
+
+    font-size: 13px;
+}
+
+
+/* Banner Icons */
+
+.new-users-banner-icon,
+.following-users-banner-icon {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+
+    padding: 25px;
+    color: rgba(102, 188, 232, 0.2);
+    font-size: 55px;
+}
+
+
+/* =====================================
+   USERS GRID
+===================================== */
+
+.new-users-grid,
+.following-users-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    width: 100%;
+}
+
+
+/* =====================================
+   USER CARDS
+===================================== */
+
+.new-user-card-horizontal,
+.following-user-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    min-width: 0;
+    padding: 15px;
+
+    background: linear-gradient(145deg, #101a30, #0b1223);
+    border: 1px solid #1d2c47;
+    border-radius: 14px;
+
+    color: #fff;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.25s ease;
+}
+
+.new-user-card-horizontal:hover,
+.following-user-card:hover {
+    transform: translateY(-3px);
+    border-color: #176b87;
+    box-shadow: 0 7px 20px rgba(23, 107, 135, 0.2);
+}
+
+
+/* =====================================
+   USER IMAGE
+===================================== */
+
+.new-user-image,
+.following-user-image {
+    flex-shrink: 0;
+}
+
+.new-user-image img,
+.following-user-image img {
+    display: block;
+    width: 105px;
+    height: 105px;
+
+    object-fit: cover;
+
+    border: 1px solid #29466b;
+    border-radius: 12px;
+
+    cursor: pointer;
+}
+
+
+/* =====================================
+   USER CONTENT
+===================================== */
+
+.new-user-content,
+.following-user-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+
+    min-width: 0;
+}
+
+
+/* User Details */
+
+.new-user-details h4,
+.following-user-details h4 {
+    margin: 0 0 5px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.new-user-details a,
+.following-user-details a {
+    color: #66bce8;
+    font-size: 13px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.new-user-details a:hover,
+.following-user-details a:hover {
+    color: #20a6a0;
+    text-decoration: underline;
+}
+
+
+/* User Bio */
+
+.new-user-bio,
+.following-user-bio {
+    display: -webkit-box;
+    overflow: hidden;
+
+    margin: 9px 0;
+
+    color: #aabbd0;
+    font-size: 13px;
+    line-height: 1.5;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+
+/* =====================================
+   USER FOOTER
+===================================== */
+
+.new-user-footer,
+.following-user-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.new-user-footer > span,
+.following-user-footer > span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #9eb1c9;
+    font-size: 12px;
+}
+
+
+/* Following User Actions */
+
+.following-user-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* =====================================
+   RESPONSIVE DESIGN
+===================================== */
+
+@media (max-width: 992px) {
+    .new-users-grid,
+    .following-users-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .new-users-banner,
+    .following-users-banner {
+        min-height: 230px;
+        padding: 25px;
+    }
+
+    .new-users-banner-icon,
+    .following-users-banner-icon {
+        font-size: 35px;
+        gap: 10px;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .new-users-page,
+    .following-users-page {
+        padding: 3px;
+    }
+
+    .new-users-banner,
+    .following-users-banner {
+        padding: 20px;
+        border-radius: 14px;
+    }
+
+    .new-users-banner-icon,
+    .following-users-banner-icon {
+        display: none;
+    }
+
+    .new-users-banner h1,
+    .following-users-banner h1 {
+        font-size: 27px;
+    }
+
+    .new-users-banner h2,
+    .following-users-banner h2 {
+        font-size: 16px;
+    }
+
+    .new-user-card-horizontal,
+    .following-user-card {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .new-user-image img,
+    .following-user-image img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .new-user-details h4,
+    .following-user-details h4 {
+        font-size: 15px;
+    }
+
+    .new-user-footer,
+    .following-user-footer {
+        align-items: center;
+    }
+
+    .followBtn,
+    .unfollowBtn {
+        padding: 6px 13px;
+        font-size: 12px;
+    }
+}
