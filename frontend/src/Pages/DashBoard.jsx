@@ -6,7 +6,7 @@ import Cards from "../components/cards/Cards.jsx";
 import Messages from "./Messages.jsx";
 import Overview from "../components/overview/Overview.jsx";
 import "./DashBoard.css";
-
+import SocketManager from "../components/SocketManager.jsx";
 function DashBoard() {
     const [user, setUser] = useState(null);
     const [activeList, setActiveList] = useState("overview");
@@ -35,6 +35,7 @@ function DashBoard() {
 
     return (
         <div className="dashboard-layout">
+        <SocketManager />
             <Sidebar
                 activeList={activeList}
                 setActiveList={setActiveList}
@@ -46,19 +47,19 @@ function DashBoard() {
                 <DashBoardNavbar user={user} />
 
                 <section className="dashboard-content">
-                    {activeList === "overview" ? (
-                        <Overview user={user} />
-                    ) : activeList === "messages" ? (
-                        <Messages />
-                    ) : (
-                        <Cards
-                            activeList={activeList}
-                            isFollowRequest={isFollowRequest}
-                            setIsFollowRequest={setIsFollowRequest}
-                            setNewUserNotification={setNewUserNotification}
-                        />
-                    )}
-                </section>
+                {activeList === "overview" && <Overview user={user} />}
+
+                <div style={{ display: activeList === "overview" || activeList === "messages" ? "none" : "block" }}>
+                    <Cards
+                        activeList={activeList}
+                        isFollowRequest={isFollowRequest}
+                        setIsFollowRequest={setIsFollowRequest}
+                        setNewUserNotification={setNewUserNotification}
+                    />
+                </div>
+
+                {activeList === "messages" && <Messages />}
+            </section>
             </main>
         </div>
     );
