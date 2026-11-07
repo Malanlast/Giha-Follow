@@ -482,50 +482,41 @@
     .following-users-page {
         padding: 3px;
     }
-
     .new-users-banner,
     .following-users-banner {
         padding: 20px;
         border-radius: 14px;
     }
-
     .new-users-banner-icon,
     .following-users-banner-icon {
         display: none;
     }
-
     .new-users-banner h1,
     .following-users-banner h1 {
         font-size: 27px;
     }
-
     .new-users-banner h2,
     .following-users-banner h2 {
         font-size: 16px;
     }
-
     .new-user-card-horizontal,
     .following-user-card {
         gap: 10px;
         padding: 10px;
     }
-
     .new-user-image img,
     .following-user-image img {
         width: 80px;
         height: 80px;
     }
-
     .new-user-details h4,
     .following-user-details h4 {
         font-size: 15px;
     }
-
     .new-user-footer,
     .following-user-footer {
         align-items: center;
     }
-
     .followBtn,
     .unfollowBtn {
         padding: 6px 13px;
