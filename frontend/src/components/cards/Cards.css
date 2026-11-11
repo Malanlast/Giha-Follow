@@ -267,7 +267,6 @@
     font-weight: 700;
     overflow-wrap: anywhere;
 }
-
 .new-user-details a,
 .following-user-details a {
     color: #66bce8;
@@ -275,36 +274,22 @@
     text-decoration: none;
     overflow-wrap: anywhere;
 }
-
 .new-user-details a:hover,
 .following-user-details a:hover {
     color: #20a6a0;
     text-decoration: underline;
 }
-
-
-/* User Bio */
-
 .new-user-bio,
 .following-user-bio {
     display: -webkit-box;
     overflow: hidden;
-
     margin: 9px 0;
-
     color: #aabbd0;
     font-size: 13px;
     line-height: 1.5;
-
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
-
-
-/* =====================================
-   USER FOOTER
-===================================== */
-
 .new-user-footer,
 .following-user-footer {
     display: flex;
@@ -313,7 +298,6 @@
     flex-wrap: wrap;
     gap: 10px;
 }
-
 .new-user-footer > span,
 .following-user-footer > span {
     display: flex;
@@ -323,35 +307,23 @@
     color: #9eb1c9;
     font-size: 12px;
 }
-
-
-/* Following User Actions */
-
 .following-user-actions {
     display: flex;
     align-items: center;
     gap: 8px;
 }
-
-
-/* =====================================
-   RESPONSIVE DESIGN
-===================================== */
-
 @media (max-width: 992px) {
     .new-users-grid,
     .following-users-grid {
         grid-template-columns: 1fr;
     }
 }
-
 @media (max-width: 768px) {
     .new-users-banner,
     .following-users-banner {
         min-height: 230px;
         padding: 25px;
     }
-
     .new-users-banner-icon,
     .following-users-banner-icon {
         font-size: 35px;
@@ -359,7 +331,6 @@
         padding: 5px;
     }
 }
-
 @media (max-width: 480px) {
     .new-users-page,
     .following-users-page {
