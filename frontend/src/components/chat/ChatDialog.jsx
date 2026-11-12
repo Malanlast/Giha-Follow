@@ -320,7 +320,7 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
     const today = new Date();
 
     const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 1);
 
     const isSameDay = (date1, date2) =>
         date1.getDate() === date2.getDate() &&
@@ -462,13 +462,14 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
                                             <button
                                                 type="button"
                                                 className="message-menu-button"
-                                                onClick={() =>
+                                                onClick={(event) =>{
+                                                    event.stopPropagation();
                                                     setActiveMessageMenu(
                                                         activeMessageMenu === msg._id
                                                             ? null
                                                             : msg._id
                                                     )
-                                                }
+                                                }}
                                                 aria-label="Message options"
                                             >
                                                 <i className="bi bi-three-dots"></i>
@@ -477,7 +478,8 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
 
                                         {activeMessageMenu === msg._id &&
                                             !msg.isDeleted && (
-                                                <div className="message-options">
+                                                <div className="message-options"
+                                                onClick={(event)=>event.stopPropagation()}>
                                                     <button
                                                         type="button"
                                                         onClick={() =>
