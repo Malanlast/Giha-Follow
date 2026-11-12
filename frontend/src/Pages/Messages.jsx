@@ -71,90 +71,109 @@ function Messages() {
     };
 
     return (
-        <div className={`messages-page ${selectedUser ? "chat-selected" : ""}`}>
+        <div
+            className={`messages-page ${
+                selectedUser ? "chat-selected" : ""
+            }`}
+        >
+            {/* Top Banner */}
+            <div className="messages-banner">
+                <div className="messages-banner-content">
+                    <h3>Messages</h3>
+                    <p>Stay connected with your community</p>
+                </div>
 
-            {/* Left: Conversation List */}
-            <div className="messages-sidebar">
-                <h3>Messages</h3>
+                <i className="bi bi-chat-dots"></i>
+            </div>
 
-                <div className="conversation-list">
-                    {loading ? (
-                        <p className="no-conversations">
-                            Loading conversations...
-                        </p>
-                    ) : conversations.length === 0 ? (
-                        <p className="no-conversations">
-                            No conversations yet.
-                        </p>
-                    ) : (
-                        conversations.map((user) => (
-                            <div
-                                className={`conversation-item ${
-                                    selectedUser?._id === user._id
-                                        ? "active"
-                                        : ""
-                                }`}
-                                key={user._id}
-                                onClick={() => setSelectedUser(user)}
-                            >
-                                <img
-                                    src={user.avatar}
-                                    alt={user.username}
-                                    className="conversation-avatar"
-                                />
+            {/* Main Content */}
+            <div className="messages-content">
 
-                                <div className="conversation-info">
-                                    <strong>{user.name}</strong>
+                {/* Left: Conversation List */}
+                <div className="messages-sidebar">
+                    <h3>Conversations</h3>
 
-                                    <span>@{user.username}</span>
+                    <div className="conversation-list">
+                        {loading ? (
+                            <p className="no-conversations">
+                                Loading conversations...
+                            </p>
+                        ) : conversations.length === 0 ? (
+                            <p className="no-conversations">
+                                No conversations yet.
+                            </p>
+                        ) : (
+                            conversations.map((user) => (
+                                <div
+                                    className={`conversation-item ${
+                                        selectedUser?._id === user._id
+                                            ? "active"
+                                            : ""
+                                    }`}
+                                    key={user._id}
+                                    onClick={() => setSelectedUser(user)}
+                                >
+                                    <img
+                                        src={user.avatar}
+                                        alt={user.username}
+                                        className="conversation-avatar"
+                                    />
 
-                                    <p>
-                                        {user.lastMessage?.isDeleted
-                                            ? "This message was deleted"
-                                            : user.lastMessage?.message}
-                                    </p>
+                                    <div className="conversation-info">
+                                        <strong>{user.name}</strong>
+
+                                        <span>@{user.username}</span>
+
+                                        <p>
+                                            {user.lastMessage?.isDeleted
+                                                ? "This message was deleted"
+                                                : user.lastMessage?.message}
+                                        </p>
+                                    </div>
+
+                                    <ChatMenu
+                                        githubUsername={user.username}
+                                        onDeleteConversation={() =>
+                                            handleDeleteConversation(user)
+                                        }
+                                    />
                                 </div>
-                                <ChatMenu
-                                    githubUsername={user.username}
-                                    onDeleteConversation={() =>
-                                        handleDeleteConversation(user)
-                                    }
-                                />
-                            </div>
-                        ))
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Right: Chat Area */}
+                <div className="messages-chat">
+                    {selectedUser ? (
+                        <ChatDialog
+                            user={selectedUser}
+                            onClose={() => setSelectedUser(null)}
+                            inline
+                            onConversationDeleted={(userId) => {
+                                setConversations((previous) =>
+                                    previous.filter(
+                                        (item) =>
+                                            item._id.toString() !== userId
+                                    )
+                                );
+                            }}
+                        />
+                    ) : (
+                        <div className="messages-placeholder">
+                            <i className="bi bi-chat-dots"></i>
+
+                            <h4>Select a conversation</h4>
+
+                            <p>
+                                Choose someone from your conversations
+                                to start chatting.
+                            </p>
+                        </div>
                     )}
                 </div>
+
             </div>
-
-            {/* Right: Existing ChatDialog */}
-            <div className="messages-chat">
-                {selectedUser ? (
-                   <ChatDialog
-                        user={selectedUser}
-                        onClose={() => setSelectedUser(null)}
-                        inline
-                        onConversationDeleted={(userId) => {
-                            setConversations((previous) =>
-                                previous.filter(
-                                    (item) => item._id.toString() !== userId
-                                )
-                            );
-                        }}
-                    />
-                ) : (
-                    <div className="messages-placeholder">
-                        <i className="bi bi-chat-dots"></i>
-
-                        <h4>Select a conversation</h4>
-
-                        <p>
-                            Choose someone from your conversations
-                            to start chatting.
-                        </p>
-                    </div>
-                )}
-            </div>
-
         </div>
     );
 }
