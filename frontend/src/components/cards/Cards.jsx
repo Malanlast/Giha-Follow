@@ -324,6 +324,7 @@ function Cards({
 
             {activeList === "following" && (
                 <FollowingUser
+                    bannerType="following"
                     users={followingUsers}
                     isfollowing={isfollowing}
                     setIsfollowing={setIsfollowing}
@@ -353,6 +354,7 @@ function Cards({
 
             {activeList === "followers" && (
                 <FollowingUser
+                    bannerType="followers"
                     users={followersUsers}
                     isfollowing={isfollowing}
                     setIsfollowing={setIsfollowing}

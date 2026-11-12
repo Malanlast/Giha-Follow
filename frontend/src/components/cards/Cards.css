@@ -1,3 +1,8 @@
+
+/* ================================
+   GENERAL
+================================ */
+
 .notFoundPage {
     min-height: 250px;
     background: #0b1223;
@@ -7,12 +12,21 @@
     flex-direction: column;
     margin-top: 1rem;
 }
+
 .cardDesign {
     overflow: hidden;
 }
+
 .cardDesign .card-body {
     overflow-wrap: anywhere;
 }
+
+
+/* ================================
+   BUTTONS
+================================ */
+
+/* Follow Button */
 .followBtn {
     background: linear-gradient(135deg, #193b65, #176b87);
     border: 1px solid #176b87;
@@ -24,12 +38,15 @@
     white-space: nowrap;
     transition: all 0.25s ease;
 }
+
 .followBtn:hover {
     background: linear-gradient(135deg, #176b87, #20a6a0);
     border-color: #20a6a0;
     color: #fff;
     transform: translateY(-2px);
-} 
+}
+
+/* Unfollow Button */
 .unfollowBtn {
     background: transparent;
     border: 1px solid #dc5555;
@@ -41,12 +58,15 @@
     white-space: nowrap;
     transition: all 0.25s ease;
 }
+
 .unfollowBtn:hover {
     background: #dc5555;
     border-color: #dc5555;
     color: #fff;
     transform: translateY(-2px);
-} 
+}
+
+/* Chat Button */
 .chatBtn {
     width: 36px;
     height: 36px;
@@ -61,12 +81,19 @@
     transition: all 0.25s ease;
     flex-shrink: 0;
 }
+
 .chatBtn:hover {
     background: linear-gradient(135deg, #176b87, #20a6a0);
     border-color: #20a6a0;
     color: #fff;
     transform: translateY(-2px);
 }
+
+
+/* ================================
+   COMMON PAGE
+================================ */
+
 .new-users-page,
 .following-users-page {
     width: 100%;
@@ -74,8 +101,13 @@
     padding: 5px;
     color: #fff;
 }
-.new-users-banner,
-.following-users-banner {
+
+
+/* ================================
+   COMMON BANNER
+================================ */
+
+.users-banner {
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -86,17 +118,13 @@
     margin-bottom: 25px;
     border: 1px solid #203d65;
     border-radius: 18px;
-    background:
-        radial-gradient(
-            circle at 85% 50%,
-            rgba(23, 107, 135, 0.3),
-            transparent 35%
-        ),
-        linear-gradient(120deg, #071326, #101b43, #111d3e);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: #fff;
 }
-.new-users-banner::before,
-.following-users-banner::before {
+
+.users-banner::before {
     content: "";
     position: absolute;
     width: 220px;
@@ -107,12 +135,63 @@
     border-radius: 50%;
     pointer-events: none;
 }
+
+
+/* ================================
+   SEPARATE BANNER BACKGROUNDS
+================================ */
+
+/* New Users */
+.new-users-banner {
+    background-image:
+        radial-gradient(
+            circle at 85% 50%,
+            rgba(23, 107, 135, 0.3),
+            transparent 35%
+        ),
+        linear-gradient(
+            120deg,
+            rgba(7, 19, 38, 0.92),
+            rgba(16, 27, 67, 0.75)
+        ),
+        url("/images/new-users-bg.jpg");
+}
+
+/* Following */
+.following-users-banner {
+    background-image:
+        linear-gradient(
+            120deg,
+            rgba(7, 19, 38, 0.92),
+            rgba(16, 27, 67, 0.75)
+        ),
+        url("/images/following-bg.jpg");
+}
+
+/* Followers */
+.followers-users-banner {
+    background-image:
+        linear-gradient(
+            120deg,
+            rgba(7, 19, 38, 0.92),
+            rgba(83, 49, 105, 0.75)
+        ),
+        url("/images/followers-bg.jpg");
+}
+
+
+/* ================================
+   BANNER CONTENT
+================================ */
+
 .new-users-banner-content,
 .following-users-banner-content {
     position: relative;
     z-index: 2;
     max-width: 650px;
 }
+
+/* Banner Tag */
 .new-users-tag,
 .following-users-tag {
     display: inline-flex;
@@ -126,32 +205,39 @@
     color: #a9dff5;
     font-size: 13px;
 }
-.new-users-banner h1,
-.following-users-banner h1 {
+
+/* Banner Heading */
+.users-banner h1 {
     margin: 0;
     color: #fff;
     font-size: clamp(28px, 4vw, 42px);
     font-weight: 750;
 }
-.new-users-banner h1 span,
-.following-users-banner h1 span {
+
+.users-banner h1 span {
     color: #ff922e;
 }
-.new-users-banner h2,
-.following-users-banner h2 {
+
+.users-banner h2 {
     margin-top: 8px;
     color: #e4edf8;
     font-size: 19px;
     font-weight: 600;
 }
-.new-users-banner p,
-.following-users-banner p {
+
+.users-banner p {
     max-width: 500px;
     margin-top: 10px;
     color: #b8c9dd;
     font-size: 14px;
     line-height: 1.6;
-} 
+}
+
+
+/* ================================
+   BANNER BOTTOM
+================================ */
+
 .new-users-banner-bottom,
 .following-users-banner-bottom {
     display: flex;
@@ -160,32 +246,40 @@
     gap: 25px;
     margin-top: 20px;
 }
+
+/* Total Users */
 .new-users-total,
 .following-users-total {
     display: flex;
     align-items: center;
     gap: 12px;
 }
+
 .new-users-total > i,
 .following-users-total > i {
     font-size: 27px;
     color: #66bce8;
 }
+
 .new-users-total div,
 .following-users-total div {
     display: flex;
     flex-direction: column;
 }
+
 .new-users-total strong,
 .following-users-total strong {
     color: #fff;
     font-size: 21px;
 }
+
 .new-users-total span,
 .following-users-total span {
     color: #aabbd0;
     font-size: 12px;
 }
+
+/* Discover / Following Label */
 .new-users-discover-label,
 .following-users-label {
     display: flex;
@@ -198,6 +292,8 @@
     color: #d5e5f2;
     font-size: 13px;
 }
+
+/* Banner Icons */
 .new-users-banner-icon,
 .following-users-banner-icon {
     position: relative;
@@ -210,6 +306,12 @@
     color: rgba(102, 188, 232, 0.2);
     font-size: 55px;
 }
+
+
+/* ================================
+   USERS GRID
+================================ */
+
 .new-users-grid,
 .following-users-grid {
     display: grid;
@@ -217,6 +319,12 @@
     gap: 15px;
     width: 100%;
 }
+
+
+/* ================================
+   USER CARDS
+================================ */
+
 .new-user-card-horizontal,
 .following-user-card {
     display: flex;
@@ -231,16 +339,24 @@
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.25s ease;
 }
+
 .new-user-card-horizontal:hover,
 .following-user-card:hover {
     transform: translateY(-3px);
     border-color: #176b87;
     box-shadow: 0 7px 20px rgba(23, 107, 135, 0.2);
 }
+
+
+/* ================================
+   USER IMAGE
+================================ */
+
 .new-user-image,
 .following-user-image {
     flex-shrink: 0;
 }
+
 .new-user-image img,
 .following-user-image img {
     display: block;
@@ -251,6 +367,12 @@
     border-radius: 12px;
     cursor: pointer;
 }
+
+
+/* ================================
+   USER CONTENT
+================================ */
+
 .new-user-content,
 .following-user-content {
     display: flex;
@@ -259,6 +381,8 @@
     justify-content: center;
     min-width: 0;
 }
+
+/* User Details */
 .new-user-details h4,
 .following-user-details h4 {
     margin: 0 0 5px;
@@ -267,6 +391,7 @@
     font-weight: 700;
     overflow-wrap: anywhere;
 }
+
 .new-user-details a,
 .following-user-details a {
     color: #66bce8;
@@ -274,11 +399,14 @@
     text-decoration: none;
     overflow-wrap: anywhere;
 }
+
 .new-user-details a:hover,
 .following-user-details a:hover {
     color: #20a6a0;
     text-decoration: underline;
 }
+
+/* User Bio */
 .new-user-bio,
 .following-user-bio {
     display: -webkit-box;
@@ -290,6 +418,8 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
 }
+
+/* User Footer */
 .new-user-footer,
 .following-user-footer {
     display: flex;
@@ -298,32 +428,41 @@
     flex-wrap: wrap;
     gap: 10px;
 }
+
 .new-user-footer > span,
 .following-user-footer > span {
     display: flex;
     align-items: center;
     gap: 6px;
-
     color: #9eb1c9;
     font-size: 12px;
 }
+
+/* Following User Actions */
 .following-user-actions {
     display: flex;
     align-items: center;
     gap: 8px;
 }
+
+
+/* ================================
+   RESPONSIVE DESIGN
+================================ */
+
 @media (max-width: 992px) {
     .new-users-grid,
     .following-users-grid {
         grid-template-columns: 1fr;
     }
 }
+
 @media (max-width: 768px) {
-    .new-users-banner,
-    .following-users-banner {
+    .users-banner {
         min-height: 230px;
         padding: 25px;
     }
+
     .new-users-banner-icon,
     .following-users-banner-icon {
         font-size: 35px;
@@ -331,46 +470,53 @@
         padding: 5px;
     }
 }
+
 @media (max-width: 480px) {
     .new-users-page,
     .following-users-page {
         padding: 3px;
     }
-    .new-users-banner,
-    .following-users-banner {
+
+    .users-banner {
         padding: 20px;
         border-radius: 14px;
     }
+
     .new-users-banner-icon,
     .following-users-banner-icon {
         display: none;
     }
-    .new-users-banner h1,
-    .following-users-banner h1 {
+
+    .users-banner h1 {
         font-size: 27px;
     }
-    .new-users-banner h2,
-    .following-users-banner h2 {
+
+    .users-banner h2 {
         font-size: 16px;
     }
+
     .new-user-card-horizontal,
     .following-user-card {
         gap: 10px;
         padding: 10px;
     }
+
     .new-user-image img,
     .following-user-image img {
         width: 80px;
         height: 80px;
     }
+
     .new-user-details h4,
     .following-user-details h4 {
         font-size: 15px;
     }
+
     .new-user-footer,
     .following-user-footer {
         align-items: center;
     }
+
     .followBtn,
     .unfollowBtn {
         padding: 6px 13px;

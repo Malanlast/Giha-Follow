@@ -13,7 +13,7 @@ function NewUsers({
     return (
         <div className="new-users-page">
             {/* Top Banner */}
-            <div className="new-users-banner">
+            <div className="users-banner new-users-banner">
                 <div className="new-users-banner-content">
                     <span className="new-users-tag">
                         <i className="bi bi-stars"></i>

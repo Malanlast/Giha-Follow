@@ -1,9 +1,11 @@
+
+import { useState } from "react";
 import FollowBtn from "./FollowBtn";
 import ChatDialog from "../chat/ChatDialog.jsx";
-import { useState } from "react";
 import "./Cards.css";
 
 function FollowingUser({
+    bannerType = "following",
     users,
     isfollowing,
     setIsfollowing,
@@ -14,28 +16,51 @@ function FollowingUser({
 }) {
     const [selectedUser, setSelectedUser] = useState(null);
 
+    const bannerContent = {
+        following: {
+            tag: "Your Network",
+            title: "Your",
+            highlight: "Connections!",
+            subtitle: "Connect. Follow. Grow.",
+            description:
+                "Stay connected with developers you follow and explore their GitHub profiles.",
+            label: "Your Connections",
+            icon: "bi-person-check-fill"
+        },
+
+        followers: {
+            tag: "Developer Community",
+            title: "People",
+            highlight: "Following You!",
+            subtitle: "Connect. Share. Grow.",
+            description:
+                "Discover developers who follow you and build meaningful connections.",
+            label: "Your Followers",
+            icon: "bi-person-fill"
+        }
+    };
+
+    const banner = bannerContent[bannerType] || bannerContent.following;
+
     return (
         <div className="following-users-page">
 
-            {/* Top Banner */}
-            <div className="following-users-banner">
+            {/* Banner */}
+            <div className={`users-banner ${bannerType}-users-banner`}>
                 <div className="following-users-banner-content">
 
                     <span className="following-users-tag">
                         <i className="bi bi-stars"></i>
-                        Developer Community
+                        {banner.tag}
                     </span>
 
                     <h1>
-                        Your <span>Connections!</span>
+                        {banner.title} <span>{banner.highlight}</span>
                     </h1>
 
-                    <h2>Connect. Follow. Grow.</h2>
+                    <h2>{banner.subtitle}</h2>
 
-                    <p>
-                        Stay connected with developers, explore their
-                        GitHub profiles and build meaningful connections.
-                    </p>
+                    <p>{banner.description}</p>
 
                     <div className="following-users-banner-bottom">
 
@@ -49,8 +74,8 @@ function FollowingUser({
                         </div>
 
                         <div className="following-users-label">
-                            <i className="bi bi-person-check-fill"></i>
-                            Your Connections
+                            <i className={`bi ${banner.icon}`}></i>
+                            {banner.label}
                         </div>
 
                     </div>
