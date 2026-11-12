@@ -3,14 +3,64 @@
    GENERAL
 ================================ */
 
+/* ================================
+   EMPTY STATE
+================================ */
+
 .notFoundPage {
-    min-height: 250px;
-    background: #0b1223;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    width: 100%;
+    min-height: 350px;
+    padding: 30px 15px;
     margin-top: 1rem;
+    border: 1px dashed #344a68;
+    border-radius: 18px;
+    background: rgba(15, 30, 50, 0.45);
+    text-align: center;
+}
+
+.notFoundPage img {
+    width: 100%;
+    max-width: 250px;
+    height: 200px;
+    margin-bottom: 15px;
+    object-fit: contain;
+}
+
+.notFoundPage h2,
+.notFoundPage h3 {
+    margin-bottom: 8px;
+    color: #eaf2ff;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.notFoundPage p {
+    max-width: 400px;
+    margin-bottom: 0;
+    color: #9eacc1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+@media (max-width: 576px) {
+    .notFoundPage {
+        min-height: 300px;
+        padding: 20px 12px;
+    }
+
+    .notFoundPage img {
+        max-width: 200px;
+        height: 170px;
+    }
+
+    .notFoundPage h2,
+    .notFoundPage h3 {
+        font-size: 17px;
+    }
 }
 
 .cardDesign {

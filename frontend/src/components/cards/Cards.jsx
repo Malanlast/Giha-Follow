@@ -303,20 +303,16 @@ function Cards({
                     setFollowingUsers={setFollowingUsers}
                 >
                     {newUsers.length === 0 && (
-                        <div style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}>
+                        <div className="notFoundPage">
                             <img
                                 src="/noUser2.png"
                                 alt="No users"
-                                style={{ height: "50vh" }}
                             />
-                            <h2 style={{ fontSize: "1rem" }}>
-                                Waiting for new users
-                            </h2>
+                            <h2>Waiting for New Users</h2>
+                            <p>
+                                New developers will appear here when they join
+                                the GiHA Follow community.
+                            </p>
                         </div>
                     )}
                 </NewUsers>
@@ -333,20 +329,16 @@ function Cards({
                     setFollowingUsers={setFollowingUsers}
                 >
                     {followingUsers.length === 0 && (
-                        <div style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}>
+                        <div className="notFoundPage">
                             <img
                                 src="/noUser2.png"
                                 alt="No following users"
-                                style={{ height: "50vh" }}
                             />
-                            <h2 style={{ fontSize: "1rem" }}>
-                                You are not following anyone yet
-                            </h2>
+                            <h2>You Are Not Following Anyone Yet</h2>
+                            <p>
+                                Discover developers and follow them to build
+                                your network.
+                            </p>
                         </div>
                     )}
                 </FollowingUser>
@@ -363,20 +355,16 @@ function Cards({
                     setFollowingUsers={setFollowingUsers}
                 >
                     {followersUsers.length === 0 && (
-                        <div style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center"
-                        }}>
+                        <div className="notFoundPage">
                             <img
                                 src="/noUser2.png"
                                 alt="No followers"
-                                style={{ height: "50vh" }}
                             />
-                            <h2 style={{ fontSize: "1rem" }}>
-                                No followers yet
-                            </h2>
+                            <h2>No Followers Yet</h2>
+                            <p>
+                                Your followers will appear here when
+                                developers connect with you.
+                            </p>
                         </div>
                     )}
                 </FollowingUser>

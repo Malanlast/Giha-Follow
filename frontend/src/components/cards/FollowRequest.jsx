@@ -1,4 +1,5 @@
 import FollowBtn from "./FollowBtn";
+import "./FollowRequest.css";
 
 function FollowRequest({
     isFollowRequest,
@@ -12,64 +13,128 @@ function FollowRequest({
         user => !isfollowing[user.username]
     );
 
-    if (pendingRequests.length === 0) {
-        return (
-            <div style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center"
-            }}>
-                <img
-                    style={{ height: "50vh" }}
-                    src="/noReq.png"
-                    alt="No follow requests"
-                />
-
-                <h2 style={{ fontSize: "1rem" }}>
-                    No follow request yet
-                </h2>
-            </div>
-        );
-    }
-
     return (
-        <>
-            {pendingRequests.map((user) => (
-                <div className="col-6 col-md-3" key={user._id}>
-                    <div className="card cardDesign">
-                        <img
-                            style={{ cursor: "pointer" }}
-                            onClick={() =>
-                                window.open(user.profileUrl, "_blank")
-                            }
-                            src={user.avatar}
-                            alt={user.username}
-                            className="card-img-top"
-                        />
+        <div className="follow-requests-page">
 
-                        <div className="card-body">
-                            <h4 className="card-title">{user.name}</h4>
+            {/* Banner */}
+            <div className="requests-banner">
+                <div className="requests-banner-content">
+                    <span className="requests-banner-tag">
+                        <i className="bi bi-people-fill"></i>
+                        Your Community
+                    </span>
 
-                            <h5 className="card-subtitle mb-2 text-body-secondary">
-                                {user.username}
-                            </h5>
+                    <h1>
+                        Follow <span>Requests!</span>
+                    </h1>
 
-                            <p className="card-text">{user.bio}</p>
+                    <h2>Build Your Network.</h2>
 
-                            <FollowBtn
-                                isfollowing={isfollowing}
-                                setIsFollowRequest={setIsFollowRequest}
-                                setIsfollowing={setIsfollowing}
-                                user={user}
-                                setNewUsers={setNewUsers}
-                                setFollowingUsers={setFollowingUsers}
-                            />
+                    <p>
+                        Discover developers who want to connect with you.
+                        Follow them back and grow your developer community.
+                    </p>
+
+                    <div className="requests-banner-stats">
+                        <div className="requests-stat">
+                            <i className="bi bi-person-plus-fill"></i>
+                            <div>
+                                <strong>{pendingRequests.length}</strong>
+                                <span>Pending Requests</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            ))}
-        </>
+
+                <div className="requests-banner-icon">
+                    <i className="bi bi-person-hearts"></i>
+                </div>
+            </div>
+
+            {/* Section Heading */}
+            <div className="requests-section-heading">
+                <div>
+                    <h3>People Who Want to Connect</h3>
+                    <p>Explore your follow requests and connect with developers.</p>
+                </div>
+
+                <span className="requests-count">
+                    {pendingRequests.length} Requests
+                </span>
+            </div>
+
+            {/* Follow Request Cards */}
+            {pendingRequests.length > 0 ? (
+                <div className="row g-4">
+                    {pendingRequests.map(user => (
+                        <div
+                            className="col-12 col-sm-6 col-md-4 col-lg-3"
+                            key={user._id}
+                        >
+                            <div className="request-card">
+
+                                <div className="request-card-image">
+                                    <img
+                                        src={user.avatar}
+                                        alt={user.username}
+                                        onClick={() =>
+                                            window.open(
+                                                user.profileUrl,
+                                                "_blank"
+                                            )
+                                        }
+                                    />
+
+                                    <span className="request-status">
+                                        <i className="bi bi-clock-fill"></i>
+                                        Pending
+                                    </span>
+                                </div>
+
+                                <div className="request-card-body">
+                                    <h4>{user.name}</h4>
+
+                                    <span className="request-username">
+                                        @{user.username}
+                                    </span>
+
+                                    <p className="request-bio">
+                                        {user.bio || "No bio available"}
+                                    </p>
+
+                                    <div className="request-card-action">
+                                        <FollowBtn
+                                            isfollowing={isfollowing}
+                                            setIsFollowRequest={setIsFollowRequest}
+                                            setIsfollowing={setIsfollowing}
+                                            user={user}
+                                            setNewUsers={setNewUsers}
+                                            setFollowingUsers={setFollowingUsers}
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="no-requests">
+                    <img
+                        src="/noReq.png"
+                        alt="No follow requests"
+                    />
+
+                    <h3>No Follow Requests Yet</h3>
+
+                    <p>
+                        When someone wants to connect with you,
+                        their request will appear here.
+                    </p>
+                </div>
+            )}
+
+        </div>
     );
 }
 
