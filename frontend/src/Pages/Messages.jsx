@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import ChatDialog from "../components/chat/ChatDialog.jsx";
-import ChatMenu from "../components/chat/ChatMenu.jsx";
+// import ChatMenu from "../components/chat/ChatMenu.jsx";
 
 import "./Messages.css";
 
@@ -37,38 +37,38 @@ function Messages() {
     }, []);
 
     // Delete conversation
-    const handleDeleteConversation = async (user) => {
-        const confirmDelete = window.confirm(
-            "Are you sure you want to delete this conversation?"
-        );
+    // const handleDeleteConversation = async (user) => {
+    //     const confirmDelete = window.confirm(
+    //         "Are you sure you want to delete this conversation?"
+    //     );
 
-        if (!confirmDelete) return;
+    //     if (!confirmDelete) return;
 
-        try {
-            await axios.delete(
-                `${API}/api/messages/${user._id}`,
-                { withCredentials: true }
-            );
+    //     try {
+    //         await axios.delete(
+    //             `${API}/api/messages/${user._id}`,
+    //             { withCredentials: true }
+    //         );
 
-            setConversations((previous) =>
-                previous.filter((item) => item._id !== user._id)
-            );
+    //         setConversations((previous) =>
+    //             previous.filter((item) => item._id !== user._id)
+    //         );
 
-            if (selectedUser?._id === user._id) {
-                setSelectedUser(null);
-            }
-        } catch (error) {
-            console.error(
-                "DELETE CONVERSATION ERROR:",
-                error.response?.data || error.message
-            );
+    //         if (selectedUser?._id === user._id) {
+    //             setSelectedUser(null);
+    //         }
+    //     } catch (error) {
+    //         console.error(
+    //             "DELETE CONVERSATION ERROR:",
+    //             error.response?.data || error.message
+    //         );
 
-            alert(
-                error.response?.data?.message ||
-                "Failed to delete conversation"
-            );
-        }
-    };
+    //         alert(
+    //             error.response?.data?.message ||
+    //             "Failed to delete conversation"
+    //         );
+    //     }
+    // };
 
     return (
         <div
@@ -130,13 +130,6 @@ function Messages() {
                                                 : user.lastMessage?.message}
                                         </p>
                                     </div>
-
-                                    <ChatMenu
-                                        githubUsername={user.username}
-                                        onDeleteConversation={() =>
-                                            handleDeleteConversation(user)
-                                        }
-                                    />
                                 </div>
                             ))
                         )}
