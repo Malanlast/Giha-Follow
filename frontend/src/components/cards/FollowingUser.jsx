@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import FollowBtn from "./FollowBtn";
+import UserSearch from "./UserSearch";
 import ChatDialog from "../chat/ChatDialog.jsx";
 import "./Cards.css";
 
@@ -15,6 +16,7 @@ function FollowingUser({
     children
 }) {
     const [selectedUser, setSelectedUser] = useState(null);
+    const [search, setSearch] = useState("");
 
     const bannerContent = {
         following: {
@@ -41,6 +43,15 @@ function FollowingUser({
     };
 
     const banner = bannerContent[bannerType] || bannerContent.following;
+
+    const filteredUsers = users.filter((user) => {
+        const searchValue = search.toLowerCase();
+
+        return (
+            user.name?.toLowerCase().includes(searchValue) ||
+            user.username?.toLowerCase().includes(searchValue)
+        );
+    });
 
     return (
         <div className="following-users-page">
@@ -88,11 +99,24 @@ function FollowingUser({
                 </div>
             </div>
 
+            {/* Search */}
+            {users.length > 0 && (
+                <UserSearch
+                    value={search}
+                    onChange={setSearch}
+                    placeholder={
+                        bannerType === "followers"
+                            ? "Search followers..."
+                            : "Search following..."
+                    }
+                />
+            )}
+
             {/* Users Data / Empty State */}
-            {users.length > 0 ? (
+            {filteredUsers.length > 0 ? (
                 <div className="following-users-grid">
 
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <div
                             className="following-user-card"
                             key={user._id}
@@ -158,6 +182,15 @@ function FollowingUser({
                         </div>
                     ))}
 
+                </div>
+            ) : users.length > 0 ? (
+                <div className="notFoundPage">
+                    <i
+                        className="bi bi-search"
+                        style={{ fontSize: "35px", color: "#66bce8" }}
+                    ></i>
+                    <h2>No Developers Found</h2>
+                    <p>Try searching with another name or username.</p>
                 </div>
             ) : (
                 children
