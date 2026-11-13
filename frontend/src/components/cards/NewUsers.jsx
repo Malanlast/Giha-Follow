@@ -1,4 +1,7 @@
+
+import { useState } from "react";
 import FollowBtn from "./FollowBtn";
+import UserSearch from "./UserSearch";
 import "./Cards.css";
 
 function NewUsers({
@@ -10,9 +13,19 @@ function NewUsers({
     setFollowingUsers,
     children
 }) {
+    const [search, setSearch] = useState("");
+
+    const filteredUsers = users.filter((user) => {
+        const searchValue = search.toLowerCase();
+
+        return (
+            user.name?.toLowerCase().includes(searchValue) ||
+            user.username?.toLowerCase().includes(searchValue)
+        );
+    });
+
     return (
         <div className="new-users-page">
-            {/* Top Banner */}
             <div className="users-banner new-users-banner">
                 <div className="new-users-banner-content">
                     <span className="new-users-tag">
@@ -54,10 +67,17 @@ function NewUsers({
                 </div>
             </div>
 
-            {/* Users List */}
-            {users.length > 0 ? (
+            {users.length > 0 && (
+                <UserSearch
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="Search new developers..."
+                />
+            )}
+
+            {filteredUsers.length > 0 ? (
                 <div className="new-users-grid">
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <div
                             className="new-user-card-horizontal"
                             key={user._id}
@@ -108,6 +128,12 @@ function NewUsers({
                             </div>
                         </div>
                     ))}
+                </div>
+            ) : users.length > 0 ? (
+                <div className="notFoundPage">
+                    <i className="bi bi-search" style={{ fontSize: "35px", color: "#66bce8" }}></i>
+                    <h2>No Developers Found</h2>
+                    <p>Try searching with another name or username.</p>
                 </div>
             ) : (
                 children
