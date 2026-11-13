@@ -1,6 +1,7 @@
+import { useState } from "react";
 import FollowBtn from "./FollowBtn";
 import "./FollowRequest.css";
-
+import UserSearch from "./UserSearch";
 function FollowRequest({
     isFollowRequest,
     isfollowing,
@@ -9,9 +10,17 @@ function FollowRequest({
     setNewUsers,
     setFollowingUsers
 }) {
+    const [search, setSearch]=useState("");
     const pendingRequests = isFollowRequest.filter(
         user => !isfollowing[user.username]
     );
+    const filteredRequests=pendingRequests.filter((user)=>{
+        const value=search.toLowerCase();
+        return(
+            user.name?.toLowerCase().includes(value) ||
+            user.username?.toLowerCase().includes(value)
+        );
+    });
 
     return (
         <div className="follow-requests-page">
@@ -47,7 +56,7 @@ function FollowRequest({
                 </div>
 
                 <div className="requests-banner-icon">
-                    <i className="bi bi-person-hearts"></i>
+                    <i className="bi bi-people-fill"></i>
                 </div>
             </div>
 
@@ -62,11 +71,18 @@ function FollowRequest({
                     {pendingRequests.length} Requests
                 </span>
             </div>
+            {pendingRequests.length>0&&(
+                <UserSearch
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="Search follow requests..."
+                />
+            )}
 
             {/* Follow Request Cards */}
-            {pendingRequests.length > 0 ? (
+            {filteredRequests.length > 0 ? (
                 <div className="row g-4">
-                    {pendingRequests.map(user => (
+                    {filteredRequests.map(user => (
                         <div
                             className="col-12 col-sm-6 col-md-4 col-lg-3"
                             key={user._id}
@@ -117,6 +133,11 @@ function FollowRequest({
                             </div>
                         </div>
                     ))}
+                </div>
+            ): pendingRequests.length>0?(
+                <div className="no-requests">
+                    <h3>No Requests Found</h3>
+                    <p>Try searching with another name or username.</p>
                 </div>
             ) : (
                 <div className="no-requests">
