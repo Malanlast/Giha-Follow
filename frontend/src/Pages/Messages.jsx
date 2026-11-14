@@ -8,9 +8,8 @@ import "./Messages.css";
 
 const API = import.meta.env.VITE_API_URL;
 
-function Messages() {
+function Messages({ selectedUser, onSelectConversation, onCloseConversation }) {
     const [conversations, setConversations] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     // Fetch all conversations
@@ -55,7 +54,7 @@ function Messages() {
     //         );
 
     //         if (selectedUser?._id === user._id) {
-    //             setSelectedUser(null);
+    //             onCloseConversation();
     //         }
     //     } catch (error) {
     //         console.error(
@@ -111,7 +110,7 @@ function Messages() {
                                             : ""
                                     }`}
                                     key={user._id}
-                                    onClick={() => setSelectedUser(user)}
+                                    onClick={() => onSelectConversation(user)}
                                 >
                                     <img
                                         src={user.avatar}
@@ -141,7 +140,7 @@ function Messages() {
                     {selectedUser ? (
                         <ChatDialog
                             user={selectedUser}
-                            onClose={() => setSelectedUser(null)}
+                            onClose={onCloseConversation}
                             inline
                             onConversationDeleted={(userId) => {
                                 setConversations((previous) =>

@@ -3,7 +3,8 @@ function Sidebar({
     activeList,
     setActiveList,
     newUserNotification = [],
-    isFollowRequest = []
+    isFollowRequest = [],
+    unreadMessages = 0
 }) {
     const menuItems = [
         { id: "overview", label: "Overview", icon: "bi-grid" },
@@ -34,11 +35,13 @@ function Sidebar({
                 {menuItems.map((item) => {
 
                     const count =
-                        item.id === "new"
-                            ? newUserNotification.length
-                            : item.id === "follow-requests"
-                            ? isFollowRequest.length
-                            : 0;
+                    item.id === "new"
+                        ? newUserNotification.length
+                        : item.id === "follow-requests"
+                        ? isFollowRequest.length
+                        : item.id === "messages"
+                        ? unreadMessages
+                        : 0;
 
                     return (
                         <button

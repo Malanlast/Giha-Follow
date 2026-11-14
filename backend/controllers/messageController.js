@@ -123,8 +123,9 @@ const getMessages = async (req, res) => {
             message: "Failed to fetch messages",
         });
     }
-}; 
+    }; 
 // Get all users with whom the current user has conversations
+
 const getConversations = async (req, res) => {
     try {
         const currentUserId = req.session.userId;
@@ -168,7 +169,24 @@ const getConversations = async (req, res) => {
                 new Date(a.lastMessage.createdAt)
         );
 
-        return res.status(200).json({ conversations });
+        // Fetch unread messages received by current user
+        const unreadMessages = await Message.find({
+            receiver: currentUserId,
+            isSeen: false,
+            hiddenFor: { $ne: currentUserId }
+        }).select("sender");
+
+        // Get unique sender IDs
+        const unreadConversationIds = [
+            ...new Set(
+                unreadMessages.map(msg => msg.sender.toString())
+            )
+        ];
+
+        return res.status(200).json({
+            conversations,
+            unreadConversationIds
+        });
 
     } catch (error) {
         console.error("GET CONVERSATIONS ERROR:", error);
@@ -178,6 +196,7 @@ const getConversations = async (req, res) => {
         });
     }
 };
+
 // Delete a single message only for the current user
 const deleteMessageForMe = async (req, res) => {
     try {
