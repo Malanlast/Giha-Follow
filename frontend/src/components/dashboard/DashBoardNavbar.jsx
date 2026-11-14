@@ -1,8 +1,10 @@
 import './DashboardNavbar.css';
 import { socket } from "../../socket.js";
+import { useState } from "react";
 import axios from 'axios';
 import RepoDialogBox from "../repository/RepoDialogBox.jsx";
 function DashBoardNavbar({ user }) {
+    const [showLogoutDialog, setShowLogoutDialog] = useState(false);
     const handleLogout = async () => {
         try {
             await axios.post(
@@ -50,12 +52,40 @@ function DashBoardNavbar({ user }) {
             {/* Logout */}
             <button
                 className="topbar-logout"
-                onClick={handleLogout}
+                onClick={() => setShowLogoutDialog(true)}
                 title="Logout"
                 type="button"
             >
                 <i className="bi bi-box-arrow-right"></i>
             </button>
+            {showLogoutDialog && (
+                <div className="logout-overlay">
+                    <div className="logout-dialog">
+                        <div className="logout-icon">
+                            <i className="bi bi-box-arrow-right"></i>
+                        </div>
+
+                        <h3>Confirm Logout</h3>
+                        <p>Are you sure you want to logout from GiHA Follow?</p>
+
+                        <div className="logout-dialog-actions">
+                            <button
+                                onClick={() => setShowLogoutDialog(false)}
+                                className="logout-cancel"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={handleLogout}
+                                className="logout-confirm"
+                            >
+                                Yes, Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </header>
     );
