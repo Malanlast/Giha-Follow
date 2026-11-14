@@ -1,6 +1,4 @@
-
 import "./Cards.css";
-
 function UserSearch({ value, onChange, placeholder = "Search developers..." }) {
     return (
         <div className="user-search-container">

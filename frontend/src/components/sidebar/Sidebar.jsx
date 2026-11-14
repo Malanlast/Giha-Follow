@@ -1,6 +1,4 @@
-
 import './Sidebar.css';
-
 function Sidebar({
     activeList,
     setActiveList,

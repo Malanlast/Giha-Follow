@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import './Cards.css';
 import axios from "axios";
 import { socket } from "../../socket.js";
@@ -31,7 +32,7 @@ function Cards({
     const loadFollowRequests = useCallback(async () => {
         try {
             const response = await axios.get(
-                "http://localhost:5000/api/users/follow-requests",
+                `${import.meta.env.VITE_API_URL}/api/users/follow-requests`,
                 { withCredentials: true }
             );
 
@@ -55,22 +56,22 @@ function Cards({
                     followersResponse,
                     requestsResponse
                 ] = await Promise.all([
-                    axios.get("http://localhost:5000/api/users/me", {
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users/me`, {
                         withCredentials: true
                     }),
-                    axios.get("http://localhost:5000/api/users", {
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users`, {
                         withCredentials: true
                     }),
-                    axios.get("http://localhost:5000/api/users/new-users", {
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users/new-users`, {
                         withCredentials: true
                     }),
-                    axios.get("http://localhost:5000/api/users/following", {
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users/following`, {
                         withCredentials: true
                     }),
-                    axios.get("http://localhost:5000/api/users/followers", {
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users/followers`, {
                         withCredentials: true
                     }),
-                    axios.get("http://localhost:5000/api/users/follow-requests", {
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/users/follow-requests`, {
                         withCredentials: true
                     })
                 ]);
@@ -119,7 +120,7 @@ function Cards({
             uniqueUsers.map(async user => {
                 try {
                     const response = await axios.get(
-                        `http://localhost:5000/api/users/${user.username}/follow-status`,
+                        `${import.meta.env.VITE_API_URL}/api/users/${user.username}/follow-status`,
                         { withCredentials: true }
                     );
 

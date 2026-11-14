@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import "./ChatDialog.css";
 import ChatMenu from "./ChatMenu";
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL;
 function getId(value) {
     return value?._id?.toString() ?? value?.toString();
 }

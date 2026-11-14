@@ -2,24 +2,20 @@ import './DashboardNavbar.css';
 import { socket } from "../../socket.js";
 import axios from 'axios';
 import RepoDialogBox from "../repository/RepoDialogBox.jsx";
-
 function DashBoardNavbar({ user }) {
-
     const handleLogout = async () => {
         try {
             await axios.post(
-                "http://localhost:5000/api/auth/logout",
+                `${import.meta.env.VITE_API_URL}/api/auth/logout`,
                 {},
                 { withCredentials: true }
             );
-
             socket.disconnect();
             window.location.href = "/";
         } catch (err) {
             console.error(err.response?.data || err.message);
         }
     };
-
     return (
         <header className="dashboard-topbar">
 

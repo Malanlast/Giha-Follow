@@ -1,4 +1,3 @@
-
 import './SearchRepo.css';
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -41,7 +40,7 @@ function Repository() {
             setError("");
 
             const response = await axios.get(
-                `http://localhost:5000/api/repos/search?q=${encodeURIComponent(query)}&page=${page}&limit=10`,
+                `${import.meta.env.VITE_API_URL}/api/repos/search?q=${encodeURIComponent(query)}&page=${page}&limit=10`,
                 {
                     withCredentials: true
                 }

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import FollowBtn from "./FollowBtn";
 import UserSearch from "./UserSearch";

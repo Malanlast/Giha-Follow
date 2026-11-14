@@ -19,7 +19,7 @@ function FollowBtn({
 
         try {
             await axios.put(
-                `http://localhost:5000/api/users/${username}/follow`,
+                `${import.meta.env.VITE_API_URL}/api/users/${username}/follow`,
                 {},
                 {
                     withCredentials: true,
@@ -65,7 +65,7 @@ function FollowBtn({
 
         try {
             await axios.delete(
-                `http://localhost:5000/api/users/${username}/unfollow`,
+                `${import.meta.env.VITE_API_URL}/api/users/${username}/unfollow`,
                 {
                     withCredentials: true,
                 }

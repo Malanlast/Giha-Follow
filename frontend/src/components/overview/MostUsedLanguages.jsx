@@ -64,7 +64,7 @@ function MostUsedLanguages() {
         const fetchLanguages = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:5000/api/users/github-languages",
+                    `${import.meta.env.VITE_API_URL}/api/users/github-languages`,
                     { withCredentials: true }
                 );
 
