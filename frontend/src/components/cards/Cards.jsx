@@ -230,6 +230,11 @@ function Cards({
                     ? prev
                     : [...prev, data.follower]
             );
+            setFollowersUsers(prev =>
+                prev.some(user => user.username === data.follower.username)
+                    ? prev
+                    : [...prev, data.follower]
+            );
         };
 
         const handleFollowBack = (data) => {
@@ -246,6 +251,11 @@ function Cards({
             if (data.targetUsername !== currUser.username) return;
 
             setIsFollowRequest(prev =>
+                prev.filter(
+                    user => user.username !== data.unfollower.username
+                )
+            );
+            setFollowersUsers(prev =>
                 prev.filter(
                     user => user.username !== data.unfollower.username
                 )
