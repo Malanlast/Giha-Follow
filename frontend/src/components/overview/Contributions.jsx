@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import "./Contributions.css";
 
@@ -60,7 +60,7 @@ function Contributions() {
         currentStreak: 0
     });
     const [loading, setLoading] = useState(true);
-
+    const heatmapScrollRef=useRef(null);
     useEffect(() => {
         const fetchContributions = async () => {
             try {
@@ -91,6 +91,15 @@ function Contributions() {
 
         fetchContributions();
     }, []);
+    useEffect(() => {
+    if (loading) return;
+
+    const container = heatmapScrollRef.current;
+
+    if (container) {
+        container.scrollLeft = container.scrollWidth;
+    }
+    }, [loading, contributions]);
 
     const contributionWeeks = [];
 
@@ -159,7 +168,7 @@ function Contributions() {
         </span>
     </div>
 
-    <div className="heatmap-scroll">
+    <div className="heatmap-scroll" ref={heatmapScrollRef}>
         <div className="heatmap-container">
 
             {/* Month labels */}
