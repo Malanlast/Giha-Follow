@@ -17,7 +17,7 @@ function DashBoard() {
         const fetchUser = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:5000/api/users/me",
+                    `${import.meta.env.VITE_API_URL}/api/users/me`,
                     { withCredentials: true }
                 );
                 setUser(response.data.user);

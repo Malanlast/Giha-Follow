@@ -6,7 +6,7 @@ import ChatDialog from "../components/chat/ChatDialog.jsx";
 
 import "./Messages.css";
 
-const API = "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL;
 
 function Messages() {
     const [conversations, setConversations] = useState([]);
