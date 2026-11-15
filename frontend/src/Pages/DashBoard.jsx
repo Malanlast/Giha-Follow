@@ -135,6 +135,7 @@ function DashBoard() {
                         selectedUser={selectedUser}
                         onSelectConversation={handleSelectConversation}
                         onCloseConversation={handleCloseConversation}
+                        unreadConversations={unreadConversations}
                     />
                 )}
             </section>

@@ -8,7 +8,7 @@ import "./Messages.css";
 
 const API = import.meta.env.VITE_API_URL;
 
-function Messages({ selectedUser, onSelectConversation, onCloseConversation }) {
+function Messages({ selectedUser, onSelectConversation, onCloseConversation, unreadConversations }) {
     const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,41 +34,6 @@ function Messages({ selectedUser, onSelectConversation, onCloseConversation }) {
 
         fetchConversations();
     }, []);
-
-    // Delete conversation
-    // const handleDeleteConversation = async (user) => {
-    //     const confirmDelete = window.confirm(
-    //         "Are you sure you want to delete this conversation?"
-    //     );
-
-    //     if (!confirmDelete) return;
-
-    //     try {
-    //         await axios.delete(
-    //             `${API}/api/messages/${user._id}`,
-    //             { withCredentials: true }
-    //         );
-
-    //         setConversations((previous) =>
-    //             previous.filter((item) => item._id !== user._id)
-    //         );
-
-    //         if (selectedUser?._id === user._id) {
-    //             onCloseConversation();
-    //         }
-    //     } catch (error) {
-    //         console.error(
-    //             "DELETE CONVERSATION ERROR:",
-    //             error.response?.data || error.message
-    //         );
-
-    //         alert(
-    //             error.response?.data?.message ||
-    //             "Failed to delete conversation"
-    //         );
-    //     }
-    // };
-
     return (
         <div
             className={`messages-page ${
@@ -119,9 +84,16 @@ function Messages({ selectedUser, onSelectConversation, onCloseConversation }) {
                                     />
 
                                     <div className="conversation-info">
+                                    <div className="conversation-name-row">
                                         <strong>{user.name}</strong>
-
-                                        <span>@{user.username}</span>
+                                        {unreadConversations?.has(String(user._id)) && (
+                                            <i
+                                                className="bi bi-chat-dots-fill unread-message-icon"
+                                                title="Unread message"
+                                            ></i>
+                                        )}
+                                    </div>
+                                    <span>@{user.username}</span>
 
                                         <p>
                                             {user.lastMessage?.isDeleted
