@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { socket } from "../socket.js";
 import ChatDialog from "../components/chat/ChatDialog.jsx";
 // import ChatMenu from "../components/chat/ChatMenu.jsx";
 
@@ -8,7 +8,8 @@ import "./Messages.css";
 
 const API = import.meta.env.VITE_API_URL;
 
-function Messages({ selectedUser, onSelectConversation, onCloseConversation, unreadConversations }) {
+function Messages({ selectedUser, onSelectConversation,
+    onCloseConversation, unreadConversations, currentUserId}) {
     const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -34,6 +35,29 @@ function Messages({ selectedUser, onSelectConversation, onCloseConversation, unr
 
         fetchConversations();
     }, []);
+    useEffect(() => {
+    const handleNewMessage = async ({ message }) => {
+        if (!message) return;
+        try {
+            const response = await axios.get(
+                `${API}/api/messages/conversations`,
+                { withCredentials: true }
+            );
+            const latestConversations =
+            response.data.conversations || [];
+            setConversations(latestConversations);
+        } catch (error) {
+            console.error(
+                "UPDATE CONVERSATIONS ERROR:",
+                error.response?.data || error.message
+            );
+        }
+    };
+    socket.on("newMessage", handleNewMessage);
+    return () => {
+        socket.off("newMessage", handleNewMessage);
+    };
+    }, [currentUserId]);
     return (
         <div
             className={`messages-page ${

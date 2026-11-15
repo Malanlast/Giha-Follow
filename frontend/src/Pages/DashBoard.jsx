@@ -114,13 +114,10 @@ function DashBoard() {
                 newUserNotification={newUserNotification}
                 unreadMessages={unreadConversations.size}
             />
-
             <main className="dashboard-main">
                 <DashBoardNavbar user={user} />
-
                 <section className="dashboard-content">
                 {activeList === "overview" && <Overview user={user} />}
-
                 <div style={{ display: activeList === "overview" || activeList === "messages" ? "none" : "block" }}>
                     <Cards
                         activeList={activeList}
@@ -129,13 +126,13 @@ function DashBoard() {
                         setNewUserNotification={setNewUserNotification}
                     />
                 </div>
-
                 {activeList === "messages" && (
                     <Messages
                         selectedUser={selectedUser}
                         onSelectConversation={handleSelectConversation}
                         onCloseConversation={handleCloseConversation}
                         unreadConversations={unreadConversations}
+                        currentUserId={user._id}
                     />
                 )}
             </section>
