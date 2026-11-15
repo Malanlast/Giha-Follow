@@ -12,7 +12,8 @@ function Cards({
     activeList,
     isFollowRequest,
     setIsFollowRequest,
-    setNewUserNotification
+    setNewUserNotification,
+    clearUnreadConversation
 }) {
     const [currUser, setCurrUser] = useState(null);
     const [users, setUsers] = useState([]);
@@ -338,6 +339,7 @@ function Cards({
                     refreshFollowRequests={loadFollowRequests}
                     setNewUsers={setNewUsers}
                     setFollowingUsers={setFollowingUsers}
+                    clearUnreadConversation={clearUnreadConversation}
                 >
                     {followingUsers.length === 0 && (
                         <div className="notFoundPage">
@@ -364,6 +366,7 @@ function Cards({
                     refreshFollowRequests={loadFollowRequests}
                     setNewUsers={setNewUsers}
                     setFollowingUsers={setFollowingUsers}
+                    clearUnreadConversation={clearUnreadConversation}
                 >
                     {followersUsers.length === 0 && (
                         <div className="notFoundPage">

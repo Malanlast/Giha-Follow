@@ -96,6 +96,13 @@ function DashBoard() {
         return updated;
     });
     };
+    const clearUnreadConversation = (userId) => {
+    setUnreadConversations((prev) => {
+        const updated = new Set(prev);
+        updated.delete(String(userId));
+        return updated;
+    });
+};
     const handleCloseConversation = () => {
     setSelectedUser(null);
     };
@@ -124,6 +131,7 @@ function DashBoard() {
                         isFollowRequest={isFollowRequest}
                         setIsFollowRequest={setIsFollowRequest}
                         setNewUserNotification={setNewUserNotification}
+                        clearUnreadConversation={clearUnreadConversation}
                     />
                 </div>
                 {activeList === "messages" && (

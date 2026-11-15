@@ -12,6 +12,7 @@ function FollowingUser({
     refreshFollowRequests,
     setNewUsers,
     setFollowingUsers,
+    clearUnreadConversation,
     children
 }) {
     const [selectedUser, setSelectedUser] = useState(null);
@@ -169,7 +170,10 @@ function FollowingUser({
 
                                         <button
                                             className="btn chatBtn"
-                                            onClick={() => setSelectedUser(user)}
+                                            onClick={() => {
+                                                clearUnreadConversation?.(user._id);
+                                                setSelectedUser(user);
+                                            }}
                                             title="Chat"
                                         >
                                             <i className="bi bi-chat-dots-fill"></i>
