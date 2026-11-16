@@ -22,6 +22,9 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
     const [activeMessageMenu, setActiveMessageMenu] = useState(null);
 
     const messagesEndRef = useRef(null);
+    const [isOtherUserTyping, setIsOtherUserTyping] = useState(false);
+    const typingTimeoutRef = useRef(null);
+    const isTypingRef = useRef(false);
 
     // Load logged-in user
     useEffect(() => {
@@ -134,6 +137,17 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
                 setPresenceLoaded(true);
             }
         };
+        const handleUserTyping = ({ userId }) => {
+            if (getId(userId) === otherUserId) {
+                setIsOtherUserTyping(true);
+            }
+        };
+
+        const handleUserStopTyping = ({ userId }) => {
+            if (getId(userId) === otherUserId) {
+                setIsOtherUserTyping(false);
+            }
+        };
 
         const handleMessageDeleted = ({ message: updatedMessage }) => {
             if (!updatedMessage) return;
@@ -154,6 +168,8 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
         socket.on("onlineUsers", handleOnlineUsers);
         socket.on("userOnline", handleUserOnline);
         socket.on("userOffline", handleUserOffline);
+        socket.on("userTyping", handleUserTyping);
+        socket.on("userStopTyping", handleUserStopTyping);
 
         // Handle an already-connected shared socket
         if (socket.connected) {
@@ -169,7 +185,14 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
             socket.off("onlineUsers", handleOnlineUsers);
             socket.off("userOnline", handleUserOnline);
             socket.off("userOffline", handleUserOffline);
+            socket.off("userTyping", handleUserTyping);
+            socket.off("userStopTyping", handleUserStopTyping);
             socket.off("messageDeleted", handleMessageDeleted);
+            clearTimeout(typingTimeoutRef.current);
+            if (isTypingRef.current) {
+                socket.emit("stopTyping");
+                isTypingRef.current = false;
+            }
             socket.emit("closeConversation");
         };
     }, [currUser?._id, user?._id]);
@@ -205,6 +228,32 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
             document.removeEventListener("click", handleOutsideClick);
         };
     }, []);
+    const handleTyping = (value) => {
+    setMessage(value);
+
+    if (!value.trim()) {
+        clearTimeout(typingTimeoutRef.current);
+
+        if (isTypingRef.current) {
+            socket.emit("stopTyping");
+            isTypingRef.current = false;
+        }
+
+        return;
+    }
+
+    if (!isTypingRef.current) {
+        socket.emit("typing");
+        isTypingRef.current = true;
+    }
+
+    clearTimeout(typingTimeoutRef.current);
+
+    typingTimeoutRef.current = setTimeout(() => {
+        socket.emit("stopTyping");
+        isTypingRef.current = false;
+    }, 1000);
+    };
 
     // Send message
     const sendMessage = async () => {
@@ -225,6 +274,13 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
             );
 
             setMessage("");
+
+            clearTimeout(typingTimeoutRef.current);
+
+            if (isTypingRef.current) {
+                socket.emit("stopTyping");
+                isTypingRef.current = false;
+            }
         } catch (error) {
             console.error(
                 error.response?.data || error.message
@@ -550,6 +606,21 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
                         );
                     })
                     )}
+                    {isOtherUserTyping && (
+                    <div className="typing-row">
+                        <img
+                            src={user.avatar}
+                            alt={user.username}
+                            className="typing-avatar"
+                        />
+
+                        <div className="typing-bubble">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                )}
                     <div ref={messagesEndRef} />
                 </main>
 
@@ -565,9 +636,7 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
                         type="button"
                         className="chat-emoji"
                         aria-label="Insert emoji"
-                        onClick={() =>
-                            setMessage((previous) => previous + "🙂")
-                        }
+                        onClick={() => handleTyping(message + "🙂")}
                     >
                         <i className="bi bi-emoji-smile"></i>
                     </button>
@@ -577,7 +646,7 @@ function ChatDialog({ user, onClose, inline = false,  onConversationDeleted }) {
                         placeholder="Type a message..."
                         value={message}
                         onChange={(event) =>
-                            setMessage(event.target.value)
+                            handleTyping(event.target.value)
                         }
                         aria-label="Message"
                     />

@@ -60,6 +60,27 @@ const setIO = (socketIO) => {
         socket.on("closeConversation", () => {
             socket.data.activeChatUserId = null;
         });
+        // Handle typing indicator
+        socket.on("typing", () => {
+            const receiverId = socket.data.activeChatUserId;
+
+            if (!receiverId) return;
+
+            io.to(receiverId).emit("userTyping", {
+                userId
+            });
+        });
+
+        // Handle stop typing
+        socket.on("stopTyping", () => {
+            const receiverId = socket.data.activeChatUserId;
+
+            if (!receiverId) return;
+
+            io.to(receiverId).emit("userStopTyping", {
+                userId
+            });
+        });
 
         // Handle disconnection
         socket.on("disconnect", () => {

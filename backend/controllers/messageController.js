@@ -68,7 +68,7 @@ const sendMessage = async (req, res) => {
             message: "Failed to send message",
         });
     }
-};
+    };
 // Get messages and mark received messages as seen
 const getMessages = async (req, res) => {
     try {
@@ -195,7 +195,7 @@ const getConversations = async (req, res) => {
             message: "Failed to fetch conversations"
         });
     }
-};
+    };
 
 // Delete a single message only for the current user
 const deleteMessageForMe = async (req, res) => {
@@ -231,7 +231,7 @@ const deleteMessageForMe = async (req, res) => {
             message: "Failed to delete message",
         });
     }
-};
+    };
 // Delete a single message for everyone
 const deleteMessageForEveryone = async (req, res) => {
     try {
@@ -304,7 +304,7 @@ const deleteMessageForEveryone = async (req, res) => {
             message: "Failed to delete message for everyone",
         });
     }
-};
+    };
 // Delete conversation only for the current user
 const deleteConversation = async (req, res) => {
     try {
@@ -346,7 +346,7 @@ const deleteConversation = async (req, res) => {
             message: "Failed to delete conversation",
         });
     }
-};
+    };
 module.exports = {
     sendMessage,
     getMessages,
@@ -354,4 +354,4 @@ module.exports = {
     deleteConversation,
     deleteMessageForMe,
     deleteMessageForEveryone 
-};
+    };
