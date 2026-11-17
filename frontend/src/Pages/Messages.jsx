@@ -3,16 +3,12 @@ import axios from "axios";
 import { socket } from "../socket.js";
 import ChatDialog from "../components/chat/ChatDialog.jsx";
 // import ChatMenu from "../components/chat/ChatMenu.jsx";
-
 import "./Messages.css";
-
 const API = import.meta.env.VITE_API_URL;
-
 function Messages({ selectedUser, onSelectConversation,
     onCloseConversation, unreadConversations, currentUserId}) {
     const [conversations, setConversations] = useState([]);
     const [loading, setLoading] = useState(true);
-
     // Fetch all conversations
     useEffect(() => {
         const fetchConversations = async () => {
@@ -73,14 +69,11 @@ function Messages({ selectedUser, onSelectConversation,
 
                 <i className="bi bi-chat-dots"></i>
             </div>
-
             {/* Main Content */}
             <div className="messages-content">
-
                 {/* Left: Conversation List */}
                 <div className="messages-sidebar">
                     <h3>Conversations</h3>
-
                     <div className="conversation-list">
                         {loading ? (
                             <p className="no-conversations">
@@ -106,7 +99,6 @@ function Messages({ selectedUser, onSelectConversation,
                                         alt={user.username}
                                         className="conversation-avatar"
                                     />
-
                                     <div className="conversation-info">
                                     <div className="conversation-name-row">
                                         <strong>{user.name}</strong>
@@ -118,7 +110,6 @@ function Messages({ selectedUser, onSelectConversation,
                                         )}
                                     </div>
                                     <span>@{user.username}</span>
-
                                         <p>
                                             {user.lastMessage?.isDeleted
                                                 ? "This message was deleted"
@@ -130,7 +121,6 @@ function Messages({ selectedUser, onSelectConversation,
                         )}
                     </div>
                 </div>
-
                 {/* Right: Chat Area */}
                 <div className="messages-chat">
                     {selectedUser ? (
@@ -165,5 +155,4 @@ function Messages({ selectedUser, onSelectConversation,
         </div>
     );
 }
-
 export default Messages;
